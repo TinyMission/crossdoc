@@ -1,0 +1,301 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CrossDoc Test</title>
+    <meta name="description" content="Test page for the CrossDoc JavaScript library"/>
+    <meta name="author" content="Tiny Mission, LLC"/>
+    <meta name="copyright" content="Tiny Mission LLC, Copyright (c) 2015"/>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.0/css/foundation.min.css"/>
+    <link rel="stylesheet" href="../vendor/assets/stylesheets/crossdoc.css"/>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.0/js/foundation.min.js"></script>
+    <script src="js/FileSaver.min.js"></script>
+    <script src="../vendor/assets/javascripts/crossdoc.js"></script>
+
+    <style>
+        body {
+            background: #f0f0f0;
+        }
+        #overlay-toggle {
+            position: fixed;
+            padding: 4px 8px;
+            z-index: 100;
+        }
+        .crossdoc .page.us-letter.decorated {
+            margin-bottom: 24px;
+        }
+        h1 {
+            margin: 0 0 1em 0;
+            font-size: 0;
+        }
+        h1.mine {
+            font-size: 32px;
+            font-weight: 100;
+            letter-spacing: 1px;
+            text-align: center;
+            padding: 12px;
+            margin: 0;
+        }
+        h2, h3, h4 {
+            color: #004488;
+        }
+        p {
+            font-size: 12px;
+        }
+        li {
+            font-size: 12px;
+        }
+        p.bordered {
+            border: 2px solid #ccc;
+            background: #f0f0f0;
+            padding: 0.5em;
+        }
+        #output {
+            background: #fff;
+            width: 100%;
+            overflow-x: scroll;
+        }
+        .blue-border {
+            border: 1px solid #0000aa;
+        }
+        .inline-list a {
+            font-size: 11px;
+            padding: 0px 4px;
+        }
+        .row.form {
+            border: 1px solid #ccc;
+            background: #f0f4f8;
+            padding-top: 8px;
+            margin-bottom: 12px;
+        }
+        table tr th {
+            background-color: #007095;
+            color: #fff;
+        }
+        td.quantity, th.quantity {
+            text-align: center;
+        }
+        td.total, th.total {
+            font-weight: bold;
+            text-align: right;
+        }
+        .image-container {
+            padding: 12px;
+            border: 1px solid #ccc;
+            background: #f0f4f8;
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay-toggle">
+        <label>
+            <input type="checkbox" checked/>
+            Overlay
+        </label>
+    </div>
+
+    <h1 class="mine">CrossDoc Demo</h1>
+
+    <div class="crossdoc" id="document">
+
+        <div class="page us-letter decorated margin-75">
+            <div class="row">
+                <div class="large-3 columns">
+                    <h1><img src="http://placehold.it/400x200.png&text=Logo"></h1>
+                </div>
+                <div class="large-9 columns">
+                    <ul class="button-group right">
+                        <li><a href="#" class="button">Link 1</a></li>
+                        <li><a href="#" class="button">Link 2</a></li>
+                        <li><a href="#" class="button">Link 3</a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="large-12 columns">
+                    <img src="http://placehold.it/1000x200.png&text=Banner">
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-4 columns">
+                    <img src="http://placehold.it/400x300.png&text=Photo">
+                </div>
+                <div class="large-8 columns">
+                    <h4>This is a content section.</h4>
+                    <div class="row">
+                        <div class="large-6 columns">
+                            <p>Bacon <em>ipsum dolor</em> sit <strong>amet nulla</strong> ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.</p>
+                        </div>
+                        <div class="large-6 columns">
+                            <ul>
+                                <li>Item 1</li>
+                                <li>Item 2</li>
+                                <li>Item 3 is longer, so it will wrap</li>
+                                <li><strong>Item 4</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-8 columns">
+                    <h4 class="text-center">This is a centered header.</h4>
+                    <p class="bordered">Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon nulla pork belly cupidatat meatloaf cow. Nulla corned beef sunt ball tip, qui bresaola enim jowl. Capicola short ribs minim salami nulla nostrud pastrami.</p>
+                </div>
+                <div class="large-4 columns">
+                    <ol>
+                        <li>Item 1</li>
+                        <li>Item 2</li>
+                        <li>Item 3 is longer, so it will wrap</li>
+                        <li><strong>Item 4</strong></li>
+                    </ol>
+                </div>
+            </div>
+
+            <footer class="row">
+                <div class="large-12 columns">
+                    <hr/>
+                    <div class="row">
+                        <div class="large-6 columns">
+                            <p>&copy; Copyright no one at all. Go to town.</p>
+                        </div>
+                        <div class="large-6 columns">
+                            <ul class="inline-list right">
+                                <li><a href="#">Link 1</a></li>
+                                <li><a href="#">Link 2</a></li>
+                                <li><a href="#">Link 3</a></li>
+                                <li><a href="#">Link 4</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <div class="page us-letter decorated margin-75">
+            <h3>Forms</h3>
+            <div class="row form">
+                <div class="large-4 columns">
+                    <label>Field 1</label>
+                    <input type="text" name="field1" value="Foo"/>
+                    <label>Field 2</label>
+                    <input type="text" name="field2" value="Bar"/>
+                </div>
+                <div class="large-4 columns">
+                    <input type="checkbox"/>
+                    <label>Checkbox</label>
+                    <br/>
+                    <input type="radio" id="radio1"/>
+                    <label for="radio1">Radio 1</label>
+                    <br/>
+                    <input type="radio" id="radio2"/>
+                    <label for="radio2">Radio 2</label>
+                    <select>
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+                <div class="large-4 columns">
+                    <label>Some Text</label>
+                    <textarea></textarea>
+                </div>
+            </div>
+            <h3>Table</h3>
+            <table cellspacing=0 cellpadding=0>
+                <tr>
+                    <th>Description</th>
+                    <th class="quantity">Quantity</th>
+                    <th class="total">Total</th>
+                </tr>
+                <tr>
+                    <td class="description">
+                        Nulla corned beef sunt ball tip, qui bresaola enim jowl.
+                    </td>
+                    <td class="quantity">
+                        32
+                    </td>
+                    <td class="total">
+                        $43.05
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description">
+                        Pork drumstick turkey fugiat.
+                    </td>
+                    <td class="quantity">
+                        9
+                    </td>
+                    <td class="total">
+                        $29.20
+                    </td>
+                </tr>
+                <tr>
+                    <td class="description">
+                        Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.
+                    </td>
+                    <td class="quantity">
+                        75
+                    </td>
+                    <td class="total">
+                        $312.38
+                    </td>
+                </tr>
+            </table>
+            <h3>Base64 SVG</h3>
+            <div class="image-container">
+                <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQ2IiBoZWlnaHQ9IjY3Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDIxIDEgYyAwIDAuNCAwLjI2IDE1LjMyIDAgMjMgYyAtMC4wOCAyLjM2IC0wLjMxIDQuODMgLTEgNyBjIC0xLjI2IDMuOTkgLTIuODUgOC40MiAtNSAxMiBjIC0yLjcxIDQuNTEgLTcuMDEgOC41MiAtMTAgMTMgYyAtMS42MyAyLjQ1IC00IDggLTQgOCIvPjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Ik0gMjEgMzUgbCA0NSAwIi8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTSA3NiAyIGMgMCAwLjQ2IDAuNjkgMTcuNzcgMCAyNiBjIC0wLjI4IDMuMyAtMS42MiA2Ljg3IC0zIDEwIGMgLTIuMjQgNS4xIC01LjE0IDEwIC04IDE1IGMgLTEuMjEgMi4xMiAtMi41NSA0LjM0IC00IDYgYyAtMC43MyAwLjgzIC0yLjMzIDEuMTkgLTMgMiBsIC0yIDQiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDg3IDU0IGMgMC4wOSAwIDMuNDEgMC4yNSA1IDAgYyAyLjYzIC0wLjQgNS44MiAtMC43NiA4IC0yIGMgNC4zMyAtMi40OCAxMC4yNCAtNi4zOCAxMyAtMTAgYyAxLjkyIC0yLjUyIDIuMzMgLTcuNDEgMyAtMTEgYyAwLjMgLTEuNTcgMC41NiAtNC4wMiAwIC01IGMgLTAuNSAtMC44OCAtMi43IC0xLjkzIC00IC0yIGMgLTQuNjcgLTAuMjMgLTExLjE2IDAuMjcgLTE2IDEgYyAtMS4zNSAwLjIgLTIuODMgMS4xNSAtNCAyIGMgLTIuNDEgMS43NSAtNS4yMSAzLjc3IC03IDYgYyAtMiAyLjUgLTQuMzMgNi4wNSAtNSA5IGMgLTAuODUgMy43MiAtMS4xNSAxMC4wNCAwIDEzIGMgMC43NiAxLjk2IDQuNjYgMy45MiA3IDUgYyAxLjY1IDAuNzYgMy45OCAwLjkyIDYgMSBjIDUuOTYgMC4yNSAxMi4xIDAuMjYgMTggMCBsIDUgLTEiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDE1MCAxIGMgMCAwLjMyIDAuNDUgMTIuMjEgMCAxOCBjIC0wLjIgMi42NSAtMS4wMSA1LjgyIC0yIDggYyAtMC41MSAxLjEyIC0yLjM1IDEuODUgLTMgMyBjIC0yLjE4IDMuODggLTQuNzIgOC42IC02IDEzIGMgLTEuNjMgNS42MSAtMyAxOCAtMyAxOCIvPjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Ik0gMTgyIDEgYyAwIDAuMzMgMS4yMSAxMy4yMyAwIDE5IGMgLTEuNjMgNy43OCAtNi42NCAxNi40MSAtOSAyNCBjIC0wLjQ2IDEuNDggMC40NSAzLjU2IDAgNSBjIC0xLjA5IDMuNDkgLTUgMTEgLTUgMTEiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDIyMSAyOSBjIC0wLjA3IDAuMDIgLTMuMyAwLjIyIC00IDEgYyAtMS41MSAxLjcgLTIuNDMgNS41NiAtNCA4IGMgLTEuMzcgMi4xMyAtMy42OCAzLjkyIC01IDYgYyAtMC45MSAxLjQzIC0xLjEzIDMuNjEgLTIgNSBjIC0wLjY5IDEuMSAtMi42MyAxLjg5IC0zIDMgYyAtMC43OSAyLjM2IC0xLjM2IDYuNTEgLTEgOSBjIDAuMjMgMS42IDEuNjQgNC44MSAzIDUgYyA3LjY5IDEuMDcgMjIuMTggMC4yOCAzMyAwIGMgMS42NyAtMC4wNCAzLjg0IC0wLjM0IDUgLTEgYyAwLjgyIC0wLjQ3IDEuOTQgLTEuOTggMiAtMyBjIDAuNTIgLTkuMDkgMC41MiAtMjIuOTEgMCAtMzIgYyAtMC4wNiAtMS4wMiAtMS4yMiAtMi4yMiAtMiAtMyBjIC0wLjc4IC0wLjc4IC0xLjk3IC0xLjU2IC0zIC0yIGMgLTEuMTggLTAuNTEgLTIuNjcgLTAuOTMgLTQgLTEgbCAtMTUgMCIvPjwvc3ZnPg=="/>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="actions" class="row">
+        <div class="medium-4 columns">
+            <a class="radius button download-json expand">Download JSON</a>
+        </div>
+    </div>
+
+    <div id="output">
+        <pre>
+
+        </pre>
+    </div>
+
+    <script>
+        $(window).load(function() {
+            var tStart = performance.now()
+            var doc = window.crossdoc.create()
+            doc.parse('document')
+            var tStop = performance.now()
+            console.log('Parsed the document in ' + (tStop-tStart).toFixed(1) + 'ms')
+            $('#output pre').html(doc.toJSON(true))
+            doc.addOverlay('#document')
+
+            $('#actions .download-json').click(function() {
+                var blob = new Blob([doc.toJSON()], {type: "application/json;charset=utf-8"});
+                saveAs(blob, "doc.json");
+            })
+
+            $('#overlay-toggle input').change(function() {
+                if ($(this).is(':checked'))
+                    $('.crossdoc-overlay').show()
+                else
+                    $('.crossdoc-overlay').hide()
+            })
+        })
+
+
+    </script>
+</body>
+</html>
