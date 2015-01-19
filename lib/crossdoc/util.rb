@@ -32,7 +32,7 @@ module CrossDoc
       end
     end
 
-    class_methods do
+    module ClassMethods
       def simple_fields(fields)
         @simple_field_names = fields
         attr_accessor *fields
