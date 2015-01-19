@@ -45,14 +45,59 @@ Each page is it's own div with class *page*, and optional classes for formatting
 
 * Page size: *us-letter* (default) or *us-legal*
 * Page margin: *margin-50*, *margin-75*, or *margin-100* for 1/2", 3/4", or 1" margins, respectively
+* Decoration: *decorated* applies a simple white background, border, and drop shadow to the page
+
+Inside each page, you place the markup for your document.
+The actual markup can be basically anything you want.
+The CrossDoc JavaScript library (see next section) will serialize the document structure and layout into a platform-neutral JSON format, which can then be sent to a server to render into a PDF.
 
 
+### JavaScript API
+
+Serializing a document to JSON is done with the CrossDoc JavaScript API:
+
+```javascript
+var doc = window.crossdoc.create(); // create the document container
+doc.parse('document'); // parse the document, passed by id
+var json = doc.toJSON(); // serialize the document to JSON
+```
+
+Once serialized, you can send the document to your server through an AJAX call or form parameter.
+
+
+### Ruby API
+
+On the server, the Ruby API lets you take a JSON document representation and render it to a PDF.
+
+```ruby
+doc = CrossDoc::Document.new JSON.parse(doc_json) # create a document from a JSON string
+renderer = CrossDoc::Renderer.new doc # create a renderer to render the document
+renderer.to_pdf 'path/to/output.pdf' # render the document to a PDF in the filesystem
+```
+
+The renderer will download all images included in the document and render the contents to a PDF using the [Prawn](http://http://prawnpdf.org/) PDF library.
+
+
+### Rails Integration
+
+To use CrossDoc in a Rails application, simply include the gem in your Gemfile and add the stylesheet and javascript file to your assets:
+
+```css
+/* application.css or similar
+*= require crossdoc
+*/
+```
+
+```javascript
+// application.js or similar
+//= require crossdoc
+```
 
 
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/crossdoc-ruby/fork )
+1. Fork it ( http://github.com/TinyMission/crossdoc/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
