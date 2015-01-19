@@ -1,4 +1,4 @@
-require 'util'
+require_relative 'util'
 
 module CrossDoc
   class Background
