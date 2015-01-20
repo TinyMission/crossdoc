@@ -23,7 +23,11 @@ module CrossDoc
         @io = StringIO.new raw
       else
         @is_svg = false
-        @io = open(@src)
+        if @src.index('file://')==0
+          @io = open(@src.gsub('file://', ''))
+        else
+          @io = open(@src)
+        end
       end
     end
 

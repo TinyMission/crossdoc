@@ -79,10 +79,23 @@ module CrossDoc
       assign_fields attrs
     end
 
-    simple_fields %i(color size weight decoration family style line_height align)
+    simple_fields %i(color size weight decoration family style line_height align transform)
 
     def color_no_hash
       self.color.gsub('#', '')
+    end
+
+    def transform_text(s)
+      case @transform
+        when 'capitalize'
+          s.capitalize
+        when 'uppercase'
+          s.upcase
+        when 'lowercase'
+          s.downcase
+        else
+          s
+      end
     end
   end
 

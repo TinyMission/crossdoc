@@ -2,8 +2,24 @@
     var crossdoc = {}
 
     // simple hash function to make unique string ids
-    hashCode = function(s){
+    function hashCode(s) {
         return (s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0) >>> 0).toString(16);
+    }
+
+    // processes a url to make sure it's absolute
+    function processUrl(url) {
+        if (url.indexOf('http') === 0 || url.indexOf('data:') === 0) {
+            // do nothing, this is fine
+        }
+        else if (url.indexOf('/') === 0) { // treat it as absolute path
+            url = window.location.origin + url
+        }
+        else { // treat as relative path
+            var link = document.createElement("a")
+            link.href = url
+            url = link.href
+        }
+        return url
     }
 
     // jQuery's hasClass implementation
@@ -106,7 +122,7 @@
             top: parsePxString(style.paddingTop),
             right: parsePxString(style.paddingRight),
             bottom: parsePxString(style.paddingBottom),
-            left: parsePxString(style.paddingLeft),
+            left: parsePxString(style.paddingLeft)
         }
     }
 
@@ -119,7 +135,8 @@
             decoration: style.textDecoration,
             style: style.fontStyle,
             color: parseColorString(style.color),
-            align: style.textAlign=='start' ? 'left' : style.textAlign
+            align: style.textAlign=='start' ? 'left' : style.textAlign,
+            transform: style.textTransform
         }
         if (style.lineHeight==='normal')
             obj.font.lineHeight = 1.2 * obj.font.size
@@ -209,7 +226,7 @@
             top: parsePxString(style.paddingTop),
             right: parsePxString(style.paddingRight),
             bottom: parsePxString(style.paddingBottom),
-            left: parsePxString(style.paddingLeft),
+            left: parsePxString(style.paddingLeft)
         }
 
         // parse the children
@@ -239,7 +256,7 @@
     var tagParsers = {}
 
     tagParsers.IMG = function(doc, node, obj, style) {
-        obj.src = node.getAttribute('src')
+        obj.src = processUrl(node.getAttribute('src'))
         obj.hash = hashCode(obj.src)
         doc.images[obj.hash] = {src: obj.src, hash: obj.hash}
     }

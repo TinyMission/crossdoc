@@ -67,6 +67,14 @@ module CrossDoc
       end
     end
 
+    def render_node_image(image, node)
+      if image.is_svg
+        @pdf.svg image.io, at: [0.0, node.box.height]
+      else
+        @pdf.image image.io, fit: [node.box.width, node.box.height]
+      end
+    end
+
     def render_node_text(text, node)
       if node.font
         @pdf.font_size node.font.size
@@ -74,6 +82,7 @@ module CrossDoc
         style = node.font.weight
         align = node.font.align.to_sym
         leading = (node.font.line_height - node.font.size)*0.4
+        text = node.font.transform_text(text)
       else
         color = '000000'
         style = 'normal'
@@ -82,9 +91,9 @@ module CrossDoc
       end
       pos = [node.padding.left,
              node.box.height - node.padding.top - leading*2.0]
-      width = node.box.width - node.padding.left - node.padding.right
-      height = node.box.height - node.padding.bottom - node.padding.bottom
-      @pdf.bounding_box(pos, width: width, height: height) do
+      width = node.box.width - node.padding.left - node.padding.right + 2 # +2 hack
+      # height = node.box.height - node.padding.bottom - node.padding.bottom # we dont really need height
+      @pdf.bounding_box(pos, width: width) do
         @pdf.text text, color: color, align: align, leading: leading #, style: style
       end
     end
@@ -174,11 +183,7 @@ module CrossDoc
         if node.tag == 'IMG'
           if @doc.images.has_key? node.hash
             image = @doc.images[node.hash]
-            if image.is_svg
-              ctx.pdf.svg image.io, at: [0.0, node.box.height]
-            else
-              ctx.pdf.image image.io, fit: [node.box.width, node.box.height]
-            end
+            ctx.render_node_image image, node
           else
             puts "Document does not contain image #{node.hash}"
           end
