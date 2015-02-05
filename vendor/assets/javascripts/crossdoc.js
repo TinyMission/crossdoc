@@ -59,7 +59,9 @@
 
     // returns true if a color string has a non-zero alpha
     function isVisibleColor(color) {
-        if (color.length == 7)
+        if (color === 'transparent')
+            return false
+        else if (color.length == 7)
             return true
         else if (color.length == 9) {
             return color.substring(7)!=='00'
