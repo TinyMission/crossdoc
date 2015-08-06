@@ -149,7 +149,21 @@ module CrossDoc
 
     private
 
+    # look at the children and try to compute a single font
+    def compute_compound_font(node)
+      return if node.font
+      fonts = node.children.map{|child| child.font}.compact
+      if fonts.length > 0
+        node.font = fonts.first
+      end
+    end
+
     def render_node(ctx, node)
+      # don't render nodes with no size
+      if node.box.width == 0 || node.box.height == 0
+        return
+      end
+
       pos = if ctx.parent.instance_of? Page
         [node.box.x - ctx.parent.padding.left,
                ctx.parent.height - node.box.y - ctx.parent.padding.top]
@@ -171,6 +185,7 @@ module CrossDoc
         end
         if node.children && all_text_children
           text = node.children.map{|n| n.text}.join(' ')
+          compute_compound_font node
           ctx.render_node_text text, node
         elsif node.text
           ctx.render_node_text node.text, node
