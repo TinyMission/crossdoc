@@ -5,7 +5,7 @@ module CrossDoc
 
   # contains the pdf instance and current tree parent
   # as well as some helper methods for rendering
-  class RenderContext
+  class PdfRenderContext
 
     def initialize(pdf, page)
       @pdf = pdf
@@ -101,7 +101,7 @@ module CrossDoc
   end
 
   # renders a document to a PDF
-  class Renderer
+  class PdfRenderer
 
     def initialize(document)
       @doc = document
@@ -131,7 +131,7 @@ module CrossDoc
       Prawn::Document.generate(path,
                                margin: first_page.padding.css_array) do |pdf|
         doc.pages.each do |page|
-          ctx = RenderContext.new pdf, page
+          ctx = PdfRenderContext.new pdf, page
           unless page == first_page
             pdf.start_new_page margin: page.padding.css_array
           end
