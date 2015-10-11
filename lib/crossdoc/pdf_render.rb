@@ -1,6 +1,8 @@
 require 'prawn'
 require 'prawn-svg'
 
+Prawn::Font::AFM.hide_m17n_warning = true
+
 module CrossDoc
 
   # contains the pdf instance and current tree parent
