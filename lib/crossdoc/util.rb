@@ -1,8 +1,17 @@
 require 'active_support'
 require 'active_support/core_ext'
 
+def value_to_raw(value)
+  if value.respond_to? :to_raw
+    value.to_raw
+  else
+    value
+  end
+end
+
 module CrossDoc
 
+  # convenience methods for storing data in typed fields
   module Fields
     extend ActiveSupport::Concern
 
@@ -30,6 +39,46 @@ module CrossDoc
         end
 
       end
+
+      # returns the object represented as raw ruby hashes and arrays
+      def to_raw
+        raw = {}
+
+        # simple fields
+        (self.class.simple_field_names || []).each do |name|
+          v = value_to_raw self.send(name)
+          if v
+            raw[name] = v
+          end
+        end
+
+        # array fields
+        (self.class.array_field_names || []).each do |name|
+          raw[name] = (self.send(name) || []).map {|v| value_to_raw(v)}
+        end
+
+        # object fields
+        (self.class.object_field_names || []).each do |name|
+          v = value_to_raw self.send(name)
+          if v
+            raw[name] = v
+          end
+        end
+
+        # hash fields
+        (self.class.hash_field_names || []).each do |name|
+          h = {}
+          (self.send(name) || {}).each do |k, v|
+            raw_v = value_to_raw v
+            if raw_v
+              h[k] = raw_v
+            end
+          end
+          raw[name] = h
+        end
+
+        raw
+      end
     end
 
     module ClassMethods
@@ -38,9 +87,13 @@ module CrossDoc
         attr_accessor *fields
       end
 
-      attr_reader :simple_field_names
+      attr_reader :simple_field_names, :object_field_names, :array_field_names, :hash_field_names
 
       def object_field(name, type)
+        unless @object_field_names
+          @object_field_names = []
+        end
+        @object_field_names << name
         define_method name do
           self.instance_variable_get("@#{name}")
         end
@@ -57,6 +110,10 @@ module CrossDoc
       end
 
       def array_field(name, type)
+        unless @array_field_names
+          @array_field_names = []
+        end
+        @array_field_names << name
         define_method name do
           self.instance_variable_get("@#{name}")
         end
@@ -75,6 +132,10 @@ module CrossDoc
       end
 
       def hash_field(name, type)
+        unless @hash_field_names
+          @hash_field_names = []
+        end
+        @hash_field_names << name
         define_method name do
           self.instance_variable_get("@#{name}")
         end
@@ -92,6 +153,48 @@ module CrossDoc
           self.instance_variable_set("@#{name}", hash)
         end
       end
+
+    end
+
+  end
+
+
+  # convenience methods for shadowing a raw hash with accessor methods
+  module RawShadow
+    extend ActiveSupport::Concern
+
+    included do
+
+      def init_raw(raw)
+        @raw = raw
+        (self.class.raw_defaults || {}).each do |name, value|
+          if value && !@raw.has_key?(name)
+            @raw[name] = value.call
+          end
+        end
+      end
+
+    end
+
+    module ClassMethods
+
+      attr_reader :raw_defaults
+
+      def raw_shadow(name, default=nil)
+        unless @raw_defaults
+          @raw_defaults = {}
+        end
+        if default
+          @raw_defaults[name] = default
+        end
+        define_method name do
+          @raw[name]
+        end
+        define_method "#{name}=" do |value|
+          @raw[name] = value
+        end
+      end
+
     end
 
   end

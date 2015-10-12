@@ -20,7 +20,7 @@ module CrossDoc
   class Box
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs = {width: 0, height: 0, x: 0, y: 0})
       assign_fields attrs
     end
 
@@ -97,17 +97,34 @@ module CrossDoc
           s
       end
     end
+
+    def self.default(modifiers)
+      args = {family: 'helvetica,sans-serif', color: '#000000ff', size: 12, weight: 'normal', align: :left, line_height: 16}.merge modifiers
+      # guess as a good line height
+      unless modifiers.has_key? :line_height
+        args[:line_height] = (1.4 * args[:size]).round.to_i
+      end
+      CrossDoc::Font.new args
+    end
+
   end
 
-
+  # used for both margin and padding
   class Margin
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs = {top: 0, left: 0, right: 0, bottom: 0})
       assign_fields attrs
     end
 
     simple_fields %i(top right bottom left)
+
+    def set_all(d)
+      @top = d
+      @left = d
+      @right = d
+      @bottom = d
+    end
 
     def css_array
       [self.top, self.right, self.bottom, self.left]

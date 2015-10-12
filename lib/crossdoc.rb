@@ -4,6 +4,7 @@ module CrossDoc
   require 'crossdoc/geom'
   require 'crossdoc/tree'
   require 'crossdoc/pdf_render'
+  require 'crossdoc/builder'
 
   if defined? Rails
     module Rails

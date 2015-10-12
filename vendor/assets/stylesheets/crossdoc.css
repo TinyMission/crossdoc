@@ -19,17 +19,21 @@
 /** Sizes **/
 .crossdoc .page.us-letter {
     width: 612px;
-    height: 792px;
+    min-height: 792px;
+}
+.crossdoc .page.us-legal {
+    width: 612px;
+    min-height: 1008px;
 }
 
 /** Margins **/
-.crossdoc .page.margin-50 {
+.crossdoc .page.margin-50in {
     padding: 36px;
 }
-.crossdoc .page.margin-75 {
+.crossdoc .page.margin-75in {
     padding: 54px;
 }
-.crossdoc .page.margin-100 {
+.crossdoc .page.margin-100in {
     padding: 72px;
 }
 

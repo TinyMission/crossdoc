@@ -14,9 +14,12 @@ module CrossDoc
       @page = page
       @parent = page
       @ancestors = [page]
+      @show_overlays = false
     end
 
     attr_reader :pdf, :page, :parent
+
+    attr_accessor :show_overlays
 
     def push_parent(new_parent)
       @parent = new_parent
@@ -32,7 +35,7 @@ module CrossDoc
       bg = node.background
       return unless bg
       if bg.image
-        # render the background image
+        # TODO: render the background image
       elsif bg.color
         @pdf.fill_color bg.color_no_hash
         @pdf.fill_rectangle [0.0, node.box.height], node.box.width, node.box.height
@@ -86,7 +89,8 @@ module CrossDoc
         leading = (node.font.line_height - node.font.size)*0.4
         text = node.font.transform_text(text)
       else
-        color = '000000'
+        @pdf.font_size 12
+        color = '000000ff'
         style = 'normal'
         align = :left
         leading = 0.0
@@ -130,12 +134,14 @@ module CrossDoc
       download_images
 
       first_page = @doc.pages.first
-      Prawn::Document.generate(path,
-                               margin: first_page.padding.css_array) do |pdf|
+      # page_margin = first_page.padding.css_array
+      page_margin = [0, 0, 0, 0]
+      Prawn::Document.generate(path, margin: page_margin) do |pdf|
         doc.pages.each do |page|
           ctx = PdfRenderContext.new pdf, page
+          ctx.show_overlays = @show_overlays
           unless page == first_page
-            pdf.start_new_page margin: page.padding.css_array
+            pdf.start_new_page margin: page_margin
           end
           if @show_overlays
             pdf.stroke_axis
@@ -166,13 +172,7 @@ module CrossDoc
         return
       end
 
-      pos = if ctx.parent.instance_of? Page
-        [node.box.x - ctx.parent.padding.left,
-               ctx.parent.height - node.box.y - ctx.parent.padding.top]
-      else
-        [node.box.x,
-         ctx.parent.box.height - node.box.y]
-      end
+      pos = [node.box.x, ctx.parent.box.height - node.box.y]
 
       ctx.pdf.bounding_box pos, width: node.box.width, height: node.box.height do
         ctx.render_node_background node
@@ -185,7 +185,7 @@ module CrossDoc
             end
           end
         end
-        if node.children && all_text_children
+        if node.children && node.children.length > 0 && all_text_children
           text = node.children.map{|n| n.text}.join(' ')
           compute_compound_font node
           ctx.render_node_text text, node

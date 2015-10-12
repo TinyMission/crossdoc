@@ -19,8 +19,12 @@
   },
   "pages": [
     {
-      "width": 612,
-      "height": 792,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 612,
+        "height": 792
+      },
       "children": [
         {
           "tag": "DIV",
@@ -1324,8 +1328,12 @@
       }
     },
     {
-      "width": 612,
-      "height": 792,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 612,
+        "height": 792
+      },
       "children": [
         {
           "tag": "H3",

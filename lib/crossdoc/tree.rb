@@ -76,11 +76,48 @@ module CrossDoc
       assign_fields attrs
     end
 
-    simple_fields %i(width height)
+    simple_fields %i(orientation size page_margin)
 
     object_field :padding, Margin
 
+    object_field :box, Box
+
     array_field :children, Node
+
+
+    ## Page Margins
+
+    @page_margin_sizes = {
+        '0.5in' => 36,
+        '0.75in' => 54,
+        '1.0in' => 72
+    }
+
+    def self.page_margin_size(margin)
+      @page_margin_sizes[margin] || @page_margin_sizes.values.first
+    end
+
+
+    ## Paper Sizes
+
+    @portrait_dimensions = {
+        us_letter: {width: 612, height: 792},
+        us_legal: {width: 612, height: 1008}
+    }
+
+    # returns the page dimensions (width/height hash) for the given page options (size and orientation), or nil if one or more arguments are incorrect
+    # current possible page sizes are 'us-letter' and 'us-legal'
+    # orientations are 'portrait' or 'landscape'
+    def self.get_dimensions(options)
+      portrait_size = @portrait_dimensions[options[:size].gsub('-', '_').to_sym]
+      unless portrait_size
+        return nil
+      end
+      if options[:orientation].to_s == 'landscape'
+        return {width: portrait_size[:height], height: portrait_size[:width]}
+      end
+      portrait_size
+    end
 
   end
 
@@ -101,6 +138,7 @@ module CrossDoc
         return Document.new JSON.parse(file.read)
       end
     end
+
   end
 
 end
