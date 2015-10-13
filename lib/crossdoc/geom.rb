@@ -4,7 +4,7 @@ module CrossDoc
   class Background
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs = {})
       assign_fields attrs
     end
 

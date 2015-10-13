@@ -21,13 +21,13 @@ class TestBuilder < Minitest::Test
   def build_demo_doc
     builder = CrossDoc::Builder.new
 
-    header_color = '#008888ff'
+    header_color = '#006688ff'
     body_color = '#222222ff'
 
     builder.page size: 'us-letter', orientation: 'portrait', page_margin: '0.5in' do |page|
       page.node 'div', {block_orientation: :horizontal} do |header|
         header.node 'div', {block_orientation: :horizontal} do |left_header|
-          left_header.node 'img', {src: 'https://placeholdit.imgix.net/~text?txtsize=60&txt=Photo&w=400&h=300&fm=png'} do |logo|
+          left_header.node 'img', {src: 'https://placeholdit.imgix.net/~text?txtsize=32&txt=Logo&w=100&h=80&fm=png'} do |logo|
             logo.push_min_height 100
             logo.margin.set_all 8
           end
@@ -68,7 +68,7 @@ class TestBuilder < Minitest::Test
           left_content.node 'p', {} do |p2|
             p2.default_font size: 12, color: body_color
             p2.padding.set_all 8
-            p2.text = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
+            p2.text = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
           end
         end
         content.node 'div', {weight: 1} do |right_content|
@@ -78,6 +78,30 @@ class TestBuilder < Minitest::Test
             bordered_content.margin.set_all 8
             bordered_content.default_font size: 14, color: body_color
             bordered_content.text = 'This content should have a border around it'
+          end
+        end
+      end
+
+      header_font = CrossDoc::Font.default size: 12, color: '#ffffffff'
+      cell_padding = 4
+      page.node 'table', {} do |table|
+        table.margin.top = 20
+        table.node 'tr', {block_orientation: :horizontal} do |header_row|
+          header_row.background_color header_color
+          header_row.node 'th', {weight: 3} do |th|
+            th.padding.set_all cell_padding
+            th.font = header_font
+            th.text = 'Description'
+          end
+          header_row.node 'th', {weight: 1} do |th|
+            th.padding.set_all cell_padding
+            th.font = header_font
+            th.text = 'Subtotal'
+          end
+          header_row.node 'th', {weight: 1} do |th|
+            th.padding.set_all cell_padding
+            th.font = header_font
+            th.text = 'Total'
           end
         end
       end

@@ -10,6 +10,8 @@ module CrossDoc
 
     raw_shadow :border
 
+    raw_shadow :background
+
     raw_shadow :text
 
     raw_shadow :font
@@ -77,6 +79,13 @@ module CrossDoc
       side = CrossDoc::BorderSide.from_s s
       self.border = CrossDoc::Border.new unless self.border
       self.border.right = side
+    end
+
+    def background_color(c)
+      unless self.background
+        self.background = CrossDoc::Background.new
+      end
+      self.background.color = c
     end
 
     def image_src(src)
