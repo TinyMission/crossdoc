@@ -26,9 +26,23 @@ class TestBuilder < Minitest::Test
 
     builder.page size: 'us-letter', orientation: 'portrait', page_margin: '0.5in' do |page|
       page.node 'div', {block_orientation: :horizontal} do |header|
-        header.node 'div', {} do |left_header|
+        header.node 'div', {block_orientation: :horizontal} do |left_header|
           left_header.node 'img', {src: 'https://placeholdit.imgix.net/~text?txtsize=60&txt=Photo&w=400&h=300&fm=png'} do |logo|
-            logo.push_min_height 120
+            logo.push_min_height 100
+            logo.margin.set_all 8
+          end
+          left_header.node 'div', {} do |company_info|
+            info_font = CrossDoc::Font.default size: 8, color: body_color
+            company_info.node 'div', {} do |name_row|
+              name_row.font = info_font
+              name_row.padding.set_all 4
+              name_row.text = 'ACME LLC'
+            end
+            company_info.node 'div', {} do |phone_row|
+              phone_row.font = info_font
+              phone_row.padding.set_all 4
+              phone_row.text = '952-555-1234'
+            end
           end
         end
         header.node 'div', {} do |right_header|
@@ -58,7 +72,13 @@ class TestBuilder < Minitest::Test
           end
         end
         content.node 'div', {weight: 1} do |right_content|
-
+          right_content.node 'div', {} do |bordered_content|
+            bordered_content.border_all '1px solid #aaaaaaff'
+            bordered_content.padding.set_all 8
+            bordered_content.margin.set_all 8
+            bordered_content.default_font size: 14, color: body_color
+            bordered_content.text = 'This content should have a border around it'
+          end
         end
       end
     end

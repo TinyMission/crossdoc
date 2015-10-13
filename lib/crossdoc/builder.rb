@@ -8,6 +8,8 @@ module CrossDoc
 
     raw_shadow :box, -> {Box.new}
 
+    raw_shadow :border
+
     raw_shadow :text
 
     raw_shadow :font
@@ -48,6 +50,35 @@ module CrossDoc
       self.font = CrossDoc::Font.default adjustments
     end
 
+    def border_all(s)
+      side = CrossDoc::BorderSide.from_s s
+      self.border = CrossDoc::Border.new top: side, right: side, left: side, bottom: side
+    end
+
+    def border_top(s)
+      side = CrossDoc::BorderSide.from_s s
+      self.border = CrossDoc::Border.new unless self.border
+      self.border.top = side
+    end
+
+    def border_bottom(s)
+      side = CrossDoc::BorderSide.from_s s
+      self.border = CrossDoc::Border.new unless self.border
+      self.border.bottom = side
+    end
+
+    def border_left(s)
+      side = CrossDoc::BorderSide.from_s s
+      self.border = CrossDoc::Border.new unless self.border
+      self.border.left = side
+    end
+
+    def border_right(s)
+      side = CrossDoc::BorderSide.from_s s
+      self.border = CrossDoc::Border.new unless self.border
+      self.border.right = side
+    end
+
     def image_src(src)
       @raw[:src] = src
       hash = src.hash.to_s
@@ -84,7 +115,7 @@ module CrossDoc
       if self.text && self.font
         # stupid simple font metrics
         num_lines = (self.text.length * self.font.size * 0.48 / child_width).ceil
-        push_min_height self.font.line_height * num_lines
+        push_min_height (self.font.line_height || 1) * num_lines
       end
       self.box.height = @min_height + self.padding.top + self.padding.bottom
 

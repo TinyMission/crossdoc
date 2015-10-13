@@ -218,8 +218,12 @@
 
     function parsePage(doc, node) {
         var page = {
-            width: node.offsetWidth,
-            height: node.offsetHeight,
+            box: {
+                x: 0,
+                y: 0,
+                width: node.offsetWidth,
+                height: node.offsetHeight
+            },
             children: []
         }
 

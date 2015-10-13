@@ -36,7 +36,7 @@ module CrossDoc
   class BorderSide
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs = {width: 1, style: 'solid', color: '#000000ff'})
       assign_fields attrs
     end
 
@@ -50,13 +50,32 @@ module CrossDoc
       return false unless other
       self.width == other.width && self.style == other.style && self.color == other.color
     end
+
+    @possible_styles = %w(solid dashed)
+
+    # parses a CSS border string into a BorderSize
+    def self.from_s(s)
+      side = CrossDoc::BorderSide.new
+      comps = s.split /\s/
+      comps.each do |comp|
+        if comp =~ /px$/
+          side.width = comp.gsub('px', '').to_i
+        elsif comp =~ /^#[\d\w]+$/
+          side.color = comp
+        elsif @possible_styles.index comp
+          side.style = comp
+        end
+      end
+      side
+    end
+
   end
 
 
   class Border
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs = {top: nil, bottom: nil, left: nil, right: nil})
       assign_fields attrs
     end
 
