@@ -52,7 +52,7 @@ module CrossDoc
       assign_fields attrs
     end
 
-    simple_fields %i(tag text src hash list_style input_type input_value input_possible)
+    simple_fields %i(id tag text src hash list_style input_type input_value input_possible)
 
     object_field :background, Background
 
@@ -130,6 +130,9 @@ module CrossDoc
     hash_field :images, ImageRef
 
     def initialize(attrs)
+      if attrs.instance_of? String
+        attrs = JSON.parse attrs
+      end
       assign_fields attrs
     end
 

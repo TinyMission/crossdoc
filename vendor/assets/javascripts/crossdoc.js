@@ -8,6 +8,8 @@
 
     // processes a url to make sure it's absolute
     function processUrl(url) {
+        if (!url)
+            return null
         if (url.indexOf('http') === 0 || url.indexOf('data:') === 0) {
             // do nothing, this is fine
         }
@@ -120,11 +122,14 @@
             obj.background = background
         }
 
-        obj.padding = {
+        padding = {
             top: parsePxString(style.paddingTop),
             right: parsePxString(style.paddingRight),
             bottom: parsePxString(style.paddingBottom),
             left: parsePxString(style.paddingLeft)
+        }
+        if (padding.top !=0 || padding.right != 0 || padding.left != 0 || padding.bottom != 0) {
+            obj.padding = padding
         }
     }
 
@@ -263,8 +268,10 @@
 
     tagParsers.IMG = function(doc, node, obj, style) {
         obj.src = processUrl(node.getAttribute('src'))
-        obj.hash = hashCode(obj.src)
-        doc.images[obj.hash] = {src: obj.src, hash: obj.hash}
+        if (obj.src) {
+            obj.hash = hashCode(obj.src)
+            doc.images[obj.hash] = {src: obj.src, hash: obj.hash}
+        }
     }
 
     tagParsers.INPUT = function(doc, node, obj, style) {

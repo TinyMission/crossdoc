@@ -95,9 +95,16 @@ module CrossDoc
         align = :left
         leading = 0.0
       end
-      pos = [node.padding.left,
-             node.box.height - node.padding.top - leading*2.0]
-      width = node.box.width - node.padding.left - node.padding.right + 2 # +2 hack
+      pos = if node.padding
+              [node.padding.left, node.box.height - node.padding.top - leading*2.0]
+            else
+              [0, node.box.height - leading*2.0]
+            end
+      width = if node.padding
+                node.box.width - node.padding.left - node.padding.right + 2 # +2 hack
+              else
+                node.box.width + 2
+              end
       # height = node.box.height - node.padding.bottom - node.padding.bottom # we dont really need height
       @pdf.bounding_box(pos, width: width) do
         @pdf.text text, color: color, align: align, leading: leading #, style: style

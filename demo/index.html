@@ -28,6 +28,7 @@
         }
         .crossdoc .page.us-letter.decorated {
             margin-bottom: 24px;
+            max-height: 792px;
         }
         h1 {
             margin: 0 0 1em 0;
@@ -77,6 +78,9 @@
             padding-top: 8px;
             margin-bottom: 12px;
         }
+        .row.top-pad {
+            margin-top: 24px;
+        }
         table tr th {
             background-color: #007095;
             color: #fff;
@@ -115,10 +119,10 @@
 
         <div class="page us-letter decorated margin-75in">
             <div class="row">
-                <div class="large-5 columns">
+                <div class="medium-5 columns">
                     <h1><img src="img/TinyMissionBanner.png"></h1>
                 </div>
-                <div class="large-7 columns">
+                <div class="medium-7 columns">
                     <ul class="button-group right">
                         <li><a href="#" class="button">Link 1</a></li>
                         <li><a href="#" class="button">Link 2</a></li>
@@ -127,25 +131,17 @@
                 </div>
             </div>
 
-
-            <div class="row">
-                <div class="large-12 columns">
-                    <img src="http://placehold.it/1000x200.png&text=Banner">
-                    <hr>
+            <div class="row top-pad">
+                <div class="medium-4 columns">
+                    <img src="https://placehold.it/400x300.png&text=Photo">
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="large-4 columns">
-                    <img src="http://placehold.it/400x300.png&text=Photo">
-                </div>
-                <div class="large-8 columns">
+                <div class="medium-8 columns">
                     <h4>This is a content section.</h4>
                     <div class="row">
-                        <div class="large-6 columns">
+                        <div class="medium-6 columns">
                             <p>Bacon <em>ipsum dolor</em> sit <strong>amet nulla</strong> ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.</p>
                         </div>
-                        <div class="large-6 columns">
+                        <div class="medium-6 columns">
                             <ul>
                                 <li>Item 1</li>
                                 <li>Item 2</li>
@@ -158,11 +154,11 @@
             </div>
 
             <div class="row">
-                <div class="large-8 columns">
+                <div class="medium-8 columns">
                     <h4 class="text-center">This is a centered header.</h4>
                     <p class="bordered">Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon nulla pork belly cupidatat meatloaf cow. Nulla corned beef sunt ball tip, qui bresaola enim jowl. Capicola short ribs minim salami nulla nostrud pastrami.</p>
                 </div>
-                <div class="large-4 columns">
+                <div class="medium-4 columns">
                     <ol>
                         <li>Item 1</li>
                         <li>Item 2</li>
@@ -173,13 +169,13 @@
             </div>
 
             <footer class="row">
-                <div class="large-12 columns">
+                <div class="medium-12 columns">
                     <hr/>
                     <div class="row">
-                        <div class="large-6 columns">
+                        <div class="medium-6 columns">
                             <p>&copy; Copyright statement</p>
                         </div>
-                        <div class="large-6 columns">
+                        <div class="medium-6 columns">
                             <ul class="inline-list right">
                                 <li><a href="#">Link 1</a></li>
                                 <li><a href="#">Link 2</a></li>
@@ -195,13 +191,13 @@
         <div class="page us-letter decorated margin-75in">
             <h3>Forms</h3>
             <div class="row form">
-                <div class="large-4 columns">
+                <div class="medium-4 columns">
                     <label>Field 1</label>
                     <input type="text" name="field1" value="Foo"/>
                     <label>Field 2</label>
                     <input type="text" name="field2" value="Bar"/>
                 </div>
-                <div class="large-4 columns">
+                <div class="medium-4 columns">
                     <input type="checkbox"/>
                     <label>Checkbox</label>
                     <br/>
@@ -216,7 +212,7 @@
                         <option>Option 3</option>
                     </select>
                 </div>
-                <div class="large-4 columns">
+                <div class="medium-4 columns">
                     <label>Some Text</label>
                     <textarea></textarea>
                 </div>
@@ -293,7 +289,7 @@
             doc.addOverlay('#document')
 
             $('#actions .download-json').click(function() {
-                var blob = new Blob([doc.toJSON()], {type: "application/json;charset=utf-8"});
+                var blob = new Blob([doc.toJSON(true)], {type: "application/json;charset=utf-8"});
                 saveAs(blob, "doc.json");
             })
 
