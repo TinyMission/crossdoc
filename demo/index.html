@@ -81,6 +81,24 @@
         .row.top-pad {
             margin-top: 24px;
         }
+        table.no-style {
+            border-collapse: collapse;
+            border: none;
+            width: 100%;
+            margin-top: 12px;
+        }
+        table.no-style tr {
+            background: none !important;
+        }
+        table.no-style td {
+            padding: 4px;
+            vertical-align: top;
+        }
+        table.no-style label {
+            text-align: right;
+            display: block;
+            font-size: 11px;
+        }
         table tr th {
             background-color: #007095;
             color: #fff;
@@ -167,6 +185,21 @@
                     </ol>
                 </div>
             </div>
+
+            <table class="no-style">
+                <tr>
+                    <td><label>Value 1:</label></td>
+                    <td><strong>Foo</strong></td>
+                </tr>
+                <tr>
+                    <td><label>Value 2:</label></td>
+                    <td><strong>Bar</strong></td>
+                </tr>
+                <tr>
+                    <td><label>Value 3:</label></td>
+                    <td><strong>Baz</strong></td>
+                </tr>
+            </table>
 
             <footer class="row">
                 <div class="medium-12 columns">

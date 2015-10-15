@@ -117,6 +117,23 @@ module CrossDoc
       end
     end
 
+    # one of the allowed default prawn font styles
+    def prawn_style
+      if self.weight == 'bold'
+        if self.style == 'italic'
+          :bold_italic
+        else
+          :bold
+        end
+      else # not bold
+        if self.style == 'italic'
+          :italic
+        else
+          :normal
+        end
+      end
+    end
+
     def self.default(modifiers)
       args = {family: 'helvetica,sans-serif', color: '#000000ff', size: 12, weight: 'normal', align: :left, line_height: 16}.merge modifiers
       # guess as a good line height

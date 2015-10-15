@@ -84,14 +84,14 @@ module CrossDoc
       if node.font
         @pdf.font_size node.font.size
         color = node.font.color_no_hash
-        style = node.font.weight
+        style = node.font.prawn_style
         align = node.font.align.to_sym
         leading = (node.font.line_height - node.font.size)*0.4
         text = node.font.transform_text(text)
       else
         @pdf.font_size 12
         color = '000000ff'
-        style = 'normal'
+        style = :normal
         align = :left
         leading = 0.0
       end
@@ -107,7 +107,7 @@ module CrossDoc
               end
       # height = node.box.height - node.padding.bottom - node.padding.bottom # we dont really need height
       @pdf.bounding_box(pos, width: width) do
-        @pdf.text text, color: color, align: align, leading: leading #, style: style
+        @pdf.text text, color: color, align: align, leading: leading, style: style
       end
     end
 
