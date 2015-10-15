@@ -74,7 +74,7 @@ module CrossDoc
 
     def render_node_image(image, node)
       if image.is_svg
-        @pdf.svg image.io, at: [0.0, node.box.height]
+        @pdf.svg image.io, at: [0.0, node.box.height], width: node.box.width, cache_images: true
       else
         @pdf.image image.io, fit: [node.box.width, node.box.height]
       end
