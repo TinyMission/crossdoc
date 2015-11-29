@@ -14,6 +14,8 @@ class TestRender < Minitest::Test
 
     renderer = CrossDoc::PdfRenderer.new doc
     renderer.show_overlays = true
+    renderer.add_horizontal_guide 3.5.inches
+    renderer.add_box_guide CrossDoc::Box.new(x: 0.875.inches, y: 2.5.inches, width: 3.inches, height: 1.125.inches)
     renderer.to_pdf "test/output/#{name}.pdf"
   end
 

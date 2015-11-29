@@ -1,5 +1,13 @@
 require_relative 'util'
 
+class Numeric
+
+  def inches
+    self * 72.0
+  end
+
+end
+
 module CrossDoc
   class Background
     include CrossDoc::Fields

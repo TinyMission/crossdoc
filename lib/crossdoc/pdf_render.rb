@@ -15,11 +15,12 @@ module CrossDoc
       @parent = page
       @ancestors = [page]
       @show_overlays = false
+      @guide_color = '00ffff'
     end
 
     attr_reader :pdf, :page, :parent
 
-    attr_accessor :show_overlays
+    attr_accessor :show_overlays, :guide_color
 
     def push_parent(new_parent)
       @parent = new_parent
@@ -111,6 +112,21 @@ module CrossDoc
       end
     end
 
+
+    def render_horizontal_guides(ys)
+      pdf.stroke_color @guide_color
+      ys.each do |y|
+        pdf.stroke_horizontal_line 0, page.box.width, at:page.box.height - y
+      end
+    end
+
+    def render_box_guides(boxes)
+      pdf.stroke_color @guide_color
+      boxes.each do |box|
+        pdf.stroke_rectangle [box.x, page.box.height-box.y], box.width, box.height
+      end
+    end
+
   end
 
   # renders a document to a PDF
@@ -119,11 +135,26 @@ module CrossDoc
     def initialize(document)
       @doc = document
       @show_overlays = false
+      @horizontal_guides = []
+      @box_guides = []
     end
 
     attr_reader :doc
 
     attr_accessor :show_overlays
+
+    # shows a horizontal line at the given distance from the top of the page
+    def add_horizontal_guide(y)
+      @horizontal_guides << y
+    end
+
+    # draws a box (must be a CrossDoc::Box object)
+    def add_box_guide(box)
+      unless box.instance_of? CrossDoc::Box
+        raise 'Must pass a Geom::Box parameters'
+      end
+      @box_guides << box
+    end
 
     def download_images
       @doc.images.each do |h, image|
@@ -156,6 +187,8 @@ module CrossDoc
           page.children.each do |child|
             render_node ctx, child
           end
+          ctx.render_horizontal_guides @horizontal_guides
+          ctx.render_box_guides @box_guides
         end
       end
 
