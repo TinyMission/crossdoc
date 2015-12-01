@@ -5,7 +5,7 @@ require 'crossdoc/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'crossdoc'
-  spec.version       = Crossdoc::VERSION
+  spec.version       = CrossDoc::VERSION
   spec.authors       = ['Andy Selvig']
   spec.email         = ['ajselvig@gmail.com']
   spec.summary       = 'Ruby server library and JavaScript client library for generating PDFs from the CrossDoc format'
