@@ -25,39 +25,39 @@ class TestBuilder < Minitest::Test
     body_color = '#222222ff'
 
     builder.page size: 'us-letter', orientation: 'portrait', page_margin: '0.5in' do |page|
-      page.node 'div', {block_orientation: :horizontal} do |header|
-        header.node 'div', {block_orientation: :horizontal} do |left_header|
+      page.horizontal_div do |header|
+        header.horizontal_div do |left_header|
           left_header.node 'img', {src: 'https://placeholdit.imgix.net/~text?txtsize=32&txt=Logo&w=100&h=80&fm=png'} do |logo|
             logo.push_min_height 100
             logo.margin.set_all 8
           end
-          left_header.node 'div', {} do |company_info|
+          left_header.div do |company_info|
             info_font = CrossDoc::Font.default size: 8, color: body_color
-            company_info.node 'div', {} do |name_row|
+            company_info.div do |name_row|
               name_row.font = info_font
               name_row.padding.set_all 4
               name_row.text = 'ACME LLC'
             end
-            company_info.node 'div', {} do |phone_row|
+            company_info.div do |phone_row|
               phone_row.font = info_font
               phone_row.padding.set_all 4
               phone_row.text = '952-555-1234'
             end
           end
         end
-        header.node 'div', {} do |right_header|
-          right_header.node 'h1', {} do |n|
+        header.div do |right_header|
+          right_header.node 'h1' do |n|
             n.default_font size: 32, align: :right, color: header_color
             n.text = 'Hello World'
           end
-          right_header.node 'h2', {} do |n|
+          right_header.node 'h2' do |n|
             n.default_font size: 24, align: :right, color: header_color
             n.text = 'Subheader'
           end
         end
       end
 
-      page.node 'div', {block_orientation: :horizontal} do |content|
+      page.horizontal_div do |content|
         content.margin.top = 20
         content.node 'div', {weight: 2} do |left_content|
           left_content.node 'p', {} do |p1|
@@ -72,7 +72,7 @@ class TestBuilder < Minitest::Test
           end
         end
         content.node 'div', {weight: 1} do |right_content|
-          right_content.node 'div', {} do |bordered_content|
+          right_content.div do |bordered_content|
             bordered_content.border_all '1px solid #aaaaaaff'
             bordered_content.padding.set_all 8
             bordered_content.margin.set_all 8

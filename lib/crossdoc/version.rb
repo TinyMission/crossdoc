@@ -1,3 +1,3 @@
-module Crossdoc
-  VERSION = '0.1.2'
+module CrossDoc
+  VERSION = '0.1.3'
 end

@@ -95,8 +95,24 @@ module CrossDoc
       @doc_builder.add_image src, hash
     end
 
-    def node(tag, raw)
+    def node(tag, raw={})
       raw[:tag] = tag.upcase
+      node_builder = NodeBuilder.new @doc_builder, raw
+      yield node_builder
+      @child_builders << node_builder
+    end
+
+    def horizontal_div(raw={})
+      raw[:tag] = 'DIV'
+      raw[:block_orientation] = 'horizontal'
+      node_builder = NodeBuilder.new @doc_builder, raw
+      yield node_builder
+      @child_builders << node_builder
+    end
+
+    def div(raw={})
+      raw[:tag] = 'DIV'
+      raw[:block_orientation] = 'vertical'
       node_builder = NodeBuilder.new @doc_builder, raw
       yield node_builder
       @child_builders << node_builder
