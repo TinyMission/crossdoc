@@ -102,6 +102,8 @@ module CrossDoc
             value = type.new value
           elsif value.instance_of? type
             # do nothing
+          elsif value.nil?
+            # do nothing, this is ok
           else
             raise "Invalid type for field #{name}: #{value.class}"
           end

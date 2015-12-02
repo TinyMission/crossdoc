@@ -67,7 +67,7 @@ module CrossDoc
       comps = s.split /\s/
       comps.each do |comp|
         if comp =~ /px$/
-          side.width = comp.gsub('px', '').to_i
+          side.width = comp.gsub('px', '').to_f
         elsif comp =~ /^#[\d\w]+$/
           side.color = comp
         elsif @possible_styles.index comp

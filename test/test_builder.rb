@@ -14,7 +14,7 @@ class TestBuilder < Minitest::Test
     end
 
     renderer = CrossDoc::PdfRenderer.new doc
-    renderer.show_overlays = true
+    # renderer.show_overlays = true
     renderer.to_pdf 'test/output/builder.pdf'
   end
 
@@ -61,6 +61,7 @@ class TestBuilder < Minitest::Test
         content.margin.top = 20
         content.node 'div', {weight: 2} do |left_content|
           left_content.node 'p', {} do |p1|
+            p1.border_bottom '0.2px solid #008888'
             p1.default_font size: 12, color: body_color
             p1.padding.set_all 8
             p1.text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -86,6 +87,7 @@ class TestBuilder < Minitest::Test
       cell_padding = 4
       page.node 'table', {} do |table|
         table.margin.top = 20
+        table.margin.bottom = 20
         table.node 'tr', {block_orientation: :horizontal} do |header_row|
           header_row.background_color header_color
           header_row.node 'th', {weight: 3} do |th|
