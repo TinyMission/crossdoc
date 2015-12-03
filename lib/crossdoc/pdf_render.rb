@@ -43,32 +43,46 @@ module CrossDoc
       end
     end
 
+    # initializes the canvas to draw based on the given border side (width, color, and style)
+    def init_border_side(side)
+      @pdf.line_width = side.width
+      @pdf.stroke_color side.color_no_hash
+      if side.style == 'dashed'
+        @pdf.dash 12
+      else
+        @pdf.undash
+      end
+    end
+
     def render_node_border(node)
       border = node.border
       if border
         if border.is_equal?
-          @pdf.stroke_color border.top.color_no_hash
+          init_border_side border.top
           @pdf.stroke_bounds
         else
           if border.top
-            @pdf.stroke_color border.top.color_no_hash
+            init_border_side border.top
             @pdf.stroke_horizontal_line 0.0, node.box.width, at: node.box.height
           end
           if border.bottom
-            @pdf.stroke_color border.bottom.color_no_hash
+            init_border_side border.bottom
             @pdf.stroke_horizontal_line 0.0, node.box.width, at: 0.0
           end
           if border.left
-            @pdf.stroke_color border.left.color_no_hash
+            init_border_side border.left
             @pdf.stroke_vertical_line 0.0, node.box.y, at: 0.0
           end
           if border.right
-            @pdf.stroke_color border.right.color_no_hash
+            init_border_side border.right
             @pdf.stroke_vertical_line 0.0, node.box.y, at: node.box.width
           end
         end
+        @pdf.undash
       elsif @show_overlays
+        @pdf.line_width = 0.2
         @pdf.stroke_color 'ff0000'
+        @pdf.undash
         @pdf.stroke_bounds
       end
     end
@@ -114,16 +128,18 @@ module CrossDoc
 
 
     def render_horizontal_guides(ys)
-      pdf.stroke_color @guide_color
+      @pdf.line_width = 0.2
+      @pdf.stroke_color @guide_color
       ys.each do |y|
-        pdf.stroke_horizontal_line 0, page.box.width, at:page.box.height - y
+        @pdf.stroke_horizontal_line 0, @page.box.width, at: @page.box.height - y
       end
     end
 
     def render_box_guides(boxes)
-      pdf.stroke_color @guide_color
+      @pdf.line_width = 0.2
+      @pdf.stroke_color @guide_color
       boxes.each do |box|
-        pdf.stroke_rectangle [box.x, page.box.height-box.y], box.width, box.height
+        @pdf.stroke_rectangle [box.x, @page.box.height-box.y], box.width, box.height
       end
     end
 

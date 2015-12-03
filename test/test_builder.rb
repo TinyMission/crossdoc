@@ -61,7 +61,7 @@ class TestBuilder < Minitest::Test
         content.margin.top = 20
         content.node 'div', {weight: 2} do |left_content|
           left_content.node 'p', {} do |p1|
-            p1.border_bottom '0.2px solid #008888'
+            p1.border_bottom '0.2px dashed #008888'
             p1.default_font size: 12, color: body_color
             p1.padding.set_all 8
             p1.text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -74,7 +74,7 @@ class TestBuilder < Minitest::Test
         end
         content.node 'div', {weight: 1} do |right_content|
           right_content.div do |bordered_content|
-            bordered_content.border_all '1px solid #aaaaaaff'
+            bordered_content.border_all '0.1px solid #aaaaaaff'
             bordered_content.padding.set_all 8
             bordered_content.margin.set_all 8
             bordered_content.default_font size: 14, color: body_color
