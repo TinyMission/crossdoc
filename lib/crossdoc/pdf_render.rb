@@ -48,7 +48,9 @@ module CrossDoc
       @pdf.line_width = side.width
       @pdf.stroke_color side.color_no_hash
       if side.style == 'dashed'
-        @pdf.dash 12
+        @pdf.dash 9
+      elsif side.style == 'dotted'
+        @pdf.dash 3
       else
         @pdf.undash
       end
