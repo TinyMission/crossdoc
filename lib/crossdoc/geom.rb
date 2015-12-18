@@ -59,7 +59,7 @@ module CrossDoc
       self.width == other.width && self.style == other.style && self.color == other.color
     end
 
-    @possible_styles = %w(solid dashed)
+    @possible_styles = %w(solid dashed dotted)
 
     # parses a CSS border string into a BorderSize
     def self.from_s(s)

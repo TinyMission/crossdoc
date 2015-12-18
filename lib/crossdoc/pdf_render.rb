@@ -50,7 +50,7 @@ module CrossDoc
       if side.style == 'dashed'
         @pdf.dash 9
       elsif side.style == 'dotted'
-        @pdf.dash 3
+        @pdf.dash 2
       else
         @pdf.undash
       end
