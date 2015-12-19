@@ -24,38 +24,40 @@ class TestBuilder < Minitest::Test
     header_color = '#006688ff'
     body_color = '#222222ff'
 
-    builder.page size: 'us-letter', orientation: 'portrait', page_margin: '0.5in' do |page|
-      page.horizontal_div do |header|
-        header.horizontal_div do |left_header|
-          left_header.node 'img', {src: 'https://placeholdit.imgix.net/~text?txtsize=32&txt=Logo&w=100&h=80&fm=png'} do |logo|
-            logo.push_min_height 100
-            logo.margin.set_all 8
-          end
-          left_header.div do |company_info|
-            info_font = CrossDoc::Font.default size: 8, color: body_color
-            company_info.div do |name_row|
-              name_row.font = info_font
-              name_row.padding.set_all 4
-              name_row.text = 'ACME LLC'
-            end
-            company_info.div do |phone_row|
-              phone_row.font = info_font
-              phone_row.padding.set_all 4
-              phone_row.text = '952-555-1234'
-            end
-          end
+    # header
+    builder.header do |header|
+      header.horizontal_div do |left_header|
+        left_header.node 'img', {src: 'https://placeholdit.imgix.net/~text?txtsize=32&txt=Logo&w=100&h=80&fm=png'} do |logo|
+          logo.push_min_height 100
+          logo.margin.set_all 8
         end
-        header.div do |right_header|
-          right_header.node 'h1' do |n|
-            n.default_font size: 32, align: :right, color: header_color
-            n.text = 'Hello World'
+        left_header.div do |company_info|
+          info_font = CrossDoc::Font.default size: 8, color: body_color
+          company_info.div do |name_row|
+            name_row.font = info_font
+            name_row.padding.set_all 4
+            name_row.text = 'ACME LLC'
           end
-          right_header.node 'h2' do |n|
-            n.default_font size: 24, align: :right, color: header_color
-            n.text = 'Subheader'
+          company_info.div do |phone_row|
+            phone_row.font = info_font
+            phone_row.padding.set_all 4
+            phone_row.text = '952-555-1234'
           end
         end
       end
+      header.div do |right_header|
+        right_header.node 'h1' do |n|
+          n.default_font size: 32, align: :right, color: header_color
+          n.text = 'Hello World'
+        end
+        right_header.node 'h2' do |n|
+          n.default_font size: 24, align: :right, color: header_color
+          n.text = 'Subheader'
+        end
+      end
+    end
+
+    builder.page size: 'us-letter', orientation: 'portrait', page_margin: '0.5in' do |page|
 
       page.horizontal_div do |content|
         content.margin.top = 20
@@ -84,26 +86,23 @@ class TestBuilder < Minitest::Test
         end
       end
 
-      header_font = CrossDoc::Font.default size: 12, color: '#ffffffff'
+      th_font = CrossDoc::Font.default size: 12, color: '#ffffffff'
       cell_padding = 4
       page.node 'table', {} do |table|
         table.margin.top = 20
         table.margin.bottom = 20
         table.node 'tr', {block_orientation: :horizontal} do |header_row|
           header_row.background_color header_color
-          header_row.node 'th', {weight: 3} do |th|
+          header_row.node 'th', {weight: 3, font: th_font} do |th|
             th.padding.set_all cell_padding
-            th.font = header_font
             th.text = 'Description'
           end
-          header_row.node 'th', {weight: 1} do |th|
+          header_row.node 'th', {weight: 1, font: th_font} do |th|
             th.padding.set_all cell_padding
-            th.font = header_font
             th.text = 'Subtotal'
           end
-          header_row.node 'th', {weight: 1} do |th|
+          header_row.node 'th', {weight: 1, font: th_font} do |th|
             th.padding.set_all cell_padding
-            th.font = header_font
             th.text = 'Total'
           end
         end

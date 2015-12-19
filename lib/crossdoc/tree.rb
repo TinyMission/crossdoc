@@ -127,6 +127,9 @@ module CrossDoc
 
     array_field :pages, Page
 
+    object_field :header, Node
+    object_field :footer, Node
+
     hash_field :images, ImageRef
 
     def initialize(attrs)

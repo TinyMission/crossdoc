@@ -222,6 +222,8 @@ module CrossDoc
     def initialize
       @page_builders = []
       @images = {}
+      @header_builder = nil
+      @footer_builder = nil
     end
 
     def page(raw)
@@ -230,13 +232,32 @@ module CrossDoc
       @page_builders << page_builder
     end
 
+    def header(raw={})
+      @header_builder = NodeBuilder.new self, raw
+      yield @header_builder
+    end
+
+    def footer(raw={})
+      @footer_builder = NodeBuilder.new self, raw
+      yield @footer_builder
+    end
+
     def add_image(src, hash)
       @images[hash] = CrossDoc::ImageRef.new src: src, hash: hash
     end
 
     def to_doc
-      pages = @page_builders.map {|pb| pb.to_page}
-      CrossDoc::Document.new pages: pages, images: @images
+      attrs = {
+          pages:@page_builders.map {|pb| pb.to_page},
+          images: @images
+      }
+      if @header_builder
+        attrs[:header] = @header_builder.to_node
+      end
+      if @footer_builder
+        attrs[:footer] = @footer_builder.to_node
+      end
+      CrossDoc::Document.new attrs
     end
 
   end

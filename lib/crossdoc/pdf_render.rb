@@ -190,7 +190,6 @@ module CrossDoc
       download_images
 
       first_page = @doc.pages.first
-      # page_margin = first_page.padding.css_array
       page_margin = [0, 0, 0, 0]
       Prawn::Document.generate(path, margin: page_margin) do |pdf|
         doc.pages.each do |page|

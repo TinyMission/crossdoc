@@ -38,6 +38,10 @@ module CrossDoc
       self.x + self.width
     end
 
+    def move_down(dy)
+      self.y += dy
+    end
+
   end
 
 
