@@ -189,6 +189,16 @@ module CrossDoc
     def to_pdf(path)
       download_images
 
+      # compute header and footer height
+      header_height = 0
+      if @doc.header
+        header_height = @doc.header.box.height
+      end
+      footer_height = 0
+      if @doc.footer
+        footer_height = @doc.footer.box.height
+      end
+
       first_page = @doc.pages.first
       page_margin = [0, 0, 0, 0]
       Prawn::Document.generate(path, margin: page_margin) do |pdf|
@@ -201,13 +211,42 @@ module CrossDoc
           if @show_overlays
             pdf.stroke_axis
           end
-          page.children.each do |child|
-            render_node ctx, child
+
+          # render header
+          if header_height > 0
+            ctx.pdf.bounding_box [@doc.page_margin.left, page.box.height-@doc.page_margin.top],
+                                 width: @doc.header.box.width, height: @doc.header.box.height do
+              header_parent = Node.new box: @doc.header.box
+              ctx.push_parent header_parent
+              render_node ctx, @doc.header
+              ctx.pop_parent
+            end
+          end
+
+          # compute footer height and render it
+          if footer_height > 0
+            ctx.pdf.bounding_box [@doc.page_margin.left, @doc.page_margin.bottom+footer_height],
+                                 width: @doc.footer.box.width, height: @doc.footer.box.height do
+              footer_parent = Node.new box: @doc.footer.box
+              ctx.push_parent footer_parent
+              render_node ctx, @doc.footer
+              ctx.pop_parent
+            end
+          end
+
+          # wrap the actual page rendering in a smaller box to account for the header and footer
+          ctx.pdf.bounding_box [0, page.box.height-header_height],
+                               width: page.box.width,
+                               height: page.box.height-header_height-footer_height do
+            page.box.height = page.box.height-header_height-footer_height
+            page.children.each do |child|
+              render_node ctx, child
+            end
           end
           ctx.render_horizontal_guides @horizontal_guides
           ctx.render_box_guides @box_guides
-        end
-      end
+        end # page
+      end # pdf
 
       dispose_images
     end

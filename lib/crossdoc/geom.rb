@@ -172,6 +172,7 @@ module CrossDoc
       @left = d
       @right = d
       @bottom = d
+      self
     end
 
     def css_array

@@ -13,13 +13,16 @@ class TestBuilder < Minitest::Test
       f.write JSON.pretty_generate(doc.to_raw)
     end
 
+    t = Time.now
     renderer = CrossDoc::PdfRenderer.new doc
     # renderer.show_overlays = true
     renderer.to_pdf 'test/output/builder.pdf'
+    dt = Time.now - t
+    puts "Rendered PDF from builder in #{dt} seconds"
   end
 
   def build_demo_doc
-    builder = CrossDoc::Builder.new
+    builder = CrossDoc::Builder.new page_size: 'us-letter', page_orientation: 'portrait', page_margin: '0.5in'
 
     header_color = '#006688ff'
     body_color = '#222222ff'
@@ -57,7 +60,28 @@ class TestBuilder < Minitest::Test
       end
     end
 
-    builder.page size: 'us-letter', orientation: 'portrait', page_margin: '0.5in' do |page|
+    # footer
+    footer_font = CrossDoc::Font.default size: 9, color: '666666', align: 'center'
+    footer_padding = CrossDoc::Margin.new.set_all 12
+    builder.footer do |footer|
+      footer.div padding: footer_padding do |column|
+        column.node 'p', font: footer_font do |p|
+          p.text = 'This is the document footer'
+        end
+      end
+      footer.div padding: footer_padding do |column|
+        column.node 'p', font: footer_font do |p|
+          p.text = 'It will sit at the bottom of every page'
+        end
+      end
+      footer.div padding: footer_padding do |column|
+        column.node 'p', font: footer_font do |p|
+          p.text = 'It usually contains boring but necessary information'
+        end
+      end
+    end
+
+    builder.page do |page|
 
       page.horizontal_div do |content|
         content.margin.top = 20
@@ -66,13 +90,19 @@ class TestBuilder < Minitest::Test
             p1.border_bottom '0.2px dashed #008888'
             p1.default_font size: 12, color: body_color
             p1.padding.set_all 8
-            p1.text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+            p1.text = 'Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
           end
           left_content.node 'p', {} do |p2|
             p2.border_bottom '0.2px dotted #008888'
             p2.default_font size: 12, color: body_color
             p2.padding.set_all 8
             p2.text = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
+          end
+          left_content.node 'p', {} do |p3|
+            p3.border_bottom '0.2px solid #008888'
+            p3.default_font size: 12, color: body_color
+            p3.padding.set_all 8
+            p3.text = 'Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
           end
         end
         content.node 'div', {weight: 1} do |right_content|
@@ -87,23 +117,36 @@ class TestBuilder < Minitest::Test
       end
 
       th_font = CrossDoc::Font.default size: 12, color: '#ffffffff'
-      cell_padding = 4
+      td_font = CrossDoc::Font.default size: 12, color: '222222'
+      cell_padding = CrossDoc::Margin.new.set_all 4
       page.node 'table', {} do |table|
         table.margin.top = 20
         table.margin.bottom = 20
+        table.border_all '0.2px solid #aaaaaa'
         table.node 'tr', {block_orientation: :horizontal} do |header_row|
           header_row.background_color header_color
-          header_row.node 'th', {weight: 3, font: th_font} do |th|
-            th.padding.set_all cell_padding
+          header_row.node 'th', {weight: 3, font: th_font, padding: cell_padding} do |th|
             th.text = 'Description'
           end
-          header_row.node 'th', {weight: 1, font: th_font} do |th|
-            th.padding.set_all cell_padding
+          header_row.node 'th', {weight: 1, font: th_font, padding: cell_padding} do |th|
             th.text = 'Subtotal'
           end
-          header_row.node 'th', {weight: 1, font: th_font} do |th|
-            th.padding.set_all cell_padding
+          header_row.node 'th', {weight: 1, font: th_font, padding: cell_padding} do |th|
             th.text = 'Total'
+          end
+        end
+        12.times do
+          table.node 'tr', block_orientation: 'horizontal' do |tr|
+            subtotal = 10.0 + rand*100.0
+            tr.node 'td', weight: 3, font: td_font, padding: cell_padding do |td|
+              td.text = "$#{'%.2f' % subtotal}"
+            end
+            tr.node 'td', weight: 1, font: td_font, padding: cell_padding do |td|
+              td.text = "$#{'%.2f' % (subtotal*0.07)}"
+            end
+            tr.node 'td', weight: 1, font: td_font, padding: cell_padding do |td|
+              td.text = "$#{'%.2f' % (subtotal*1.07)}"
+            end
           end
         end
       end

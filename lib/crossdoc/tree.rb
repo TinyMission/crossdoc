@@ -105,15 +105,15 @@ module CrossDoc
         us_legal: {width: 612, height: 1008}
     }
 
-    # returns the page dimensions (width/height hash) for the given page options (size and orientation), or nil if one or more arguments are incorrect
+    # returns the page dimensions (width/height hash) for the given page size and orientation, or nil if one or more arguments are incorrect
     # current possible page sizes are 'us-letter' and 'us-legal'
     # orientations are 'portrait' or 'landscape'
-    def self.get_dimensions(options)
-      portrait_size = @portrait_dimensions[options[:size].gsub('-', '_').to_sym]
+    def self.get_dimensions(size, orientation)
+      portrait_size = @portrait_dimensions[size.to_s.gsub('-', '_').to_sym]
       unless portrait_size
         return nil
       end
-      if options[:orientation].to_s == 'landscape'
+      if orientation && orientation.to_s == 'landscape'
         return {width: portrait_size[:height], height: portrait_size[:width]}
       end
       portrait_size
@@ -124,6 +124,10 @@ module CrossDoc
 
   class Document
     include CrossDoc::Fields
+
+    object_field :page_width, Fixnum
+    object_field :page_height, Fixnum
+    object_field :page_margin, Margin
 
     array_field :pages, Page
 
@@ -137,6 +141,9 @@ module CrossDoc
         attrs = JSON.parse attrs
       end
       assign_fields attrs
+      unless @page_margin
+        @page_margin = Margin.new
+      end
     end
 
     def self.from_file(path)

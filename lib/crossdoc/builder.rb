@@ -122,6 +122,20 @@ module CrossDoc
       self.box.width - self.padding.left - self.padding.right
     end
 
+    def flow_children
+      if @block_orientation == :horizontal
+        flow_children_horizontal
+      else # vertical
+        flow_children_vertical
+      end
+    end
+
+    # flow_children, with extra logic for being a header or footer
+    def flow_header_footer
+      flow_children
+      self.box.height = @min_height
+    end
+
     # sets the position and size of the node based on the starting position and width (including margin)
     # returns the height consumed
     def flow(x, y, w)
@@ -130,11 +144,7 @@ module CrossDoc
       self.box.width = w - @margin.left - @margin.right
 
       # layout the children
-      if @block_orientation == :horizontal
-        flow_children_horizontal
-      else # vertical
-        flow_children_vertical
-      end
+      flow_children
 
       # compute/update the height
       if self.text && self.font
@@ -198,13 +208,23 @@ module CrossDoc
 
     def initialize(doc_builder, raw)
       super
-      @raw = {orientation: 'portrait', size: 'us-letter', page_margin: '0.75in'}.merge @raw
-      dimensions = Page.get_dimensions @raw
-      self.box.width = dimensions[:width]
-      self.box.height = dimensions[:height]
 
-      margin_size = Page.page_margin_size @raw[:page_margin]
-      self.padding.set_all margin_size
+      if raw[:size]
+        dimensions = Page.get_dimensions raw[:size], raw[:orientation]
+        self.box.width = dimensions[:width]
+        self.box.height = dimensions[:height]
+      else
+        self.box.width = doc_builder.page_width
+        self.box.height = doc_builder.page_height
+      end
+
+      if raw[:margin]
+        margin_size = Page.page_margin_size @raw[:page_margin]
+        self.padding.set_all margin_size
+      else
+        self.padding = doc_builder.page_margin
+      end
+
     end
 
     def to_page
@@ -219,27 +239,48 @@ module CrossDoc
   # Creates a document through a ruby DSL
   class Builder
 
-    def initialize
+    attr_accessor :page_width, :page_height, :page_margin
+
+    def initialize(options={})
+      @options = {
+          page_size: 'us-letter',
+          page_orientation: 'portrait',
+          page_margin: '0.75in'
+      }.merge options
+      dimensions = Page.get_dimensions @options[:page_size], @options[:page_orientation]
+      @page_width = dimensions[:width]
+      @page_height = dimensions[:height]
+
+      @page_margin = Margin.new
+      margin_size = Page.page_margin_size @options[:page_margin]
+      @page_margin.set_all margin_size
+
       @page_builders = []
       @images = {}
       @header_builder = nil
       @footer_builder = nil
     end
 
-    def page(raw)
+    def page(raw={})
       page_builder = PageBuilder.new self, raw
       yield page_builder
       @page_builders << page_builder
     end
 
     def header(raw={})
+      raw[:block_orientation] = :horizontal
       @header_builder = NodeBuilder.new self, raw
       yield @header_builder
+      @header_builder.box.width = @page_width - @page_margin.left - @page_margin.right
+      @header_builder.flow_header_footer
     end
 
     def footer(raw={})
+      raw[:block_orientation] = :horizontal
       @footer_builder = NodeBuilder.new self, raw
       yield @footer_builder
+      @footer_builder.box.width = @page_width - @page_margin.left - @page_margin.right
+      @footer_builder.flow_header_footer
     end
 
     def add_image(src, hash)
@@ -248,6 +289,9 @@ module CrossDoc
 
     def to_doc
       attrs = {
+          page_width: @page_width,
+          page_height: @page_height,
+          page_margin: @page_margin,
           pages:@page_builders.map {|pb| pb.to_page},
           images: @images
       }
