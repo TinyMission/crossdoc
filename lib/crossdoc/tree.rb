@@ -8,7 +8,7 @@ module CrossDoc
   class ImageRef
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs={})
       assign_fields attrs
     end
 
@@ -48,7 +48,7 @@ module CrossDoc
   class Node
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs={})
       assign_fields attrs
     end
 
@@ -72,7 +72,7 @@ module CrossDoc
   class Page
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs={})
       assign_fields attrs
     end
 

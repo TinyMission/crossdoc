@@ -200,6 +200,12 @@ module CrossDoc
       end
 
       first_page = @doc.pages.first
+
+      unless @doc.page_width && @doc.page_height
+        @doc.page_width = first_page.box.width
+        @doc.page_height = first_page.box.height
+      end
+
       page_margin = [0, 0, 0, 0]
       Prawn::Document.generate(path, margin: page_margin) do |pdf|
         doc.pages.each do |page|
@@ -214,7 +220,7 @@ module CrossDoc
 
           # render header
           if header_height > 0
-            ctx.pdf.bounding_box [@doc.page_margin.left, page.box.height-@doc.page_margin.top],
+            ctx.pdf.bounding_box [@doc.page_margin.left, @doc.page_height-@doc.page_margin.top],
                                  width: @doc.header.box.width, height: @doc.header.box.height do
               header_parent = Node.new box: @doc.header.box
               ctx.push_parent header_parent
@@ -235,10 +241,10 @@ module CrossDoc
           end
 
           # wrap the actual page rendering in a smaller box to account for the header and footer
-          ctx.pdf.bounding_box [0, page.box.height-header_height],
-                               width: page.box.width,
-                               height: page.box.height-header_height-footer_height do
-            page.box.height = page.box.height-header_height-footer_height
+          ctx.pdf.bounding_box [0, @doc.page_height-header_height],
+                               width: @doc.page_width,
+                               height: @doc.page_height-header_height-footer_height do
+            page.box.height = @doc.page_height-header_height-footer_height
             page.children.each do |child|
               render_node ctx, child
             end

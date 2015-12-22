@@ -40,6 +40,22 @@ module CrossDoc
 
       end
 
+      # returns a copy of the object that only copies first level references
+      def shallow_copy
+        new_obj = self.class.new
+        new_obj.assign_fields field_values
+        new_obj
+      end
+
+      # returns a simple hash of all field values
+      def field_values
+        values = {}
+        self.class.all_field_names.each do |f|
+          values[f] = self.send(f)
+        end
+        values
+      end
+
       # returns the object represented as raw ruby hashes and arrays
       def to_raw
         raw = {}
@@ -88,6 +104,11 @@ module CrossDoc
       end
 
       attr_reader :simple_field_names, :object_field_names, :array_field_names, :hash_field_names
+
+      def all_field_names
+        (@simple_field_names || []) + (@object_field_names || []) +
+            (@array_field_names || []) + (@hash_field_names || [])
+      end
 
       def object_field(name, type)
         unless @object_field_names

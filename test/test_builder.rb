@@ -9,6 +9,9 @@ class TestBuilder < Minitest::Test
   def test_builder
     doc = build_demo_doc
 
+    paginator = CrossDoc::Paginator.new num_levels: 3
+    paginator.run doc
+
     File.open('test/output/builder.json', 'wt') do |f|
       f.write JSON.pretty_generate(doc.to_raw)
     end
@@ -84,7 +87,7 @@ class TestBuilder < Minitest::Test
     builder.page do |page|
 
       page.horizontal_div do |content|
-        content.margin.top = 20
+        content.margin.top = 0
         content.node 'div', {weight: 2} do |left_content|
           left_content.node 'p', {} do |p1|
             p1.border_bottom '0.2px dashed #008888'
@@ -107,7 +110,7 @@ class TestBuilder < Minitest::Test
         end
         content.node 'div', {weight: 1} do |right_content|
           right_content.div do |bordered_content|
-            bordered_content.border_all '0.1px solid #aaaaaaff'
+            bordered_content.border_all '0.2px solid #aaaaaaff'
             bordered_content.padding.set_all 8
             bordered_content.margin.set_all 8
             bordered_content.default_font size: 14, color: body_color
@@ -149,6 +152,12 @@ class TestBuilder < Minitest::Test
             end
           end
         end
+      end
+
+      page.node 'p', {} do |p|
+        p.default_font size: 12, color: body_color
+        p.padding.set_all 8
+        p.text = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
       end
     end
 

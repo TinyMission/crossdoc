@@ -38,8 +38,16 @@ module CrossDoc
       self.x + self.width
     end
 
+    def bottom
+      self.y + self.height
+    end
+
     def move_down(dy)
       self.y += dy
+    end
+
+    def dup
+      Box.new x: self.x, y: self.y, width: self.width, height: self.height
     end
 
   end
