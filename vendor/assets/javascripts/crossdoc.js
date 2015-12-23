@@ -221,14 +221,18 @@
         return obj
     }
 
-    function parsePage(doc, node) {
+    function parsePage(doc, pageNode) {
+        var node = null
+        for (var i in pageNode.childNodes) {
+            var n = pageNode.childNodes[i]
+            if (n.className && n.className.indexOf('page-content') > -1) {
+                node = n
+                break
+            }
+        }
+        if (node == null)
+            throw "Each page must have exactly one child node with class page-content"
         var page = {
-            box: {
-                x: 0,
-                y: 0,
-                width: node.offsetWidth,
-                height: node.offsetHeight
-            },
             children: []
         }
 
@@ -291,6 +295,21 @@
         return tagBlacklist.indexOf(tag) > -1
     }
 
+    function parsePageMeta(doc, pageNode) {
+        var contentNode = pageNode.children[0]
+        doc.pageWidth = pageNode.offsetWidth
+        doc.pageHeight = pageNode.offsetHeight
+        doc.pageMargin = {
+            top: contentNode.offsetTop,
+            left: contentNode.offsetLeft
+        }
+        doc.pageMargin.right = doc.pageMargin.left
+        doc.pageMargin.bottom = doc.pageMargin.top
+        if (doc.pageWidth > doc.pageHeight)
+            doc.orientation = 'landscape'
+        else
+            doc.orientation = 'portrait'
+    }
 
     crossdoc.create = function(options) {
         this.pages = null
@@ -301,13 +320,21 @@
             this.images = {}
 
             for (var p=0; p<root.children.length; p++) {
+                if (p == 0) {
+                    parsePageMeta(this, root.children[p])
+                }
                 var page = parsePage(this, root.children[p])
+                delete page.padding
                 this.pages.push(page)
             }
         }
 
         this.toJSON = function(pretty) {
-            var data = {images: this.images, pages: this.pages}
+            var data = {
+                images: this.images, pages: this.pages,
+                page_width: this.pageWidth, page_height: this.pageHeight,
+                page_margin: this.pageMargin, page_orientation: this.orientation
+            }
             if (pretty)
                 return JSON.stringify(data, undefined, 4)
             else
@@ -357,7 +384,7 @@
         for (var p=0; p<this.pages.length; p++) {
             var page = this.pages[p]
             var overlay = $('<div class="crossdoc-overlay"></div>')
-            var pageShadow = $(shadowElement.children[p])
+            var pageShadow = $(shadowElement.children[p]).find('.page-content')
             overlay.css('top', pageShadow.offset().top)
             overlay.css('left', pageShadow.offset().left)
             overlay.css('width', pageShadow.css('width'))

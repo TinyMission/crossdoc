@@ -25,7 +25,6 @@ class TestRender < Minitest::Test
 
   def test_render_pdf
     render_pdf_named 'doc'
-    render_pdf_named 'report'
   end
 
 end

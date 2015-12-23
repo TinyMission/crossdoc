@@ -15,18 +15,12 @@
     },
     "pages": [
         {
-            "box": {
-                "x": 0,
-                "y": 0,
-                "width": 612,
-                "height": 792
-            },
             "children": [
                 {
                     "tag": "DIV",
                     "box": {
-                        "x": 54,
-                        "y": 54,
+                        "x": 0,
+                        "y": 0,
                         "width": 502,
                         "height": 87
                     },
@@ -239,8 +233,8 @@
                 {
                     "tag": "DIV",
                     "box": {
-                        "x": 54,
-                        "y": 165,
+                        "x": 0,
+                        "y": 111,
                         "width": 502,
                         "height": 216
                     },
@@ -526,8 +520,8 @@
                 {
                     "tag": "DIV",
                     "box": {
-                        "x": 54,
-                        "y": 381,
+                        "x": 0,
+                        "y": 327,
                         "width": 502,
                         "height": 174
                     },
@@ -756,8 +750,8 @@
                         "repeat": "repeat"
                     },
                     "box": {
-                        "x": 54,
-                        "y": 567,
+                        "x": 0,
+                        "y": 513,
                         "width": 502,
                         "height": 78
                     },
@@ -1021,8 +1015,8 @@
                 {
                     "tag": "FOOTER",
                     "box": {
-                        "x": 54,
-                        "y": 665,
+                        "x": 0,
+                        "y": 611,
                         "width": 502,
                         "height": 79
                     },
@@ -1292,27 +1286,15 @@
                         }
                     ]
                 }
-            ],
-            "padding": {
-                "top": 54,
-                "right": 54,
-                "bottom": 54,
-                "left": 54
-            }
+            ]
         },
         {
-            "box": {
-                "x": 0,
-                "y": 0,
-                "width": 612,
-                "height": 792
-            },
             "children": [
                 {
                     "tag": "H3",
                     "box": {
-                        "x": 54,
-                        "y": 57,
+                        "x": 0,
+                        "y": 0,
                         "width": 502,
                         "height": 37
                     },
@@ -1367,8 +1349,8 @@
                         "left": 0
                     },
                     "box": {
-                        "x": 54,
-                        "y": 102,
+                        "x": 0,
+                        "y": 45,
                         "width": 502,
                         "height": 171
                     },
@@ -1668,7 +1650,7 @@
                                     "background": {
                                         "attachment": "scroll",
                                         "color": "#fafafaff",
-                                        "image": "url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+)",
+                                        "image": "url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+\")",
                                         "position": "100% 50%",
                                         "repeat": "no-repeat"
                                     },
@@ -1774,8 +1756,8 @@
                 {
                     "tag": "H3",
                     "box": {
-                        "x": 54,
-                        "y": 285,
+                        "x": 0,
+                        "y": 228,
                         "width": 502,
                         "height": 37
                     },
@@ -1824,8 +1806,8 @@
                         "repeat": "repeat"
                     },
                     "box": {
-                        "x": 54,
-                        "y": 330,
+                        "x": 0,
+                        "y": 273,
                         "width": 502,
                         "height": 182
                     },
@@ -2249,8 +2231,8 @@
                 {
                     "tag": "H3",
                     "box": {
-                        "x": 54,
-                        "y": 532,
+                        "x": 0,
+                        "y": 475,
                         "width": 502,
                         "height": 37
                     },
@@ -2305,8 +2287,8 @@
                         "left": 12
                     },
                     "box": {
-                        "x": 54,
-                        "y": 577,
+                        "x": 0,
+                        "y": 520,
                         "width": 502,
                         "height": 93
                     },
@@ -2324,13 +2306,16 @@
                         }
                     ]
                 }
-            ],
-            "padding": {
-                "top": 54,
-                "right": 54,
-                "bottom": 54,
-                "left": 54
-            }
+            ]
         }
-    ]
+    ],
+    "page_width": 612,
+    "page_height": 800,
+    "page_margin": {
+        "top": 54,
+        "left": 54,
+        "right": 54,
+        "bottom": 54
+    },
+    "page_orientation": "portrait"
 }

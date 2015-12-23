@@ -202,29 +202,16 @@ module CrossDoc
   class PageBuilder < NodeBuilder
     include CrossDoc::RawShadow
 
-    raw_shadow :padding, -> {Margin.new}
-
-    raw_shadow :box, -> {Box.new}
-
     def initialize(doc_builder, raw)
       super
+      @padding = Margin.new
+      @box = doc_builder.page_box
+    end
 
-      if raw[:size]
-        dimensions = Page.get_dimensions raw[:size], raw[:orientation]
-        self.box.width = dimensions[:width]
-        self.box.height = dimensions[:height]
-      else
-        self.box.width = doc_builder.page_width
-        self.box.height = doc_builder.page_height
-      end
+    attr_accessor :padding, :box
 
-      if raw[:margin]
-        margin_size = Page.page_margin_size @raw[:page_margin]
-        self.padding.set_all margin_size
-      else
-        self.padding = doc_builder.page_margin
-      end
-
+    def child_width
+      @doc_builder.page_content_width
     end
 
     def to_page
@@ -239,7 +226,7 @@ module CrossDoc
   # Creates a document through a ruby DSL
   class Builder
 
-    attr_accessor :page_width, :page_height, :page_margin
+    attr_accessor :page_width, :page_height, :page_margin, :page_orientation
 
     def initialize(options={})
       @options = {
@@ -247,18 +234,27 @@ module CrossDoc
           page_orientation: 'portrait',
           page_margin: '0.75in'
       }.merge options
-      dimensions = Page.get_dimensions @options[:page_size], @options[:page_orientation]
+      dimensions = Document.get_dimensions @options[:page_size], @options[:page_orientation]
       @page_width = dimensions[:width]
       @page_height = dimensions[:height]
 
       @page_margin = Margin.new
-      margin_size = Page.page_margin_size @options[:page_margin]
+      margin_size = Document.page_margin_size @options[:page_margin]
       @page_margin.set_all margin_size
 
       @page_builders = []
       @images = {}
       @header_builder = nil
       @footer_builder = nil
+    end
+
+    def page_content_width
+      @page_width - @page_margin.left - @page_margin.right
+    end
+
+    # a box at 0, 0 with page_width and page_height
+    def page_box
+      Box.new x: 0, y: 0, width: @page_width, height: @page_height
     end
 
     def page(raw={})

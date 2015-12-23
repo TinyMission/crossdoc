@@ -76,13 +76,42 @@ module CrossDoc
       assign_fields attrs
     end
 
-    simple_fields %i(orientation size page_margin)
-
-    object_field :padding, Margin
-
-    object_field :box, Box
-
     array_field :children, Node
+
+  end
+
+
+  class Document
+    include CrossDoc::Fields
+
+    simple_fields %i(page_orientation)
+
+    object_field :page_width, Fixnum
+    object_field :page_height, Fixnum
+    object_field :page_margin, Margin
+
+    array_field :pages, Page
+
+    object_field :header, Node
+    object_field :footer, Node
+
+    hash_field :images, ImageRef
+
+    def initialize(attrs)
+      if attrs.instance_of? String
+        attrs = JSON.parse attrs
+      end
+      assign_fields attrs
+      unless @page_margin
+        @page_margin = Margin.new
+      end
+    end
+
+    def self.from_file(path)
+      File.open(path, 'r') do |file|
+        return Document.new JSON.parse(file.read)
+      end
+    end
 
 
     ## Page Margins
@@ -117,39 +146,6 @@ module CrossDoc
         return {width: portrait_size[:height], height: portrait_size[:width]}
       end
       portrait_size
-    end
-
-  end
-
-
-  class Document
-    include CrossDoc::Fields
-
-    object_field :page_width, Fixnum
-    object_field :page_height, Fixnum
-    object_field :page_margin, Margin
-
-    array_field :pages, Page
-
-    object_field :header, Node
-    object_field :footer, Node
-
-    hash_field :images, ImageRef
-
-    def initialize(attrs)
-      if attrs.instance_of? String
-        attrs = JSON.parse attrs
-      end
-      assign_fields attrs
-      unless @page_margin
-        @page_margin = Margin.new
-      end
-    end
-
-    def self.from_file(path)
-      File.open(path, 'r') do |file|
-        return Document.new JSON.parse(file.read)
-      end
     end
 
   end

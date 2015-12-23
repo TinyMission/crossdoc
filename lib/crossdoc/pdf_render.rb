@@ -9,8 +9,9 @@ module CrossDoc
   # as well as some helper methods for rendering
   class PdfRenderContext
 
-    def initialize(pdf, page)
+    def initialize(pdf, doc, page)
       @pdf = pdf
+      @doc = doc
       @page = page
       @parent = page
       @ancestors = [page]
@@ -18,7 +19,7 @@ module CrossDoc
       @guide_color = '00ffff'
     end
 
-    attr_reader :pdf, :page, :parent
+    attr_reader :pdf, :doc, :page, :parent
 
     attr_accessor :show_overlays, :guide_color
 
@@ -133,7 +134,7 @@ module CrossDoc
       @pdf.line_width = 0.2
       @pdf.stroke_color @guide_color
       ys.each do |y|
-        @pdf.stroke_horizontal_line 0, @page.box.width, at: @page.box.height - y
+        @pdf.stroke_horizontal_line 0, @doc.page_width, at: @doc.page_height - y
       end
     end
 
@@ -141,7 +142,7 @@ module CrossDoc
       @pdf.line_width = 0.2
       @pdf.stroke_color @guide_color
       boxes.each do |box|
-        @pdf.stroke_rectangle [box.x, @page.box.height-box.y], box.width, box.height
+        @pdf.stroke_rectangle [box.x, @doc.page_height-box.y], box.width, box.height
       end
     end
 
@@ -201,15 +202,10 @@ module CrossDoc
 
       first_page = @doc.pages.first
 
-      unless @doc.page_width && @doc.page_height
-        @doc.page_width = first_page.box.width
-        @doc.page_height = first_page.box.height
-      end
-
       page_margin = [0, 0, 0, 0]
       Prawn::Document.generate(path, margin: page_margin) do |pdf|
-        doc.pages.each do |page|
-          ctx = PdfRenderContext.new pdf, page
+        @doc.pages.each do |page|
+          ctx = PdfRenderContext.new pdf, doc, page
           ctx.show_overlays = @show_overlays
           unless page == first_page
             pdf.start_new_page margin: page_margin
@@ -241,13 +237,17 @@ module CrossDoc
           end
 
           # wrap the actual page rendering in a smaller box to account for the header and footer
-          ctx.pdf.bounding_box [0, @doc.page_height-header_height],
-                               width: @doc.page_width,
-                               height: @doc.page_height-header_height-footer_height do
-            page.box.height = @doc.page_height-header_height-footer_height
+          content_width = @doc.page_width-@doc.page_margin.left-@doc.page_margin.right
+          content_height = @doc.page_height-@doc.page_margin.top-@doc.page_margin.bottom-header_height-footer_height
+          ctx.pdf.bounding_box [@doc.page_margin.left, @doc.page_height-@doc.page_margin.top-header_height],
+                               width: content_width,
+                               height: content_height do
+            content_parent = Node.new box: Box.new(x: 0, y: 0, width: content_height, height: content_height)
+            ctx.push_parent content_parent
             page.children.each do |child|
               render_node ctx, child
             end
+            ctx.pop_parent
           end
           ctx.render_horizontal_guides @horizontal_guides
           ctx.render_box_guides @box_guides
