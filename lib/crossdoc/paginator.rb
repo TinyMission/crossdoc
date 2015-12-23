@@ -56,37 +56,53 @@ class CrossDoc::Paginator
         after_root = after_parent.children.first
         y_offset = after_root.box.y
         puts "y_offset=#{y_offset}"
-        after_root.box = after_root.box.dup
-        after_root.box.y = 0
+        # after_root.box = after_root.box.dup
+        # after_root.box.y = 0
         if last_before_node
-          puts "adding another #{last_before_node.box.height} to y_offset from last_before_node"
+          # puts "adding another #{last_before_node.box.height} to y_offset from last_before_node"
           y_offset += last_before_node.box.height
         end
         if after_parent == page
           # puts "adding another #{old_before_height} to page y_offset"
           # y_offset += old_before_height
         else
-          puts "adding another #{after_parent.box.y} to y_offset"
+          # puts "adding another #{after_parent.box.y} to y_offset"
           # y_offset += after_parent.box.y
-          after_parent.box = CrossDoc::Box.new x: after_parent.box.x, y: 0,
-                                               width: after_parent.box.width,
-                                               height: after_parent.box.height-(y_offset)
+          # after_parent.box = CrossDoc::Box.new x: after_parent.box.x, y: 0,
+          #                                      width: after_parent.box.width,
+          #                                      height: after_parent.box.height-(y_offset)
         end
-        after_parent.children[1..-1].each do |child|
-          child.box = child.box.dup
-          child.box.y -= y_offset
-        end
+        # after_parent.children[1..-1].each do |child|
+        #   child.box = child.box.dup
+        #   child.box.y -= y_offset
+        # end
       end
 
       after_parent = after_node
       before_parent = before_parent.children.last
     end # after_node
 
-    0.upto(stack.size-1).each do |i|
-      child = stack[stack.size-1-i]
-      parent = stack[stack.size-i]
-      puts "child #{stack.size-i} is #{child.box.height} high at #{child.box.y}"
-
+    full_stack = [page] + stack
+    height_diff = 0
+    puts "full stack size #{full_stack.size}"
+    1.upto(stack.size).each do |i|
+      child = full_stack[-i]
+      parent = full_stack[-i-1]
+      puts "child #{-i} is #{child.box.height} high at #{child.box.y}"
+      dy = child.box.y
+      if parent == page
+        dy -= parent.padding.top
+      end
+      parent.children.each do |c|
+        c.box.y -= dy
+        if c != child
+          c.box.y -=  height_diff
+        end
+      end
+      new_height = parent.children.last.box.bottom
+      puts "resizing parent from #{parent.box.height} to #{new_height}"
+      height_diff = parent.box.height - new_height
+      parent.box.height = new_height
     end
 
     puts "split page with #{original_child_count} children into one with #{new_page.children.count} and one with #{page.children.count} with stack size #{stack.count}"
@@ -107,7 +123,7 @@ class CrossDoc::Paginator
       return # empty document
     end
 
-    content_height = doc.page_height-doc.page_margin.top-doc.page_margin.bottom
+    content_height = doc.page_height-doc.page_margin.top # not sure why we don't need the bottom margin here
     if doc.header
       content_height -= doc.header.box.height
     end
