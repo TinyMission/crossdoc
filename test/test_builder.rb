@@ -71,6 +71,9 @@ class TestBuilder < Minitest::Test
         column.node 'p', font: footer_font do |p|
           p.text = 'This is the document footer'
         end
+        column.node 'p', font: footer_font do |p|
+          p.text = 'Page {{page_number}} of {{num_pages}}'
+        end
       end
       footer.div padding: footer_padding do |column|
         column.node 'p', font: footer_font do |p|

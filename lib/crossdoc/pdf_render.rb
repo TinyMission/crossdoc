@@ -13,6 +13,7 @@ module CrossDoc
       @pdf = pdf
       @doc = doc
       @page = page
+      @page_number = @doc.pages.index(@page) + 1
       @parent = page
       @ancestors = [page]
       @show_overlays = false
@@ -31,6 +32,14 @@ module CrossDoc
     def pop_parent
       @ancestors.pop
       @parent = @ancestors.last
+    end
+
+    def process_text_meta(t)
+      if t.index '{{'
+        t = t.gsub('{{page_number}}', @page_number.to_s)
+            .gsub('{{num_pages}}', @doc.pages.count.to_s)
+      end
+      t
     end
 
     def render_node_background(node)
@@ -113,6 +122,7 @@ module CrossDoc
         align = :left
         leading = 0.0
       end
+      text = process_text_meta text
       pos = if node.padding
               [node.padding.left, node.box.height - node.padding.top - leading*2.0]
             else
