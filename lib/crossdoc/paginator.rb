@@ -3,7 +3,8 @@ class CrossDoc::Paginator
 
   def initialize(options={})
     @options = {
-        num_levels: 3
+        num_levels: 3,
+        max_pages: 10
     }.merge options
   end
 
@@ -106,7 +107,9 @@ class CrossDoc::Paginator
     content_width = doc.page_width - doc.page_margin.left - doc.page_margin.right
     pages = []
 
-    while full_page
+    page_num = 0
+    while full_page && page_num < @options[:max_pages]
+      page_num += 1
       y = 0
       stack = []
       0.upto(@options[:num_levels]) do |level|
