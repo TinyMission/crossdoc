@@ -5,8 +5,11 @@ class TestRender < Minitest::Test
   def setup
   end
 
-  def render_pdf_named(name)
+  def render_pdf_named(name, paginate=false)
     doc = CrossDoc::Document.from_file "test/data/#{name}.json"
+    if paginate
+      CrossDoc::Paginator.new(num_levels: 6).run doc
+    end
 
     File.open("test/output/#{name}.json", 'wt') do |f|
       f.write JSON.pretty_generate(doc.to_raw)
@@ -25,6 +28,7 @@ class TestRender < Minitest::Test
 
   def test_render_pdf
     render_pdf_named 'doc'
+    render_pdf_named 'report', true
   end
 
 end
