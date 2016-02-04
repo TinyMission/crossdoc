@@ -101,7 +101,15 @@ module CrossDoc
 
     def render_node_image(image, node)
       if image.is_svg
-        @pdf.svg image.io, at: [0.0, node.box.height], width: node.box.width, cache_images: true
+        puts "-- image #{image.io.size} with size: #{node.box.width} x #{node.box.height}"
+        STDOUT.flush
+        if node.box.height > 0 && node.box.width > 0
+          begin
+            @pdf.svg image.io, at: [0.0, node.box.height], width: node.box.width, cache_images: true
+          rescue Exception => ex
+            puts "Error rendering SVG: #{ex.message}"
+          end
+        end
       else
         @pdf.image image.io, fit: [node.box.width, node.box.height]
       end
