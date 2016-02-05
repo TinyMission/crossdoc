@@ -11,9 +11,9 @@ class CrossDoc::Paginator
   # returns the node in parent.children that spans y
   def find_spanning_node(content_width, parent, y)
     return nil unless parent.children && parent.children.length > 0
-    puts "looking for spanning node at #{y} with content_width #{content_width} in children #{parent.children.map{|n| "#{n.box.y}-#{n.box.bottom}"}.inspect}"
+    # puts "looking for spanning node at #{y} with content_width #{content_width} in children #{parent.children.map{|n| "#{n.box.y}-#{n.box.bottom}"}.inspect}"
     parent.children.each do |node|
-      if node.box.y <= y && node.box.bottom > y && (content_width-node.box.width)<1
+      if node.box && node.box.y <= y && node.box.bottom > y && (content_width-node.box.width)<1
         return node
       end
     end
@@ -50,7 +50,11 @@ class CrossDoc::Paginator
 
       # adjust the before_parent height to match the reduced number of children
       unless before_parent == new_page
-        before_parent.box.height = before_parent.children.last.box.bottom
+        if before_parent.children.last
+          before_parent.box.height = before_parent.children.last.box.bottom
+        else
+          before_parent.box.height = 0
+        end
       end
 
       after_parent = after_node

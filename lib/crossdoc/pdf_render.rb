@@ -131,6 +131,7 @@ module CrossDoc
         leading = 0.0
       end
       text = process_text_meta text
+      text = text.gsub("\n", ' ')
       pos = if node.padding
               [node.padding.left, node.box.height - node.padding.top - leading*2.0]
             else
