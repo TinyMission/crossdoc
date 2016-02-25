@@ -2,6 +2,7 @@ require 'crossdoc/version'
 
 module CrossDoc
   require 'crossdoc/geom'
+  require 'crossdoc/font_metrics'
   require 'crossdoc/tree'
   require 'crossdoc/pdf_render'
   require 'crossdoc/builder'

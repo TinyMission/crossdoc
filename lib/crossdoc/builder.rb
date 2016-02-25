@@ -149,8 +149,9 @@ module CrossDoc
       # compute/update the height
       if self.text && self.font
         # stupid simple font metrics
-        num_lines = (self.text.length * self.font.size * 0.48 / child_width).ceil
-        push_min_height (self.font.line_height || 1) * num_lines
+        # num_lines = (self.text.length * self.font.size * 0.48 / child_width).ceil
+        num_lines = FontMetrics.num_lines self.text, child_width, self.font.size
+        push_min_height (self.font.line_height || self.font.size) * num_lines
       end
       self.box.height = @min_height + self.padding.top + self.padding.bottom
 
