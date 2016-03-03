@@ -19,7 +19,7 @@ class CrossDoc::Paginator
 
       # look for a node that is entirely below y, while the rest were all above
       if all_above_y
-        if node.box.y >= y
+        if node.box && node.box.y >= y
           if (content_width-node.box.width)<width_threshold
             return node
           else
