@@ -284,6 +284,13 @@ module CrossDoc
       @images[hash] = CrossDoc::ImageRef.new src: src, hash: hash
     end
 
+    # clears the pages, header, and footer so the builder can be reused
+    def clear_content
+      @page_builders = []
+      @header_builder = nil
+      @footer_builder = nil
+    end
+
     def to_doc
       attrs = {
           page_width: @page_width,
