@@ -119,6 +119,13 @@ class TestBuilder < Minitest::Test
             bordered_content.default_font size: 14, color: body_color
             bordered_content.text = 'This content should have a border around it'
           end
+          right_content.div do |bordered_content|
+            bordered_content.border_all '0.2px solid #aaaaaaff'
+            bordered_content.padding.set_all 8
+            bordered_content.margin.set_all 8
+            bordered_content.default_font size: 14, color: body_color
+            bordered_content.text = 'Verylong textthat messeswith thewrapping'
+          end
         end
       end
 

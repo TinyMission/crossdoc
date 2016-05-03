@@ -101,7 +101,6 @@ module CrossDoc
 
     def render_node_image(image, node)
       if image.is_svg
-        puts "-- image #{image.io.size} with size: #{node.box.width} x #{node.box.height}"
         STDOUT.flush
         if node.box.height > 0 && node.box.width > 0
           begin
