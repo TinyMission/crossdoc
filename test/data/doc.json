@@ -1,7 +1,7 @@
 {
     "images": {
         "3e661733": {
-            "src": "file:///Users/andy/TinyMission/crossdoc/crossdoc/demo/img/TinyMissionBanner.png",
+            "src": "file://./demo/img/TinyMissionBanner.png",
             "hash": "3e661733"
         },
         "8dce576b": {
