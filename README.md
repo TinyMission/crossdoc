@@ -71,11 +71,45 @@ On the server, the Ruby API lets you take a JSON document representation and ren
 
 ```ruby
 doc = CrossDoc::Document.new JSON.parse(doc_json) # create a document from a JSON string
-renderer = CrossDoc::Renderer.new doc # create a renderer to render the document
+renderer = CrossDoc::PdfRenderer.new doc # create a PDF renderer to render the document
 renderer.to_pdf 'path/to/output.pdf' # render the document to a PDF in the filesystem
 ```
 
 The renderer will download all images included in the document and render the contents to a PDF using the [Prawn](http://http://prawnpdf.org/) PDF library.
+
+
+### Ruby Builder
+
+In addition to serializing DOM elements to the intermediate JSON representation, 
+CrossDoc also has a builder API that lets you create the document from a Ruby DSL.
+The builder API allows CrossDoc documents to be generated without a browser.
+
+```ruby
+# create a builder and configure the page properties
+builder = CrossDoc::Builder.new page_size: 'us-letter', page_orientation: 'portrait', page_margin: '0.5in'
+
+# create a new page
+builder.page do |page|
+    # create a container for layout, can be horizontal or vertical
+    page.horizontal_div do |layout|
+        # each child can have a layout weight
+        layout.node 'p', {weight: 2} do |p|
+            p.default_font size: 12, color: '#800' # creates a new font by replacing default font values
+            p.padding.top = 8 # set just one side of padding
+            p.text = "This paragraph is larger"
+        end
+        layout.node 'p' do |p|
+            p.border_left '0.5px solid #080' # CSS borer definitions
+            p.padding.set_all 4 # set all padding at once
+            p.text = "This paragraph is half as wide"
+        end
+    end
+end
+
+# create the raw document that can be passed to a renderer
+doc = builder.to_doc
+CrossDoc::PdfRenderer.new(doc).to_pdf 'path/to/output.pdf'
+```
 
 
 ### Rails Integration
