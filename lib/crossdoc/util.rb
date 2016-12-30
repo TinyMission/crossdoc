@@ -29,7 +29,21 @@ module CrossDoc
             elsif attrs.has_key? (s=field.to_s.camelize(:lower))
               value = attrs.delete s
               self.instance_variable_set "@#{field}", value
+            else
+              self.instance_variable_set "@#{field}", nil
             end
+          end
+        end
+
+        if self.class.object_field_names
+          self.class.object_field_names.each do |field|
+            self.instance_variable_set "@#{field}", nil
+          end
+        end
+
+        if self.class.array_field_names
+          self.class.array_field_names.each do |field|
+            self.instance_variable_set "@#{field}", nil
           end
         end
 
@@ -100,14 +114,14 @@ module CrossDoc
     module ClassMethods
       def simple_fields(fields)
         @simple_field_names = fields
-        attr_accessor *fields
+        attr_accessor(*fields)
       end
 
       attr_reader :simple_field_names, :object_field_names, :array_field_names, :hash_field_names
 
       def all_field_names
-        (@simple_field_names || []) + (@object_field_names || []) +
-            (@array_field_names || []) + (@hash_field_names || [])
+        (self.simple_field_names || []) + (self.object_field_names || []) +
+            (self.array_field_names || []) + (self.hash_field_names || [])
       end
 
       def object_field(name, type)

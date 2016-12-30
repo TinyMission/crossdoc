@@ -10,7 +10,7 @@ module CrossDoc
     def self.num_lines(text, width, font_size, font_name='Helvetica')
       font = @dummy_document.find_font font_name
 
-      words = text.split /\s+/
+      words = text.split(/\s+/)
       word_widths = words.map{|w| font.compute_width_of(w, size: font_size)}
       space_width = font.compute_width_of(' ', size: font_size)
 

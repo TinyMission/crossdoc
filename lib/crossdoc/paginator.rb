@@ -34,7 +34,6 @@ class CrossDoc::Paginator
   end
 
   def break_page(page, stack)
-    original_child_count = page.children.count
     new_page = page.shallow_copy
     new_page.children = []
 

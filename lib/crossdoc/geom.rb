@@ -76,11 +76,11 @@ module CrossDoc
     # parses a CSS border string into a BorderSize
     def self.from_s(s)
       side = CrossDoc::BorderSide.new
-      comps = s.split /\s/
+      comps = s.split(/\s/)
       comps.each do |comp|
         if comp =~ /px$/
           side.width = comp.gsub('px', '').to_f
-        elsif comp =~ /^#[\d\w]+$/
+        elsif comp =~ /^#[\d[a-z][A-Z]]+$/
           side.color = comp
         elsif @possible_styles.index comp
           side.style = comp
