@@ -29,21 +29,7 @@ module CrossDoc
             elsif attrs.has_key? (s=field.to_s.camelize(:lower))
               value = attrs.delete s
               self.instance_variable_set "@#{field}", value
-            else
-              self.instance_variable_set "@#{field}", nil
             end
-          end
-        end
-
-        if self.class.object_field_names
-          self.class.object_field_names.each do |field|
-            self.instance_variable_set "@#{field}", nil
-          end
-        end
-
-        if self.class.array_field_names
-          self.class.array_field_names.each do |field|
-            self.instance_variable_set "@#{field}", nil
           end
         end
 
