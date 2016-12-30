@@ -342,6 +342,8 @@ module CrossDoc
           text = node.children.map{|n| n.text}.join(' ')
           compute_compound_font node
           ctx.render_node_text text, node
+        elsif node.input_type == 'text' && node.input_value&.length > 0
+          ctx.render_node_text node.input_value, node
         elsif node.text
           ctx.render_node_text node.text, node
         end

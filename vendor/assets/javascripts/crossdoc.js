@@ -91,9 +91,11 @@
         b = parseBorderSide(style.borderRight)
         if (b)
             border.right = b
+        console.log("borderBottom: " + style.borderBottom)
         b = parseBorderSide(style.borderBottom)
         if (b)
             border.bottom = b
+        console.log("border.bottom: " + JSON.stringify(border.bottom) )
         b = parseBorderSide(style.borderLeft)
         if (b)
             border.left = b
@@ -113,7 +115,7 @@
 
     // Adds general style-related attributes to the object
     function parseStyle(node, obj, style) {
-        if (style.borderWidth.length > 0 && parseFloat(style.borderWidth.replace('px','')) > 0) {
+        if (style.borderWidth.length > 0 && parseFloat(style.borderWidth.replace(/px\s*/g,'')) > 0) {
             obj.border = parseBorder(style)
         }
 
@@ -122,7 +124,7 @@
             obj.background = background
         }
 
-        padding = {
+        var padding = {
             top: parsePxString(style.paddingTop),
             right: parsePxString(style.paddingRight),
             bottom: parsePxString(style.paddingBottom),
