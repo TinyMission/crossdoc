@@ -165,6 +165,10 @@
 
         parseStyle(node, obj, style)
 
+        // don't bother parsing display: none elements
+        if (style.display === 'none')
+            return null
+
         // we only need box size for non-inline elements
         if (style.display != 'inline') {
             obj.box = {
@@ -209,7 +213,7 @@
         }
 
         // parse text styles
-        if (hasText)
+        if (hasText || obj.inputValue)
             parseTextStyle(node, obj, style)
 
         // flatten single text nodes
