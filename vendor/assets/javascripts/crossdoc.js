@@ -282,7 +282,7 @@
 
     tagParsers.INPUT = function(doc, node, obj, style) {
         obj.inputType = node.getAttribute('type')
-        obj.inputValue = node.getAttribute('value')
+        obj.inputValue = node.value
     }
 
     tagParsers.UL = function(doc, node, obj, style) {
