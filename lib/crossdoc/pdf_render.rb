@@ -18,6 +18,8 @@ module CrossDoc
       @ancestors = [page]
       @show_overlays = false
       @guide_color = '00ffff'
+      @list_style = nil
+      @list_count = 0
     end
 
     attr_reader :pdf, :doc, :page, :parent
@@ -99,6 +101,38 @@ module CrossDoc
       end
     end
 
+    def render_node_decorations(node)
+      # keep track of the list style so that we can render item decorations when they come around
+      if node.list_style
+        @list_style = node.list_style.split(' ').first
+        @list_style = nil if @list_style == 'none'
+        @list_count = 0
+      end
+
+      # list item
+      if node.tag&.downcase == 'li' && @list_style
+        case @list_style
+          when 'disc'
+            r = node.font.size/4.0
+            pos = [-4*r, node.box.height/2.0]
+            @pdf.fill_color = node.font.color_no_hash
+            @pdf.circle pos, r
+            @pdf.fill
+          when 'decimal'
+            @list_count += 1
+            s = node.font.size
+            @pdf.font_size s
+            color = node.font.color_no_hash
+            pos = [-2.5*s, node.box.height-0.5*s]
+            @pdf.bounding_box(pos, width: 2*s) do
+              @pdf.text "#{@list_count}.", color: color, align: :right, leading: 0
+            end
+          else
+            puts "!! don't know how to render list style '#{@list_style}'"
+        end
+      end
+    end
+
     def render_node_image(image, node)
       if image.is_svg
         STDOUT.flush
@@ -146,7 +180,6 @@ module CrossDoc
         @pdf.text text, color: color, align: align, leading: leading, style: style
       end
     end
-
 
     def render_horizontal_guides(ys)
       @pdf.line_width = 0.2
@@ -312,6 +345,9 @@ module CrossDoc
         elsif node.text
           ctx.render_node_text node.text, node
         end
+
+        # draw the decorations
+        ctx.render_node_decorations node
 
         # draw the border
         ctx.render_node_border node
