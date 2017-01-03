@@ -91,11 +91,9 @@
         b = parseBorderSide(style.borderRight)
         if (b)
             border.right = b
-        console.log("borderBottom: " + style.borderBottom)
         b = parseBorderSide(style.borderBottom)
         if (b)
             border.bottom = b
-        console.log("border.bottom: " + JSON.stringify(border.bottom) )
         b = parseBorderSide(style.borderLeft)
         if (b)
             border.left = b
