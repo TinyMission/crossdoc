@@ -287,6 +287,11 @@
         obj.inputValue = node.value
     }
 
+    tagParsers.TEXTAREA = function(doc, node, obj, style) {
+        obj.inputType = 'text'
+        obj.inputValue = node.value
+    }
+
     tagParsers.UL = function(doc, node, obj, style) {
         obj.listStyle = style.listStyle
     }
