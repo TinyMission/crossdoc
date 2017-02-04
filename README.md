@@ -9,7 +9,7 @@ It is the defacto standard implementation of CrossDoc PDF rendering.
 
 Add this line to your application's Gemfile:
 
-    gem 'crossdoc'
+    gem 'crossdoc', github: 'TinyMission/crossdoc'
 
 And then execute:
 
@@ -32,10 +32,14 @@ A basic document is structured like this:
 ```html
 <div class="crossdoc" id="document">
     <div class="page us-letter decorated margin-75" id="page1">
-        <!-- Page Content -->
+        <div class='page-content'>
+            <!-- Page Content -->
+        </div>
     </div>
     <div class="page us-letter decorated margin-75" id="page2">
-        <!-- Page Content -->
+       <div class='page-content'>
+            <!-- Page Content -->
+        </div>
     </div>
 </div>
 ```
