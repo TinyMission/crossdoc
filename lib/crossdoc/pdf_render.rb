@@ -164,7 +164,6 @@ module CrossDoc
         leading = 0.0
       end
       text = process_text_meta text
-      text = text.gsub("\n", ' ')
       pos = if node.padding
               [node.padding.left, node.box.height - node.padding.top - leading*2.0]
             else
@@ -310,6 +309,17 @@ module CrossDoc
 
     private
 
+    # concatenate all child text into a single string, taking into account line breaks
+    def compute_compound_text(node)
+      node.children.map do |n|
+        if n.tag == 'BR'
+          "\n"
+        else
+          n.text
+        end
+      end.join(' ')
+    end
+
     # look at the children and try to compute a single font
     def compute_compound_font(node)
       return if node.font
@@ -339,7 +349,8 @@ module CrossDoc
           end
         end
         if node.children && node.children.length > 0 && all_text_children
-          text = node.children.map{|n| n.text}.join(' ')
+          text = compute_compound_text node
+          puts "Compound text: #{text}"
           compute_compound_font node
           ctx.render_node_text text, node
         elsif node.input_value && node.input_value.length > 0
