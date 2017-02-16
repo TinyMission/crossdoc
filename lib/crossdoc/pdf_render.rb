@@ -175,8 +175,9 @@ module CrossDoc
                 node.box.width + 2
               end
       # height = node.box.height - node.padding.bottom - node.padding.bottom # we dont really need height
+      @pdf.fill_color color # need to reset the fill color every time when using text_box
       @pdf.bounding_box(pos, width: width) do
-        @pdf.text text, color: color, align: align, leading: leading, style: style
+        @pdf.text_box text, color: color, align: align, leading: leading, style: style, inline_format: true
       end
     end
 
@@ -314,6 +315,10 @@ module CrossDoc
       node.children.map do |n|
         if n.tag == 'BR'
           "\n"
+        elsif n.tag == 'EM'
+          "<em>#{n.text}</em>"
+        elsif n.tag == 'STRONG'
+          "<strong>#{n.text}</strong>"
         else
           n.text
         end
@@ -350,7 +355,6 @@ module CrossDoc
         end
         if node.children && node.children.length > 0 && all_text_children
           text = compute_compound_text node
-          puts "Compound text: #{text}"
           compute_compound_font node
           ctx.render_node_text text, node
         elsif node.input_value && node.input_value.length > 0
