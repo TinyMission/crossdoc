@@ -168,12 +168,21 @@
             return null
 
         // we only need box size for non-inline elements
-        if (style.display != 'inline') {
+        var display = style.display
+        var offsetHeight = node.offsetHeight
+        node.childNodes.forEach(function(child) {
+            // inline elements with line breaks are inherently blocks
+            if (child.tagName === 'BR') {
+                display = 'block'
+                offsetHeight = node.offsetHeight * 1.3 // hack to ensure that text actually renders
+            }
+        })
+        if (display != 'inline') {
             obj.box = {
                 x: node.offsetLeft,
                 y: node.offsetTop,
                 width: node.offsetWidth,
-                height: node.offsetHeight
+                height: offsetHeight
             }
             // hack for wrong reporting of table-cell vertical offsets
             if (style.display === 'table-cell')

@@ -354,7 +354,7 @@
                                                         "x": 15,
                                                         "y": 0,
                                                         "width": 137,
-                                                        "height": 172
+                                                        "height": 223.6
                                                     },
                                                     "font": {
                                                         "size": 12,
@@ -667,7 +667,7 @@
                                 "x": 335,
                                 "y": 0,
                                 "width": 167,
-                                "height": 116
+                                "height": 174
                             },
                             "children": [
                                 {
@@ -766,6 +766,75 @@
                                                         "lineHeight": 19.2
                                                     },
                                                     "text": "Item 4"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "tag": "P",
+                                    "box": {
+                                        "x": 15,
+                                        "y": 116,
+                                        "width": 137,
+                                        "height": 38
+                                    },
+                                    "children": [
+                                        {
+                                            "tag": "SPAN",
+                                            "box": {
+                                                "x": 0,
+                                                "y": 2,
+                                                "width": 112,
+                                                "height": 18.2
+                                            },
+                                            "font": {
+                                                "size": 12,
+                                                "weight": "normal",
+                                                "family": "\"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif",
+                                                "decoration": "none",
+                                                "style": "normal",
+                                                "color": "#222222ff",
+                                                "align": "left",
+                                                "transform": "none",
+                                                "lineHeight": 19.2
+                                            },
+                                            "children": [
+                                                {
+                                                    "tag": "TEXT",
+                                                    "text": "Span on it's own line"
+                                                },
+                                                {
+                                                    "tag": "BR"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "SPAN",
+                                            "box": {
+                                                "x": 0,
+                                                "y": 21,
+                                                "width": 112,
+                                                "height": 18.2
+                                            },
+                                            "font": {
+                                                "size": 12,
+                                                "weight": "normal",
+                                                "family": "\"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif",
+                                                "decoration": "none",
+                                                "style": "normal",
+                                                "color": "#222222ff",
+                                                "align": "left",
+                                                "transform": "none",
+                                                "lineHeight": 19.2
+                                            },
+                                            "children": [
+                                                {
+                                                    "tag": "TEXT",
+                                                    "text": "Span on it's own line"
+                                                },
+                                                {
+                                                    "tag": "BR"
                                                 }
                                             ]
                                         }
@@ -1575,7 +1644,7 @@
                                 "x": 167,
                                 "y": 8,
                                 "width": 166,
-                                "height": 161
+                                "height": 209.3
                             },
                             "children": [
                                 {
