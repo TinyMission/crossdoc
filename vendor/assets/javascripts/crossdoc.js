@@ -170,13 +170,14 @@
         // we only need box size for non-inline elements
         var display = style.display
         var offsetHeight = node.offsetHeight
-        node.childNodes.forEach(function(child) {
+        for (var i = 0; i < node.childNodes.length; i++) {
+            var child = node.childNodes[i]
             // inline elements with line breaks are inherently blocks
             if (child.tagName === 'BR') {
                 display = 'block'
                 offsetHeight = node.offsetHeight * 1.3 // hack to ensure that text actually renders
             }
-        })
+        }
         if (display != 'inline') {
             obj.box = {
                 x: node.offsetLeft,
