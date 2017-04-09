@@ -38,7 +38,7 @@
     // parses an arbitrary color string into an 8 character hex color
     function parseColorString(s) {
         function twoChars(s) {
-            if (s.length == 1)
+            if (s.length === 1)
                 return '0' + s
             return s
         }
@@ -46,12 +46,13 @@
             return vals.map(function(val) {return twoChars(parseInt(val).toString(16))})
         }
         s = s.trim()
-        if (s.indexOf('rgba(') == 0) {
-            var comps = s.replace('rgba(', '').replace(')', '').split(', ')
+        var comps
+        if (s.indexOf('rgba(') === 0) {
+            comps = s.replace('rgba(', '').replace(')', '').split(', ')
             return '#' + decToHex(comps.slice(0,3)).join('') + twoChars((parseFloat(comps[3])*255).toString(16))
         }
-        else if (s.indexOf('rgb(')==0) {
-            var comps = s.replace('rgb(', '').replace(')', '').split(', ')
+        else if (s.indexOf('rgb(') === 0) {
+            comps = s.replace('rgb(', '').replace(')', '').split(', ')
             return '#' + decToHex(comps).join('') + 'ff'
         }
         else {
@@ -63,9 +64,9 @@
     function isVisibleColor(color) {
         if (color === 'transparent')
             return false
-        else if (color.length == 7)
+        else if (color.length === 7)
             return true
-        else if (color.length == 9) {
+        else if (color.length === 9) {
             return color.substring(7)!=='00'
         }
         else
@@ -78,7 +79,7 @@
             var comps = side.split(' ')
             var border = {}
             border.width = parsePxString(comps[0])
-            if (border.width == 0)
+            if (border.width === 0)
                 return null
             border.style = comps[1]
             border.color = parseColorString(comps.slice(2, comps.length).join(' '))
@@ -128,7 +129,7 @@
             bottom: parsePxString(style.paddingBottom),
             left: parsePxString(style.paddingLeft)
         }
-        if (padding.top !=0 || padding.right != 0 || padding.left != 0 || padding.bottom != 0) {
+        if (padding.top !==0 || padding.right !== 0 || padding.left !== 0 || padding.bottom !== 0) {
             obj.padding = padding
         }
     }
@@ -142,7 +143,7 @@
             decoration: style.textDecoration,
             style: style.fontStyle,
             color: parseColorString(style.color),
-            align: style.textAlign=='start' ? 'left' : style.textAlign,
+            align: style.textAlign==='start' ? 'left' : style.textAlign,
             transform: style.textTransform
         }
         if (style.lineHeight==='normal')
@@ -153,6 +154,7 @@
 
     // Recursively parses a node and its children
     function parseNode(doc, node) {
+        var i
         var obj = {
             tag: node.tagName
         }
@@ -170,7 +172,7 @@
         // we only need box size for non-inline elements
         var display = style.display
         var offsetHeight = node.offsetHeight
-        for (var i = 0; i < node.childNodes.length; i++) {
+        for (i = 0; i < node.childNodes.length; i++) {
             var child = node.childNodes[i]
             // inline elements with line breaks are inherently blocks
             if (child.tagName === 'BR') {
@@ -178,7 +180,7 @@
                 offsetHeight = node.offsetHeight * 1.3 // hack to ensure that text actually renders
             }
         }
-        if (display != 'inline') {
+        if (display !== 'inline') {
             obj.box = {
                 x: node.offsetLeft,
                 y: node.offsetTop,
@@ -199,7 +201,7 @@
         var childNodes = node.childNodes
         var children = []
         var hasText = false
-        for (var i = 0; i < childNodes.length; i++) {
+        for (i = 0; i < childNodes.length; i++) {
             var childNode = childNodes[i]
             switch (childNode.nodeType) {
             case Node.ELEMENT_NODE:
@@ -225,7 +227,7 @@
             parseTextStyle(node, obj, style)
 
         // flatten single text nodes
-        if (children.length == 1 && children[0].tag=='TEXT') {
+        if (children.length === 1 && children[0].tag==='TEXT') {
             obj.text = children[0].text
         }
         else if (children.length > 0) {
@@ -237,14 +239,15 @@
 
     function parsePage(doc, pageNode) {
         var node = null
-        for (var i in pageNode.childNodes) {
+        var i
+        for (i in pageNode.childNodes) {
             var n = pageNode.childNodes[i]
             if (n.className && n.className.indexOf('page-content') > -1) {
                 node = n
                 break
             }
         }
-        if (node == null)
+        if (node === null)
             throw "Each page must have exactly one child node with class page-content"
         var page = {
             children: []
@@ -260,7 +263,7 @@
 
         // parse the children
         var childNodes = node.childNodes
-        for (var i = 0; i < childNodes.length; i++) {
+        for (i = 0; i < childNodes.length; i++) {
             var childNode = childNodes[i]
             switch (childNode.nodeType) {
             case Node.ELEMENT_NODE:
@@ -339,7 +342,7 @@
             this.images = {}
 
             for (var p=0; p<root.children.length; p++) {
-                if (p == 0) {
+                if (p === 0) {
                     parsePageMeta(this, root.children[p])
                 }
                 var page = parsePage(this, root.children[p])
