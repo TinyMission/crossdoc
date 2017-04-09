@@ -123,9 +123,10 @@ module CrossDoc
             s = node.font.size
             @pdf.font_size s
             color = node.font.color_no_hash
-            pos = [-2.5*s, node.box.height-0.5*s]
+            leading = (node.font.line_height - s)*0.4
+            pos = [-2.5*s, node.box.height-0.5*(s+leading)]
             @pdf.bounding_box(pos, width: 2*s) do
-              @pdf.text "#{@list_count}.", color: color, align: :right, leading: 0
+              @pdf.text "#{@list_count}.", color: color, align: :right, leading: leading
             end
           else
             puts "!! don't know how to render list style '#{@list_style}'"

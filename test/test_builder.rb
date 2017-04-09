@@ -171,6 +171,20 @@ class TestBuilder < TestBase
   def build_markdown_doc
     builder = CrossDoc::Builder.new page_size: 'us-letter', page_orientation: 'portrait', page_margin: '0.5in'
 
+    builder.page do |page|
+      markdown = File.open('test/input/markdown.md') do |file|
+        file.read
+      end
+      page.markdown markdown, {
+          H1: {
+              font: {color: '#224488', size: 30}
+          },
+          P: {
+              font: {line_height: 30}
+          }
+      }
+    end
+
     builder.to_doc
   end
 

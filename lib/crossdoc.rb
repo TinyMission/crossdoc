@@ -7,6 +7,7 @@ module CrossDoc
   require 'crossdoc/pdf_render'
   require 'crossdoc/builder'
   require 'crossdoc/paginator'
+  require 'crossdoc/markdown_builder'
 
   if defined? Rails
     module Rails

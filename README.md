@@ -74,12 +74,29 @@ Once serialized, you can send the document to your server through an AJAX call o
 On the server, the Ruby API lets you take a JSON document representation and render it to a PDF.
 
 ```ruby
-doc = CrossDoc::Document.new JSON.parse(doc_json) # create a document from a JSON string
+doc = CrossDoc::Document.new doc_json # create a document from a JSON string (or Hash)
 renderer = CrossDoc::PdfRenderer.new doc # create a PDF renderer to render the document
 renderer.to_pdf 'path/to/output.pdf' # render the document to a PDF in the filesystem
 ```
 
 The renderer will download all images included in the document and render the contents to a PDF using the [Prawn](http://http://prawnpdf.org/) PDF library.
+
+
+## Pagination
+
+CrossDoc includes an automatic pagination utility that will split a one-page document into multiple pages.
+It recursively traverses the document tree and tries to determine the best place to break the pages.
+
+To use the pagination, create a Paginator then run it on the document. This should be done before rendering the document.
+
+```ruby
+CrossDoc::Paginator.new(options).run doc
+```
+
+_options_ is a hash with the possible optional values:
+
+* _num_levels_ (default 3): the number of document tree levels the paginator will traverse before giving up. Set higher for complex documents and lower if you don't want to split up elements at a certain level (like tables).
+* _max_pages*_ (default 10): the maximum number of pages to create. This only exists to compensate for pagination failures that cause the document to blow up.
 
 
 ### Ruby Builder
@@ -103,6 +120,7 @@ builder.page do |page|
             p.text = "This paragraph is larger"
         end
         layout.node 'p' do |p|
+            p.default_font
             p.border_left '0.5px solid #080' # CSS borer definitions
             p.padding.set_all 4 # set all padding at once
             p.text = "This paragraph is half as wide"
@@ -114,6 +132,41 @@ end
 doc = builder.to_doc
 CrossDoc::PdfRenderer.new(doc).to_pdf 'path/to/output.pdf'
 ```
+
+
+## Markdown
+
+The Ruby Builder is able to parse a (limited subset of) Markdown-formatted text (using the [Kramdown](https://github.com/gettalong/kramdown/) parser) and create the appropriate nodes in the document. Simply call the _markdown_ method on any builder node: 
+
+```ruby
+page.div do |container|
+  container.markdown formatted_text, style
+end
+```
+
+_formatted_text_ is a string containing Markdown-formatted text.
+_style_ is an optional hash that lets you override the default styling for the generated nodes.
+You can override the font attributes, margin, and padding, using the uppercase tag name as the key:
+
+```ruby
+styles = {
+  H2: {
+    font: {
+      size: 23,
+      color: '#222222'
+    },
+    margin: {top: 20},
+    padding: {left: 4, right: 6}
+  }
+}
+```
+
+Currently, only the following constructs are supported by the Markdown parser:
+
+* Headers (levels 1-3)
+* Paragraphs
+* Ordered and unordered lists
+* Inline *em* and **strong** spans 
 
 
 ### Rails Integration

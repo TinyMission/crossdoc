@@ -12,9 +12,13 @@ module CrossDoc
 
     raw_shadow :background
 
+    raw_shadow :list_style
+
     raw_shadow :text
 
     raw_shadow :font
+
+    raw_shadow :tag
 
     attr_accessor :block_orientation, :weight, :min_height, :margin
 
@@ -156,6 +160,10 @@ module CrossDoc
       self.box.height = @min_height + self.padding.top + self.padding.bottom
 
       self.box.height + @margin.top + @margin.bottom
+    end
+
+    def markdown(content, style={})
+      MarkdownBuilder.new(self, style).build content
     end
 
     def to_node
