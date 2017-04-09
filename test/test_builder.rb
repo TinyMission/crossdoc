@@ -1,27 +1,14 @@
-require 'minitest/autorun'
 require 'crossdoc'
+require_relative 'test_base'
 
-
-class TestBuilder < Minitest::Test
+class TestBuilder < TestBase
   def setup
   end
 
   def test_builder
     doc = build_demo_doc
 
-    paginator = CrossDoc::Paginator.new num_levels: 3
-    paginator.run doc
-
-    File.open('test/output/builder.json', 'wt') do |f|
-      f.write JSON.pretty_generate(doc.to_raw)
-    end
-
-    t = Time.now
-    renderer = CrossDoc::PdfRenderer.new doc
-    # renderer.show_overlays = true
-    renderer.to_pdf 'test/output/builder.pdf'
-    dt = Time.now - t
-    puts "Rendered PDF from builder in #{dt} seconds"
+    write_doc doc, 'builder', {paginate: 3}
   end
 
   def build_demo_doc
@@ -170,6 +157,19 @@ class TestBuilder < Minitest::Test
         p.text = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
       end
     end
+
+    builder.to_doc
+  end
+
+
+  def test_markdown_builder
+    doc = build_markdown_doc
+
+    write_doc doc, 'markdown'
+  end
+
+  def build_markdown_doc
+    builder = CrossDoc::Builder.new page_size: 'us-letter', page_orientation: 'portrait', page_margin: '0.5in'
 
     builder.to_doc
   end
