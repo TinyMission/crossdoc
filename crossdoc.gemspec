@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake'
   spec.add_dependency 'prawn'
   spec.add_dependency 'prawn-svg'
-  spec.add_dependency 'activesupport'
+  spec.add_dependency 'activesupport', '~> 4.2'
   spec.add_dependency 'railties'
   spec.add_dependency 'kramdown'
 end
