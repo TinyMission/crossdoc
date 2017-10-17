@@ -16,6 +16,10 @@ class TestBase < Minitest::Test
     t = Time.now
     renderer = CrossDoc::PdfRenderer.new doc
 
+    renderer.register_font_family 'HeaderFont', {
+        normal: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf"
+    }
+
     if options[:show_overlays]
       renderer.show_overlays = true
     end

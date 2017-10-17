@@ -151,13 +151,22 @@ module CrossDoc
 
     def render_node_text(text, node)
       if node.font
-        @pdf.font_size node.font.size
         color = node.font.color_no_hash
         style = node.font.prawn_style
         align = node.font.align.to_sym
-        leading = (node.font.line_height - node.font.size)*0.4
         text = node.font.transform_text(text)
+        family = node.font.family.strip
+        if family.length > 0 && @pdf.font_families[family]
+          @pdf.font family
+          @pdf.font_size node.font.size
+          leading = 0 # I don't know why
+        else
+          @pdf.font 'Helvetica'
+          @pdf.font_size node.font.size
+          leading = (node.font.line_height - node.font.size)*0.4
+        end
       else
+        @pdf.font 'Helvetica'
         @pdf.font_size 12
         color = '000000ff'
         style = :normal
@@ -208,6 +217,7 @@ module CrossDoc
       @show_overlays = false
       @horizontal_guides = []
       @box_guides = []
+      @font_families = {}
     end
 
     attr_reader :doc
@@ -239,6 +249,10 @@ module CrossDoc
       end
     end
 
+    def register_font_family(name, styles)
+      @font_families[name] = styles
+    end
+
     def to_pdf(path)
       download_images
 
@@ -256,6 +270,13 @@ module CrossDoc
 
       page_margin = [0, 0, 0, 0]
       Prawn::Document.generate(path, margin: page_margin) do |pdf|
+
+        # register the fonts
+        @font_families.each do |name, styles|
+          pdf.font_families.update name => styles
+        end
+        puts pdf.font_families.inspect
+
         @doc.pages.each do |page|
           ctx = PdfRenderContext.new pdf, doc, page
           ctx.show_overlays = @show_overlays

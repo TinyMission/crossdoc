@@ -82,6 +82,20 @@ renderer.to_pdf 'path/to/output.pdf' # render the document to a PDF in the files
 The renderer will download all images included in the document and render the contents to a PDF using the [Prawn](http://http://prawnpdf.org/) PDF library.
 
 
+## Custom Fonts
+
+In order to user custom fonts inside the PDF, you must register the font family with the renderer: 
+
+```ruby
+renderer.register_font_family 'FontName', {
+  normal: 'path to normal font',
+  italic: 'path to italic font'
+}
+```
+
+Only TTF fonts are currently supported. 
+
+
 ## Pagination
 
 CrossDoc includes an automatic pagination utility that will split a one-page document into multiple pages.
