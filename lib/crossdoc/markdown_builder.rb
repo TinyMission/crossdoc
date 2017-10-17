@@ -59,7 +59,6 @@ module CrossDoc
 
     def style_node(node)
       node_style = @style[node.tag.to_sym] || {}
-      puts "-- #{node.tag} style: #{node_style.inspect}"
       node.default_font node_style[:font] || {}
 
       unless node_style.has_key? :margin_cache

@@ -118,7 +118,7 @@ module CrossDoc
       assign_fields attrs
     end
 
-    simple_fields %i(color size weight decoration family style line_height align transform)
+    simple_fields %i(color size weight decoration family style line_height letter_spacing align transform)
 
     def color_no_hash
       self.color.gsub('#', '')

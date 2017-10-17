@@ -17,7 +17,18 @@ class TestBase < Minitest::Test
     renderer = CrossDoc::PdfRenderer.new doc
 
     renderer.register_font_family 'HeaderFont', {
-        normal: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf"
+        normal: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf",
+        bold: "#{Dir.pwd}/demo/fonts/Quicksand-Bold.ttf",
+        italic: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf",
+        leading_factor: 0
+    }
+
+    renderer.register_font_family 'BodyFont', {
+        normal: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf",
+        bold: "#{Dir.pwd}/demo/fonts/Quicksand-Bold.ttf",
+        italic: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf",
+        bold_italic: "#{Dir.pwd}/demo/fonts/Quicksand-Bold.ttf",
+        leading_factor: 0.4
     }
 
     if options[:show_overlays]

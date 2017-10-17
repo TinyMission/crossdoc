@@ -101,6 +101,16 @@ module CrossDoc
       end
     end
 
+    DEFAULT_LEADING_FACTOR = 0.4
+
+    def leading_factor(family)
+      if @pdf.font_families[family]
+        @pdf.font_families[family][:leading_factor] || DEFAULT_LEADING_FACTOR
+      else
+        DEFAULT_LEADING_FACTOR
+      end
+    end
+
     def render_node_decorations(node)
       # keep track of the list style so that we can render item decorations when they come around
       if node.list_style
@@ -123,7 +133,7 @@ module CrossDoc
             s = node.font.size
             @pdf.font_size s
             color = node.font.color_no_hash
-            leading = (node.font.line_height - s)*0.4
+            leading = (node.font.line_height - s)*leading_factor(node.font.family)
             pos = [-2.5*s, node.box.height-0.5*(s+leading)]
             @pdf.bounding_box(pos, width: 2*s) do
               @pdf.text "#{@list_count}.", color: color, align: :right, leading: leading
@@ -156,18 +166,19 @@ module CrossDoc
         align = node.font.align.to_sym
         text = node.font.transform_text(text)
         family = node.font.family.strip
-        if family.length > 0 && @pdf.font_families[family]
+        character_spacing = node.font.letter_spacing || 0
+        if family.length > 0 && @pdf.font_families[family] && @pdf.font_families[family][style]
           @pdf.font family
           @pdf.font_size node.font.size
-          leading = 0 # I don't know why
         else
           @pdf.font 'Helvetica'
           @pdf.font_size node.font.size
-          leading = (node.font.line_height - node.font.size)*0.4
         end
+        leading = (node.font.line_height - node.font.size).to_f*leading_factor(family)
       else
         @pdf.font 'Helvetica'
         @pdf.font_size 12
+        character_spacing = 0
         color = '000000ff'
         style = :normal
         align = :left
@@ -175,9 +186,9 @@ module CrossDoc
       end
       text = process_text_meta text
       pos = if node.padding
-              [node.padding.left, node.box.height - node.padding.top - leading*2.0]
+              [node.padding.left, node.box.height - node.padding.top - leading]
             else
-              [0, node.box.height - leading*2.0]
+              [0, node.box.height - leading]
             end
       width = if node.padding
                 node.box.width - node.padding.left - node.padding.right + 2 # +2 hack
@@ -187,7 +198,8 @@ module CrossDoc
       # height = node.box.height - node.padding.bottom - node.padding.bottom # we dont really need height
       @pdf.fill_color color # need to reset the fill color every time when using text_box
       @pdf.bounding_box(pos, width: width) do
-        @pdf.text_box text, color: color, align: align, leading: leading, style: style, inline_format: true
+        @pdf.text_box text, color: color, align: align, leading: leading,
+                      style: style, inline_format: true, final_gap: false, character_spacing: character_spacing
       end
     end
 
@@ -275,7 +287,6 @@ module CrossDoc
         @font_families.each do |name, styles|
           pdf.font_families.update name => styles
         end
-        puts pdf.font_families.inspect
 
         @doc.pages.each do |page|
           ctx = PdfRenderContext.new pdf, doc, page

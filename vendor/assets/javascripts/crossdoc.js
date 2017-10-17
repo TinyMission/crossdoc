@@ -150,6 +150,8 @@
             obj.font.lineHeight = 1.2 * obj.font.size
         else
             obj.font.lineHeight = parsePxString(style.lineHeight)
+        if (style.letterSpacing!=='normal')
+            obj.font.letterSpacing = parsePxString(style.letterSpacing)
     }
 
     // Recursively parses a node and its children

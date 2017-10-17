@@ -18,8 +18,22 @@
     <script src="../vendor/assets/javascripts/crossdoc.js"></script>
 
     <style>
+        @font-face {
+            font-family: HeaderFont;
+            src: url(fonts/Quicksand-Regular.ttf);
+        }
+        @font-face {
+            font-family: BodyFont;
+            src: url(fonts/Quicksand-Regular.ttf);
+        }
+        @font-face {
+            font-family: BodyFont;
+            src: url(fonts/Quicksand-Bold.ttf);
+            font-weight: bold;
+        }
         body {
             background: #f0f0f0;
+            font-family: BodyFont;
         }
         #overlay-toggle {
             position: fixed;
@@ -30,12 +44,9 @@
             margin-bottom: 24px;
             max-height: 792px;
         }
-        @font-face {
-            font-family: HeaderFont;
-            src: url(fonts/Quicksand-Regular.ttf);
-        }
         h1, h2, h3, h4, h5 {
             font-family: HeaderFont;
+            letter-spacing: 1px;
         }
         h1 {
             margin: 0 0 1em 0;
@@ -184,7 +195,7 @@
 
                 <div class="row">
                     <div class="medium-8 columns">
-                        <h4 class="text-center">This is a centered header.</h4>
+                        <h4 class="text-center">This Header Is Centered</h4>
                         <p class="bordered">Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon nulla pork belly cupidatat meatloaf cow. Nulla corned beef sunt ball tip, qui bresaola enim jowl. Capicola short ribs minim salami nulla nostrud pastrami.</p>
                     </div>
                     <div class="medium-4 columns">
