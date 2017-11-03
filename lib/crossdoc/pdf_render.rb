@@ -121,19 +121,31 @@ module CrossDoc
 
       # list item
       if node.tag&.downcase == 'li' && @list_style
+        font = node.font
+        unless font
+          node.children.each do |child|
+            if child.font
+              font = child.font
+              break
+            end
+          end
+        end
+        unless font
+          font = CrossDoc::Font.default
+        end
         case @list_style
           when 'disc'
-            r = node.font.size/4.0
+            r = font.size/4.0
             pos = [-4*r, node.box.height/2.0]
-            @pdf.fill_color = node.font.color_no_hash
+            @pdf.fill_color = font.color_no_hash
             @pdf.circle pos, r
             @pdf.fill
           when 'decimal'
             @list_count += 1
-            s = node.font.size
+            s = font.size
             @pdf.font_size s
-            color = node.font.color_no_hash
-            leading = (node.font.line_height - s)*leading_factor(node.font.family)
+            color = font.color_no_hash
+            leading = (font.line_height - s)*leading_factor(font.family)
             pos = [-2.5*s, node.box.height-0.5*(s+leading)]
             @pdf.bounding_box(pos, width: 2*s) do
               @pdf.text "#{@list_count}.", color: color, align: :right, leading: leading
