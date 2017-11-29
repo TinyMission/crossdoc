@@ -207,12 +207,10 @@ module CrossDoc
               else
                 node.box.width + 2
               end
-      # height = node.box.height - node.padding.bottom - node.padding.bottom # we dont really need height
       @pdf.fill_color color # need to reset the fill color every time when using text_box
-      @pdf.bounding_box(pos, width: width) do
-        @pdf.text_box text, color: color, align: align, leading: leading,
-                      style: style, inline_format: true, final_gap: false, character_spacing: character_spacing
-      end
+      @pdf.text_box text, at: pos, width: width, color: color, align: align, leading: leading,
+                      style: style, inline_format: true, final_gap: false,
+                      character_spacing: character_spacing, overflow: :expand
     end
 
     def render_horizontal_guides(ys)
@@ -385,9 +383,10 @@ module CrossDoc
         return
       end
 
+      height = node.box.height
       pos = [node.box.x, ctx.parent.box.height - node.box.y]
 
-      ctx.pdf.bounding_box pos, width: node.box.width, height: node.box.height do
+      ctx.pdf.bounding_box pos, width: node.box.width, height: height do
         ctx.render_node_background node
 
         all_text_children = true
