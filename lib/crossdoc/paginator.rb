@@ -11,13 +11,13 @@ class CrossDoc::Paginator
   # returns the node in parent.children that spans y
   def find_spanning_node(content_width, parent, y)
     return nil unless parent.children && parent.children.length > 0
-    width_threshold = 4 # how close the width of the matching node needs to be to the content_width
+    width_threshold = 0.75 # how close (fraction) the width of the matching node needs to be to the content_width
     all_above_y = true # keep track of when all nodes have been entirely above y
     parent.children.each do |node|
       # look for a node that is entirely below y, while the rest were all above
       if all_above_y
         if node.box && node.box.y >= y
-          if (content_width-node.box.width)<width_threshold
+          if node.box.width.to_f/content_width > width_threshold
             return node
           else
             all_above_y = false
@@ -26,7 +26,7 @@ class CrossDoc::Paginator
       end
 
       # look for a node that spans y
-      if node.box && node.box.y <= y && node.box.bottom > y && (content_width-node.box.width)<width_threshold
+      if node.box && node.box.y <= y && node.box.bottom > y && node.box.width.to_f/content_width > width_threshold
         return node
       end
     end
