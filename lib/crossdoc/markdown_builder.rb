@@ -126,7 +126,6 @@ module CrossDoc
     def render_element(node, elem)
       type = elem.type
       return if type == :blank
-      puts "rendering #{elem.inspect}"
       case type
         when :root # container
           elem.children.each do |child_elem|

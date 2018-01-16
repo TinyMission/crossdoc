@@ -8,6 +8,7 @@ module CrossDoc
   require 'crossdoc/builder'
   require 'crossdoc/paginator'
   require 'crossdoc/markdown_builder'
+  require 'crossdoc/converter'
 
   if defined? Rails
     module Rails

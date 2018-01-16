@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'crossdoc'
+CrossDoc::Converter.new ARGV
