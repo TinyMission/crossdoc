@@ -24,21 +24,21 @@ module CrossDoc
         },
         H1: {
             font: {
-                size: 24
+                size: 32
             },
-            margin: {bottom: 6}
+            margin: {bottom: 8}
         },
         H2: {
             font: {
-                size: 20
+                size: 26
             },
-            margin: {bottom: 6}
+            margin: {bottom: 8}
         },
         H3: {
             font: {
-                size: 18
+                size: 20
             },
-            margin: {bottom: 6}
+            margin: {bottom: 8}
         },
         P: {
             font: {

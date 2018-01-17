@@ -289,7 +289,9 @@ module CrossDoc
     end
 
     def add_image(src, hash)
-      @images[hash] = CrossDoc::ImageRef.new src: src, hash: hash
+      image_ref = CrossDoc::ImageRef.new src: src, hash: hash
+      @images[hash] = image_ref
+      image_ref
     end
 
     # clears the pages, header, and footer so the builder can be reused

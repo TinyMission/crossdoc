@@ -35,6 +35,21 @@ module CrossDoc
       end
     end
 
+    # returns a hash (with :width and :height keys) giving the natural size of the images
+    def dimensions
+      if !@is_svg && !@src.index('data:')
+        ident = `identify #{@src}`
+        match = /\s\d+x\d+\s/.match(ident)
+        unless match.size > 0
+          raise "Error getting identity information for #{@src}: #{ident}"
+        end
+        dims = match[0].strip.split('x').map(&:to_f)
+        {width: dims[0], height: dims[1]}
+      else
+        raise "Need to implement size calculation for #{@src}"
+      end
+    end
+
     def dispose
       if @io
         @io.close

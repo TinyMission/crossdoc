@@ -42,10 +42,31 @@ module CrossDoc
       end
     end
 
+    def render_image(parent, elem)
+      parent.node 'IMG' do |img|
+        src = elem.attr['src']
+        image_ref = img.image_src src
+        dims = image_ref.dimensions
+        height = if dims[:width] > parent.box.width
+                   dims[:height].to_f / dims[:width] * parent.box.width
+                 else
+                   dims[:height]
+                 end.ceil
+        img.push_min_height height
+      end
+    end
+
     def render_paragraph(parent, elem)
+      children = elem.children
+      return if elem.children.empty?
+      if children.first.type == :img
+        render_image parent, children.shift
+      elsif children.last.type == :img
+        render_image parent, children.pop
+      end
       parent.node 'P' do |p|
         @styler.style_node p
-        p.text = combine_text elem.children
+        p.text = combine_text children
       end
     end
 
