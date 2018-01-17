@@ -9,6 +9,24 @@ def value_to_raw(value)
   end
 end
 
+class Hash
+
+  # recursively changes all keys to symbols
+  def sanitize_keys
+    self.keys.each do |key|
+      unless key.is_a? Symbol
+        value = self.delete key
+        if value.is_a? Hash
+          value = value.sanitize_keys
+        end
+        self[key.to_sym] = value
+      end
+    end
+    self
+  end
+
+end
+
 module CrossDoc
 
   # convenience methods for storing data in typed fields
