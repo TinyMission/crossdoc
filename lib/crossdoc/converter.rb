@@ -155,6 +155,14 @@ module CrossDoc
       Document.from_file path
     end
 
+    def create_renderer(doc)
+      renderer = CrossDoc::PdfRenderer.new doc
+
+      @styler.register_fonts renderer
+
+      renderer
+    end
+
     def write_json(doc, path)
       log "Writing JSON document to #{path}"
       File.open(path, 'wt') do |f|
@@ -164,7 +172,7 @@ module CrossDoc
 
     def write_pdf(doc, path)
       log "Writing PDF document to #{path}"
-      renderer = CrossDoc::PdfRenderer.new  doc
+      renderer = create_renderer doc
       renderer.to_pdf path
     end
 

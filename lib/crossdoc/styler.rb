@@ -62,9 +62,29 @@ module CrossDoc
 
     def initialize(styles)
       @styles = DEFAULT_STYLE.deep_merge styles.sanitize_keys
+      @fonts = @styles[:FONTS] || {}
+
+      # apply the default font
+      default_font_name = nil
+      @fonts.each do |name, data|
+        if data[:default]
+          default_font_name = name.to_s
+          break
+        end
+      end
+      if default_font_name
+        @styles.each do |key, data|
+          if data[:font]
+            data[:font][:family] ||= default_font_name
+          else # no font specified
+            data[:font] = {family: default_font_name}
+          end
+        end
+      end
     end
 
 
+    # styles a builder node with the given tag (uses the node's tag by default)
     def style_node(node, tag=nil)
       tag = (tag ||node.tag).to_s.upcase.to_sym
       node_style = @styles[tag] || {}
@@ -82,6 +102,14 @@ module CrossDoc
         node_style[:padding_cache] = Margin.new raw_padding
       end
       node.padding = node_style[:padding_cache]
+    end
+
+
+    # registers the fonts defined in the FONTS tag of the styles hash with the given renderer
+    def register_fonts(renderer)
+      @fonts.each do |name, data|
+        renderer.register_font_family name.to_s, data
+      end
     end
 
   end

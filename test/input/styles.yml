@@ -1,3 +1,18 @@
+FONTS:
+  BodyFont:
+    normal: "demo/fonts/Quicksand-Regular.ttf"
+    bold: "demo/fonts/Quicksand-Bold.ttf"
+    italic: "demo/fonts/Quicksand-Regular.ttf"
+    leading_factor: 0
+    default: true
 H1:
   font:
+    family: BodyFont
+    color: '#376177'
     align: center
+H2:
+  font:
+    color: '#376177'
+H3:
+  font:
+    color: '#376177'
