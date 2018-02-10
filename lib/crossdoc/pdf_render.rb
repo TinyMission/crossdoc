@@ -197,6 +197,10 @@ module CrossDoc
         leading = 0.0
       end
       text = process_text_meta text
+
+      # remove bad whitespace
+      text = text.gsub /\s+/, ' '
+
       pos = if node.padding
               [node.padding.left, node.box.height - node.padding.top - leading]
             else
