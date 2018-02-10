@@ -29,6 +29,8 @@ module CrossDoc
         @is_svg = !@src.index('.svg').nil?
         if @src.index('file://')==0
           @io = open(@src.gsub('file://', ''))
+        elsif @src.index('./')==0
+          @io = open(@src.gsub('./', Dir.pwd + '/'))
         else
           @io = open(@src)
         end

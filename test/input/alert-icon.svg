@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.2 (15855) - http://www.bohemiancoding.com/sketch -->
+    <title>alert-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="alert-icon" sketch:type="MSLayerGroup">
+            <path d="M3.71742662,63.062568 C6.14090794,57.6939828 23.2396397,29.0888222 33.0298967,12.1147033 C36.8955075,5.41259776 43.5312496,6.6264649 46.689941,12.1147034 C54.9184073,26.4116953 67.8836475,48.7779065 75.5400425,62.0854503 C78.8265319,67.7976818 74.4536167,73.0000011 70.9389683,73.0000011 C50.0895217,73.0000011 29.7571615,73 8.90771484,73 C5.2718099,73 1.29394531,68.4311532 3.71742662,63.062568 Z" id="Triangle-1" stroke="#D01819" stroke-width="2" sketch:type="MSShapeGroup"></path>
+            <path d="M35.7738302,23 C33.7710763,26.2374078 36.2187631,44.9062506 36.8188104,49 C37.4188577,53.0937494 42.3880022,53.3413697 43.0886918,49 C43.9164154,45.2091483 46.2550338,26.2708493 44.1336721,23 C42.9410329,18.7956582 36.8373115,19.4448194 35.7738302,23 Z" id="Path-65" fill="#D01819" sketch:type="MSShapeGroup"></path>
+            <circle id="Oval-5" fill="#D01819" sketch:type="MSShapeGroup" cx="40" cy="61" r="5"></circle>
+        </g>
+    </g>
+</svg>

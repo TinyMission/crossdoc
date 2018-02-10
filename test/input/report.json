@@ -7463,11 +7463,11 @@
   ],
   "images": {
     "1037691914055830163": {
-      "src": "/Users/andy/Clypboard/clypboard-server/public/clyps/plunketts/header-logo.png",
+      "src": "./test/input/logo.jpg",
       "hash": "1037691914055830163"
     },
     "3786326712675087387": {
-      "src": "/Users/andy/Clypboard/clypboard-server/public/images/alert-icon.svg",
+      "src": "./test/input/alert-icon.svg",
       "hash": "3786326712675087387"
     }
   },
