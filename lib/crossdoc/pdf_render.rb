@@ -201,6 +201,9 @@ module CrossDoc
       # remove bad whitespace
       text = text.gsub /\s+/, ' '
 
+      # add line breaks for BR tags
+      text = text.gsub /<br>/, "\n"
+
       pos = if node.padding
               [node.padding.left, node.box.height - node.padding.top - leading]
             else
@@ -361,7 +364,7 @@ module CrossDoc
     def compute_compound_text(node)
       node.children.map do |n|
         if n.tag == 'BR'
-          "\n"
+          '<br>'
         elsif n.tag == 'EM'
           "<em>#{n.text}</em>"
         elsif n.tag == 'STRONG'
