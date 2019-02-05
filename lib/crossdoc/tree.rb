@@ -103,8 +103,8 @@ module CrossDoc
 
     simple_fields %i(page_orientation)
 
-    object_field :page_width, Fixnum
-    object_field :page_height, Fixnum
+    object_field :page_width, Integer
+    object_field :page_height, Integer
     object_field :page_margin, Margin
 
     array_field :pages, Page
