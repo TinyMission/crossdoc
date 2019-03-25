@@ -61,7 +61,7 @@ class CrossDoc::Paginator
 
       # adjust the before_parent height to match the reduced number of children
       unless before_parent == new_page
-        if before_parent.children.last
+        if before_parent.children.last&.box
           before_parent.box.height = before_parent.children.last.box.bottom
         else
           before_parent.box.height = 0
