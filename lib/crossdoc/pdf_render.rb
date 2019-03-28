@@ -309,7 +309,7 @@ module CrossDoc
           ctx = PdfRenderContext.new pdf, doc, page
           ctx.show_overlays = @show_overlays
           unless page == first_page
-            pdf.start_new_page margin: page_margin
+            pdf.start_new_page margin: page_margin, layout: @doc.page_orientation
           end
           if @show_overlays
             pdf.stroke_axis
