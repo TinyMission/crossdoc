@@ -298,7 +298,8 @@ module CrossDoc
       first_page = @doc.pages.first
 
       page_margin = [0, 0, 0, 0]
-      Prawn::Document.generate(path, margin: page_margin) do |pdf|
+      page_layout = (@doc.page_orientation || 'portrait').to_sym
+      Prawn::Document.generate(path, margin: page_margin, page_layout: page_layout) do |pdf|
 
         # register the fonts
         @font_families.each do |name, styles|
@@ -309,7 +310,7 @@ module CrossDoc
           ctx = PdfRenderContext.new pdf, doc, page
           ctx.show_overlays = @show_overlays
           unless page == first_page
-            pdf.start_new_page margin: page_margin, layout: @doc.page_orientation
+            pdf.start_new_page margin: page_margin, layout: page_layout
           end
           if @show_overlays
             pdf.stroke_axis
