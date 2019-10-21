@@ -182,7 +182,7 @@
                 offsetHeight = node.offsetHeight * 1.3 // hack to ensure that text actually renders
             }
         }
-        if (display !== 'inline') {
+        if (display !== 'inline' || node.tagName === 'IMG') {
             obj.box = {
                 x: node.offsetLeft,
                 y: node.offsetTop,
