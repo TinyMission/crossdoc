@@ -25,6 +25,10 @@ module CrossDoc
         @is_svg = false
         raw = Base64.decode64 @src.gsub('data:image/png;base64,', '')
         @io = StringIO.new raw
+      elsif @src.index('data:image/jpeg;') == 0
+        @is_svg = false
+        raw = Base64.decode64 @src.gsub('data:image/jpeg;base64,', '')
+        @io = StringIO.new raw
       else
         @is_svg = !@src.index('.svg').nil?
         if @src.index('file://')==0
