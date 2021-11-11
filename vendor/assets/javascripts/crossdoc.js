@@ -49,7 +49,7 @@
         var comps
         if (s.indexOf('rgba(') === 0) {
             comps = s.replace('rgba(', '').replace(')', '').split(', ')
-            return '#' + decToHex(comps.slice(0,3)).join('') + twoChars((parseFloat(comps[3])*255).toString(16))
+            return '#' + decToHex(comps.slice(0,3)).join('') + (parseFloat(comps[3]) * 255 | 1 << 8).toString(16).slice(1)
         }
         else if (s.indexOf('rgb(') === 0) {
             comps = s.replace('rgb(', '').replace(')', '').split(', ')
