@@ -35,8 +35,8 @@ module CrossDoc
           @io = open(@src.gsub('file://', ''))
         elsif @src.index('./')==0
           @io = open(@src.gsub('./', Dir.pwd + '/'))
-        else
-          @io = open(@src)
+        else # assume it's a URL
+          @io = URI.open(@src)
         end
       end
     end

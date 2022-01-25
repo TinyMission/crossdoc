@@ -1,11 +1,11 @@
 {
     "images": {
         "c908c1bb": {
-            "src": "file:///Volumes/Data/Projects/crossdoc/demo/img/TinyMissionBanner.png",
+            "src": "./demo/img/TinyMissionBanner.png",
             "hash": "c908c1bb"
         },
         "8dce576b": {
-            "src": "https://placehold.it/400x300.png&text=Photo",
+            "src": "https://via.placeholder.com/400x300.png&text=Photo",
             "hash": "8dce576b"
         },
         "d7a28ba0": {
@@ -57,7 +57,7 @@
                                                 "width": 179,
                                                 "height": 76
                                             },
-                                            "src": "file:///Volumes/Data/Projects/crossdoc/demo/img/TinyMissionBanner.png",
+                                            "src": "demo/img/TinyMissionBanner.png",
                                             "hash": "c908c1bb"
                                         }
                                     ]
@@ -276,7 +276,7 @@
                                         "width": 137,
                                         "height": 103
                                     },
-                                    "src": "https://placehold.it/400x300.png&text=Photo",
+                                    "src": "https://via.placeholder.com/400x300.png&text=Photo",
                                     "hash": "8dce576b"
                                 }
                             ]

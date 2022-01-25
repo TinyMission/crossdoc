@@ -14,7 +14,8 @@ pkg
 rdoc
 spec/reports
 test/data/report.json
-test/output
+test/output/*.pdf
+test/output/*.json
 test/tmp
 test/version_tmp
 tmp
