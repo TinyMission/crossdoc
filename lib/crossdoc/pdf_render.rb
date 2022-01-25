@@ -144,7 +144,7 @@ module CrossDoc
         end
         case @list_style
           when 'disc'
-            r = font.size/4.0
+            r = font.size/5.0
             pos = [-4*r, node.box.height/2.0]
             @pdf.fill_color = font.color_no_hash
             @pdf.circle pos, r
