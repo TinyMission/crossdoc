@@ -111,11 +111,20 @@ module CrossDoc
       end
     end
 
+    # these list styles will be rendered so they should be preferentially parsed
+    RENDERED_LIST_STYLES = %w[disc decimal]
+
     def render_node_decorations(node)
       # keep track of the list style so that we can render item decorations when they come around
+      # list styles will often look like: "outside+none+disc"
       if node.list_style
-        @list_style = node.list_style.split(' ').first
-        @list_style = nil if @list_style == 'none'
+        @list_style = nil
+        RENDERED_LIST_STYLES.each do |style|
+          if node.list_style.index(style)
+            @list_style = style
+            break
+          end
+        end
         @list_count = 0
       end
 

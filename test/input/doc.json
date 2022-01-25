@@ -445,7 +445,7 @@
                                                         "width": 119,
                                                         "height": 95
                                                     },
-                                                    "listStyle": "disc outside none",
+                                                    "listStyle": "outside+none+disc",
                                                     "children": [
                                                         {
                                                             "tag": "LI",
