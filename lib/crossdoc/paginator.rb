@@ -82,13 +82,15 @@ class CrossDoc::Paginator
       #   dy -= parent.padding.top
       # end
       parent.children.each do |c|
+        next if c.box.nil?
         c.box.y -= dy
         if c != child
           c.box.y -=  height_diff
         end
       end
       unless parent == page
-        new_height = parent.children.last.box.bottom
+        last_block_child = parent.children.reverse.find { |c| c.box.present? }
+        new_height = last_block_child&.box&.bottom || 0
         height_diff = parent.box.height - new_height
         parent.box.height = new_height
       end
