@@ -409,7 +409,31 @@
                                                         },
                                                         {
                                                             "tag": "TEXT",
-                                                            "text": "ham qui sint exercitation eiusmod commodo,"
+                                                            "text": "ham qui"
+                                                        },
+                                                        {
+                                                            "tag": "STRONG",
+                                                            "children": [
+                                                                {
+                                                                    "tag": "EM",
+                                                                    "font": {
+                                                                        "size": 12,
+                                                                        "weight": "700",
+                                                                        "family": "BodyFont",
+                                                                        "decoration": "none solid rgb(34, 34, 34)",
+                                                                        "style": "italic",
+                                                                        "color": "#222222ff",
+                                                                        "align": "left",
+                                                                        "transform": "none",
+                                                                        "lineHeight": 19.2
+                                                                    },
+                                                                    "text": "sint exercitation eiusmod commodo"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "tag": "TEXT",
+                                                            "text": ","
                                                         },
                                                         {
                                                             "tag": "BR"
