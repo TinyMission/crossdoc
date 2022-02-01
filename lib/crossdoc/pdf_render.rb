@@ -376,11 +376,11 @@ module CrossDoc
         if n.tag == 'BR'
           '<br>'
         elsif n.tag == 'EM'
-          text = defined?(n.text) ? n.text : compute_compound_text(n)
-          "<em>#{text || ""}</em>"
+          text = n.text || compute_compound_text(n) || ""
+          "<em>#{text}</em>"
         elsif n.tag == 'STRONG'
-          text = defined?(n.text) ? n.text : compute_compound_text(n)
-          "<strong>#{text || ""}</strong>"
+          text = n.text || compute_compound_text(n) || ""
+          "<strong>#{text}</strong>"
         else
           n.text
         end
