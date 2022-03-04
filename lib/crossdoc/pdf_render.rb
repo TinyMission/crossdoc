@@ -155,7 +155,7 @@ module CrossDoc
             @pdf.font_size s
             color = font.color_no_hash
             leading = (font.line_height - s)*leading_factor(font.family)
-            pos = [-2.5*s, node.box.height-0.5*(s+leading)]
+            pos = [-2.5*s, node.box.height - leading]
             @pdf.bounding_box(pos, width: 2*s) do
               @pdf.text "#{@list_count}.", color: color, align: :right, leading: leading
             end
