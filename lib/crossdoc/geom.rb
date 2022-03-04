@@ -50,6 +50,10 @@ module CrossDoc
       Box.new x: self.x, y: self.y, width: self.width, height: self.height
     end
 
+    def to_s
+      "x: #{self.x}, y: #{self.y}, w: #{self.width}, h: #{self.height}"
+    end
+
   end
 
 
@@ -185,6 +189,17 @@ module CrossDoc
 
     def css_array
       [self.top, self.right, self.bottom, self.left]
+    end
+
+    def to_s
+      if [self.top, self.left, self.right, self.bottom].uniq.length == 1
+        "all: #{self.top}"
+      elsif self.top == self.bottom && self.left == self.right
+        "vert: #{self.top}, horiz: #{self.left}"
+      else
+        "top: #{self.top}, left: #{self.left}, right: #{self.right}, bottom: #{self.bottom}"
+      end
+
     end
   end
 

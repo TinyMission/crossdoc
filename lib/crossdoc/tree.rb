@@ -87,6 +87,18 @@ module CrossDoc
 
     array_field :children, Node
 
+    def to_s
+      downcase_tag = @tag.to_s.downcase
+      if @text.present?
+        "<#{downcase_tag}>#{@text.to_s}</#{downcase_tag}>"
+      elsif @children.present?
+        child_noun = @children.length > 1 ? "children" : "child"
+        "<#{downcase_tag}>...</#{downcase_tag}> (#{@children.length} #{child_noun})"
+      else
+        "<#{downcase_tag}>"
+      end
+    end
+
   end
 
 
