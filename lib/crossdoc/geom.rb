@@ -158,7 +158,7 @@ module CrossDoc
       end
     end
 
-    def self.default(modifiers)
+    def self.default(modifiers={})
       args = {family: 'helvetica,sans-serif', color: '#000000ff', size: 12, weight: 'normal', align: :left, line_height: 16}.merge modifiers
       # guess as a good line height
       unless modifiers.has_key? :line_height
