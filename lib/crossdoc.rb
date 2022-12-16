@@ -9,6 +9,7 @@ module CrossDoc
   require 'crossdoc/paginator'
   require 'crossdoc/markdown_builder'
   require 'crossdoc/converter'
+  require 'crossdoc/prawn_monkey_patches'
 
   if defined? Rails
     module Rails
