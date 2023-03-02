@@ -396,7 +396,7 @@
                                                             "tag": "STRONG",
                                                             "font": {
                                                                 "size": 12,
-                                                                "weight": "700",
+                                                                "weight": "bold",
                                                                 "family": "BodyFont",
                                                                 "decoration": "none solid rgb(34, 34, 34)",
                                                                 "style": "normal",
@@ -418,7 +418,7 @@
                                                                     "tag": "EM",
                                                                     "font": {
                                                                         "size": 12,
-                                                                        "weight": "700",
+                                                                        "weight": "bold",
                                                                         "family": "BodyFont",
                                                                         "decoration": "none solid rgb(34, 34, 34)",
                                                                         "style": "italic",
@@ -547,7 +547,7 @@
                                                                     "tag": "STRONG",
                                                                     "font": {
                                                                         "size": 12,
-                                                                        "weight": "700",
+                                                                        "weight": "bold",
                                                                         "family": "BodyFont",
                                                                         "decoration": "none solid rgb(34, 34, 34)",
                                                                         "style": "normal",
@@ -794,7 +794,7 @@
                                                     "tag": "STRONG",
                                                     "font": {
                                                         "size": 12,
-                                                        "weight": "700",
+                                                        "weight": "bold",
                                                         "family": "BodyFont",
                                                         "decoration": "none solid rgb(34, 34, 34)",
                                                         "style": "normal",
@@ -973,7 +973,7 @@
                                                     "tag": "STRONG",
                                                     "font": {
                                                         "size": 14,
-                                                        "weight": "700",
+                                                        "weight": "bold",
                                                         "family": "BodyFont",
                                                         "decoration": "none solid rgb(34, 34, 34)",
                                                         "style": "normal",
@@ -1054,7 +1054,7 @@
                                                     "tag": "STRONG",
                                                     "font": {
                                                         "size": 14,
-                                                        "weight": "700",
+                                                        "weight": "bold",
                                                         "family": "BodyFont",
                                                         "decoration": "none solid rgb(34, 34, 34)",
                                                         "style": "normal",
@@ -1135,7 +1135,7 @@
                                                     "tag": "STRONG",
                                                     "font": {
                                                         "size": 14,
-                                                        "weight": "700",
+                                                        "weight": "bold",
                                                         "family": "BodyFont",
                                                         "decoration": "none solid rgb(34, 34, 34)",
                                                         "style": "normal",
@@ -2054,7 +2054,7 @@
                                             },
                                             "font": {
                                                 "size": 12,
-                                                "weight": "700",
+                                                "weight": "bold",
                                                 "family": "BodyFont",
                                                 "decoration": "none solid rgb(255, 255, 255)",
                                                 "style": "normal",
@@ -2088,7 +2088,7 @@
                                             },
                                             "font": {
                                                 "size": 12,
-                                                "weight": "700",
+                                                "weight": "bold",
                                                 "family": "BodyFont",
                                                 "decoration": "none solid rgb(255, 255, 255)",
                                                 "style": "normal",
@@ -2122,7 +2122,7 @@
                                             },
                                             "font": {
                                                 "size": 12,
-                                                "weight": "700",
+                                                "weight": "bold",
                                                 "family": "BodyFont",
                                                 "decoration": "none solid rgb(255, 255, 255)",
                                                 "style": "normal",
@@ -2221,7 +2221,7 @@
                                             },
                                             "font": {
                                                 "size": 14,
-                                                "weight": "700",
+                                                "weight": "bold",
                                                 "family": "BodyFont",
                                                 "decoration": "none solid rgb(34, 34, 34)",
                                                 "style": "normal",
@@ -2313,7 +2313,7 @@
                                             },
                                             "font": {
                                                 "size": 14,
-                                                "weight": "700",
+                                                "weight": "bold",
                                                 "family": "BodyFont",
                                                 "decoration": "none solid rgb(34, 34, 34)",
                                                 "style": "normal",
@@ -2412,7 +2412,7 @@
                                             },
                                             "font": {
                                                 "size": 14,
-                                                "weight": "700",
+                                                "weight": "bold",
                                                 "family": "BodyFont",
                                                 "decoration": "none solid rgb(34, 34, 34)",
                                                 "style": "normal",

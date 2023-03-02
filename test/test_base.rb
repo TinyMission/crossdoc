@@ -20,6 +20,7 @@ class TestBase < Minitest::Test
         normal: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf",
         bold: "#{Dir.pwd}/demo/fonts/Quicksand-Bold.ttf",
         italic: "#{Dir.pwd}/demo/fonts/Quicksand-Regular.ttf",
+        bold_italic: "#{Dir.pwd}/demo/fonts/Quicksand-Bold.ttf",
         leading_factor: 0
     }
 

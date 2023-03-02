@@ -10,7 +10,7 @@ Bacon *ipsum dolor* sit **amet nulla** ham qui sint exercitation eiusmod commodo
 
 ## Images
 
-![Tiny Mission Banner](demo/img/TinyMissionBanner.png)
+![Tiny Mission Banner](./demo/img/TinyMissionBanner.png)
 {: height="200px" width="400px"}
 This is the Tiny Mission banner.
 

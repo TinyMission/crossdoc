@@ -1,8 +1,9 @@
 FONTS:
   BodyFont:
     normal: "demo/fonts/Quicksand-Regular.ttf"
-    bold: "demo/fonts/Quicksand-Bold.ttf"
+    bold: "demo/fonts/Quicksand-Regular.ttf"
     italic: "demo/fonts/Quicksand-Regular.ttf"
+    bold_italic: "demo/fonts/Quicksand-Regular.ttf"
     leading_factor: 0
     default: true
 H1:
