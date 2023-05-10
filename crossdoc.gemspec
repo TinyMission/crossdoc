@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport', '>= 4.2.0'
   spec.add_dependency 'railties'
   spec.add_dependency 'kramdown'
-  spec.add_dependency 'open_uri_redirections'
 
-  spec.required_ruby_version = '>= 2.4.0'
+  spec.required_ruby_version = '>= 3.0.0'
 end

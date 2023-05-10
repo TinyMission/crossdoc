@@ -1,7 +1,6 @@
 require 'open-uri'
 require 'base64'
 require 'tempfile'
-require 'open_uri_redirections'
 
 module CrossDoc
 
@@ -37,7 +36,7 @@ module CrossDoc
         elsif @src.index('./')==0
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
-          @io = URI.open(@src, allow_redirections: :all)
+          @io = URI.open(@src)
         end
       end
     end
