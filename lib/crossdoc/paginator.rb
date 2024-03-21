@@ -88,6 +88,7 @@ class CrossDoc::Paginator
         if c != child
           c.box.y -=  height_diff
         end
+        c.box.y = [c.box.y, 0].max
       end
       unless parent == page
         last_block_child = parent.children.reverse.find { |c| c.box.present? }
