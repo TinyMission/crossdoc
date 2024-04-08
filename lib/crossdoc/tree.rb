@@ -36,7 +36,13 @@ module CrossDoc
         elsif @src.index('./')==0
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
-          @io = URI.open(@src)
+          @io = URI.open @src
+          if @src.include?('logo_images') || @io.size < 1.megabyte
+            return
+          end
+          img = MiniMagick::Image.open @src
+          img.geometry 1024 # double the max page width
+          @io = URI.open img.path
         end
       end
     end
