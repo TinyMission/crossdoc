@@ -16,7 +16,7 @@ module CrossDoc
 
     attr_reader :io, :is_svg
 
-    def download
+    def download(num_images)
       if @src.index('data:image/svg+xml;') == 0
         @is_svg = true
         raw = Base64.decode64 @src.gsub('data:image/svg+xml;base64,', '')
@@ -37,14 +37,22 @@ module CrossDoc
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
           @io = URI.open @src
-          if @src.include?('logo_images') || @io.size < 1.megabyte
+          if @src.include?('logo_images') || num_images < 6
             return
           end
           img = MiniMagick::Image.open @src
-          img.geometry 1024 # double the max page width
+          img.geometry image_width
           @io = URI.open img.path
         end
       end
+    end
+
+    # decrease width as image file size increases to decrease final pdf size
+    # starts from 2 x page width (1024px)
+    # 1MB -> 963px, 6MB -> 658px
+    def image_width
+      scale_amount = (@io.size/1024/16)
+      1024 - scale_amount
     end
 
     # returns a hash (with :width and :height keys) giving the natural size of the images
