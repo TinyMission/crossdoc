@@ -37,11 +37,16 @@ module CrossDoc
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
           @io = URI.open @src
-          if num_images < 6
+          if @is_svg || num_images < 6
             return
           end
           img = MiniMagick::Image.open @src
           img.geometry image_width
+          img.combine_options do |i|
+            i.background '#FFFFFF'
+            i.alpha 'remove'
+          end
+          img.format 'jpg'
           @io = URI.open img.path
         end
       end
