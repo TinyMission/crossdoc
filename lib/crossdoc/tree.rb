@@ -41,8 +41,9 @@ module CrossDoc
             return
           end
           img = MiniMagick::Image.open @src
-          img.geometry image_width
           img.combine_options do |i|
+            i.quality 80
+            i.geometry image_width
             i.background '#FFFFFF'
             i.alpha 'remove'
           end
