@@ -37,7 +37,7 @@ module CrossDoc
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
           @io = URI.open @src
-          if @src.include?('logo_images') || num_images < 6
+          if num_images < 6
             return
           end
           img = MiniMagick::Image.open @src
