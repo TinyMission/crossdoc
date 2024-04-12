@@ -275,7 +275,7 @@ module CrossDoc
 
     def download_images
       @doc.images.each do |h, image|
-        image.download @doc.images.count
+        image.download(skip_processing: @doc.images.count < 6)
       end
     end
 
