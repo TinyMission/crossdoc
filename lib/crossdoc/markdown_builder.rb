@@ -25,12 +25,18 @@ module CrossDoc
     def combine_text(children)
       children.map do |child|
         case child.type
-          when :em
-            "<em>#{child.children.first.value}</em>"
-          when :strong
-            "<strong>#{child.children.first.value}</strong>"
-          else
-            child.value
+        when :em
+          value = child.children.first.value.to_s
+          value.gsub!(/rsquo/, "'")
+          "<em>#{value}</em>"
+        when :strong
+          value = child.children.first.value.to_s
+          value.gsub!(/rsquo/, "'")
+          "<strong>#{child.children.first.value}</strong>"
+        else
+          value = child.value.to_s
+          value.gsub!(/rsquo/, "'")
+          value
         end
       end.join('')
     end

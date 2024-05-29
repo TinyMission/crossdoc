@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 2.3'
   spec.add_development_dependency 'rake'
+  spec.add_dependency 'matrix'
   spec.add_dependency 'prawn', '~> 2.1.0'
   spec.add_dependency 'prawn-svg'
   spec.add_dependency 'activesupport', '>= 4.2.0'
