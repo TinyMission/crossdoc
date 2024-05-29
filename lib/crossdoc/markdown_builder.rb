@@ -19,24 +19,26 @@ module CrossDoc
 
 
     private
-    
+
+    SMART_QUOTES = {
+      lsquo: "\u2018", # ‘
+      rsquo: "\u2019", # ’
+      ldquo: "\u201C", # “
+      rdquo: "\u201D", # ”
+    }
 
     # combines the text of all child elements into one string
     def combine_text(children)
       children.map do |child|
         case child.type
         when :em
-          value = child.children.first.value.to_s
-          value.gsub!(/rsquo/, "'")
-          "<em>#{value}</em>"
+          "<em>#{child.children.first.value.to_s}</em>"
         when :strong
-          value = child.children.first.value.to_s
-          value.gsub!(/rsquo/, "'")
-          "<strong>#{child.children.first.value}</strong>"
+          "<strong>#{child.children.first.value.to_s}</strong>"
+        when :smart_quote
+          SMART_QUOTES[child.value]
         else
-          value = child.value.to_s
-          value.gsub!(/rsquo/, "'")
-          value
+          child.value
         end
       end.join('')
     end
