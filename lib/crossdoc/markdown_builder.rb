@@ -32,9 +32,9 @@ module CrossDoc
       children.map do |child|
         case child.type
         when :em
-          "<em>#{child.children.first.value.to_s}</em>"
+          "<em>#{child.children.first.value}</em>"
         when :strong
-          "<strong>#{child.children.first.value.to_s}</strong>"
+          "<strong>#{child.children.first.value}</strong>"
         when :smart_quote
           SMART_QUOTES[child.value]
         else
