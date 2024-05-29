@@ -31,14 +31,14 @@ module CrossDoc
     def combine_text(children)
       children.map do |child|
         case child.type
-        when :em
-          "<em>#{child.children.first.value}</em>"
-        when :strong
-          "<strong>#{child.children.first.value}</strong>"
-        when :smart_quote
-          SMART_QUOTES[child.value]
-        else
-          child.value
+          when :em
+            "<em>#{child.children.first.value}</em>"
+          when :strong
+            "<strong>#{child.children.first.value}</strong>"
+          when :smart_quote
+            SMART_QUOTES[child.value]
+          else
+            child.value
         end
       end.join('')
     end
