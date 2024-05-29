@@ -1,5 +1,5 @@
 # Header 1
-I'm u's'i'n'g a'p'o's't'r'o'p'h'e's
+I'm using an "apostrophe"
 
 ## Header 2
 
