@@ -19,7 +19,7 @@ module CrossDoc
     simple_fields %i(attachment color image position repeat)
 
     def color_no_hash
-      self.color.gsub('#', '')
+      self.color.gsub('#', '')[0..5]
     end
   end
 
@@ -60,14 +60,14 @@ module CrossDoc
   class BorderSide
     include CrossDoc::Fields
 
-    def initialize(attrs = {width: 1, style: 'solid', color: '#000000ff'})
+    def initialize(attrs = {width: 1, style: 'solid', color: '#000000'})
       assign_fields attrs
     end
 
     simple_fields %i(width style color)
 
     def color_no_hash
-      self.color.gsub('#', '')
+      self.color.gsub('#', '')[0..5]
     end
 
     def ==(other)
@@ -125,7 +125,7 @@ module CrossDoc
     simple_fields %i(color size weight decoration family style line_height letter_spacing align transform)
 
     def color_no_hash
-      self.color.gsub('#', '')
+      self.color.gsub('#', '')[0..5]
     end
 
     def transform_text(s)
@@ -159,7 +159,7 @@ module CrossDoc
     end
 
     def self.default(modifiers={})
-      args = {family: 'helvetica,sans-serif', color: '#000000ff', size: 12, weight: 'normal', align: :left, line_height: 16}.merge modifiers
+      args = {family: 'helvetica,sans-serif', color: '#000000', size: 12, weight: 'normal', align: :left, line_height: 16}.merge modifiers
       # guess as a good line height
       unless modifiers.has_key? :line_height
         args[:line_height] = (1.4 * args[:size]).round.to_i
