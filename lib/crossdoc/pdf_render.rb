@@ -198,7 +198,7 @@ module CrossDoc
         @pdf.font 'Helvetica'
         @pdf.font_size 12
         character_spacing = 0
-        color = '000000ff'
+        color = '000000'
         style = :normal
         align = :left
         leading = 0.0
