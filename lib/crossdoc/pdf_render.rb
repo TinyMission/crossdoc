@@ -123,7 +123,7 @@ module CrossDoc
             break
           end
         end
-        @list_count = 0
+        @list_count = (node.start || 1) - 1
       end
 
       # list item

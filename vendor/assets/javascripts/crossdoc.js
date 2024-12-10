@@ -310,7 +310,11 @@
     tagParsers.UL = function(doc, node, obj, style) {
         obj.listStyle = style.listStyle
     }
-    tagParsers.OL = tagParsers.UL
+    tagParsers.OL = function(doc, node, obj, style) {
+        obj.listStyle = style.listStyle
+        if (node.start)
+            obj.start = node.start
+    }
 
     // don't parse these tags, they aren't a part of the visible DOM
     var tagBlacklist = ['OPTION', 'SCRIPT']

@@ -69,6 +69,11 @@ class CrossDoc::Paginator
         end
       end
 
+      # ordered list was broken up, so change the start of after_parent
+      if after_parent.is_a?(CrossDoc::Node) && after_parent.tag&.downcase == 'ol' && before_parent.tag&.downcase == 'ol'
+        after_parent.start = before_parent.children.count + before_parent.start - 1 # -1 for seemingly phantom list item
+      end
+
       after_parent = after_node
       before_parent = before_parent.children.last
     end # after_node
