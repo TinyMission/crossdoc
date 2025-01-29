@@ -14,32 +14,17 @@ module CrossDoc
 
     def build(content)
       doc = Kramdown::Document.new content
+      @converter = Kramdown::Converter::Html.method(:new).call(doc.root, Kramdown::Options.defaults)
       render_element @container, doc.root
     end
 
 
     private
 
-    SMART_QUOTES = {
-      lsquo: "\u2018", # ‘
-      rsquo: "\u2019", # ’
-      ldquo: "\u201C", # “
-      rdquo: "\u201D", # ”
-    }
-
     # combines the text of all child elements into one string
     def combine_text(children)
       children.map do |child|
-        case child.type
-          when :em
-            "<em>#{child.children.first.value}</em>"
-          when :strong
-            "<strong>#{child.children.first.value}</strong>"
-          when :smart_quote
-            SMART_QUOTES[child.value]
-          else
-            child.value
-        end
+        @converter.convert child
       end.join('')
     end
 
