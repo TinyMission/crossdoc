@@ -1,5 +1,12 @@
 # Header 1
-I'm using an "apostrophe"
+
+- Apostrophe: I'm
+- Single quotes: 'quote'
+- Double quotes: "quote"
+- En dash: --
+- Em dash: ---
+- Ellipsis: ...
+- This thing: << >>
 
 ## Header 2
 
