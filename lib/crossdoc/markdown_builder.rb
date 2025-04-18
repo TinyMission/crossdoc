@@ -84,6 +84,16 @@ module CrossDoc
       end
     end
 
+    def render_horizontal_rule(parent)
+      parent.node 'P' do |f|
+        @styler.style_node f
+        f.border_bottom "1px solid #{@body_color}"
+      end
+      parent.node 'P' do |f|
+        @styler.style_node f
+      end
+    end
+
     def render_element(node, elem)
       type = elem.type
       return if type == :blank
@@ -98,6 +108,8 @@ module CrossDoc
           render_paragraph node, elem
         when :ul, :ol
           render_list node, elem
+        when :hr
+          render_horizontal_rule node
         else
           raise "Don't know how to render markdown element #{type}"
       end
