@@ -87,7 +87,7 @@ module CrossDoc
     def render_horizontal_rule(parent)
       parent.node 'P' do |f|
         @styler.style_node f
-        f.border_bottom "1px solid #{@body_color}"
+        f.border_bottom "1px solid #{defined?(@body_color) ? @body_color : '#222222'}"
       end
       parent.node 'P' do |f|
         @styler.style_node f
