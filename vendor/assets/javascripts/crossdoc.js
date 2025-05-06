@@ -224,17 +224,23 @@
             }
         }
 
-        // parse text styles
-        if (hasText || obj.inputValue)
-            parseTextStyle(node, obj, style)
 
         // flatten single text nodes
-        if (children.length === 1 && children[0].tag==='TEXT') {
+        if (obj.tag === 'FONT' && children.length === 1 && children[0].tag === 'TEXT') {
+            obj.tag = 'TEXT'
             obj.text = children[0].text
+            hasText = true
+        }
+        else if (children.length === 1 && children[0].tag==='TEXT') {
+            obj.text = children[0].text
+            hasText = true
         }
         else if (children.length > 0) {
             obj.children = children
         }
+        // parse text styles
+        if (hasText || obj.inputValue)
+            parseTextStyle(node, obj, style)
 
         return obj
     }
