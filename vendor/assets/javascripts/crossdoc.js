@@ -154,6 +154,24 @@
             obj.font.letterSpacing = parsePxString(style.letterSpacing)
     }
 
+    // Parse an individual child node
+    function parseChild(doc, childNode) {
+        switch (childNode.nodeType) {
+            case Node.ELEMENT_NODE:
+                return parseNode(doc, childNode)
+            case Node.TEXT_NODE:
+                var text = childNode.data.trim()
+                if (text.length > 0) {
+                    return [{ tag: 'TEXT', text: text }]
+                }
+                return []
+            default:
+                console.log("Don't know what to do with node type " + childNode.nodeType)
+                console.log(childNode)
+                return []
+        }
+    }
+
     // Recursively parses a node and its children
     function parseNode(doc, node) {
         var i
@@ -161,7 +179,7 @@
             tag: node.tagName
         }
         if (isTagBlacklisted(obj.tag))
-            return null
+            return []
 
         var style = window.getComputedStyle(node)
 
@@ -169,7 +187,20 @@
 
         // don't bother parsing display: none elements
         if (style.display === 'none')
-            return null
+            return []
+
+        // parse the children
+        var childNodes = Array.from(node.childNodes)
+        if (node.shadowRoot) {
+            childNodes = childNodes.concat(Array.from(node.shadowRoot.childNodes))
+        }
+
+        var children = childNodes.flatMap(childNode => parseChild(doc, childNode))
+
+        // display == contents means render this node's children directly into its parent with no formatting from itself
+        if (style.display === 'contents') {
+            return children
+        }
 
         // we only need box size for non-inline elements
         var display = style.display
@@ -194,36 +225,15 @@
                 obj.box.y = 0
         }
 
+        var hasText = children.some(child => child.tag === 'TEXT')
+
         // run the tag-specific parser, if one exists
         if (tagParsers.hasOwnProperty(obj.tag)) {
             tagParsers[obj.tag](doc, node, obj, style)
+        } else if (node.constructor && customElements.getName(node.constructor)) {
+            // this is a custom tag, treat it as a div
+            obj.tag = 'DIV'
         }
-
-        // parse the children
-        var childNodes = node.childNodes
-        var children = []
-        var hasText = false
-        for (i = 0; i < childNodes.length; i++) {
-            var childNode = childNodes[i]
-            switch (childNode.nodeType) {
-            case Node.ELEMENT_NODE:
-                var childObj = parseNode(doc, childNode)
-                if (childObj)
-                    children.push(childObj)
-                break
-            case Node.TEXT_NODE:
-                var text = childNode.data.trim()
-                if (text.length > 0) {
-                    children.push({tag: 'TEXT', text: text})
-                    hasText = true
-                }
-                break
-            default:
-                console.log("Don't know what to do with node type " + childNode.nodeType)
-                console.log(childNode)
-            }
-        }
-
 
         // flatten single text nodes
         if (obj.tag === 'FONT' && children.length === 1 && children[0].tag === 'TEXT') {
@@ -242,7 +252,7 @@
         if (hasText || obj.inputValue)
             parseTextStyle(node, obj, style)
 
-        return obj
+        return [obj]
     }
 
     function parsePage(doc, pageNode) {
@@ -270,26 +280,8 @@
         }
 
         // parse the children
-        var childNodes = node.childNodes
-        for (i = 0; i < childNodes.length; i++) {
-            var childNode = childNodes[i]
-            switch (childNode.nodeType) {
-            case Node.ELEMENT_NODE:
-                var childObj = parseNode(doc, childNode)
-                if (childObj)
-                    page.children.push(childObj)
-                break
-            case Node.TEXT_NODE:
-                var text = childNode.data.trim()
-                if (text.length > 0) {
-                    page.children.push({tag: 'TEXT', text: text})
-                }
-                break
-            default:
-                console.log("Don't know what to do with node type " + childNode.nodeType)
-                console.log(childNode)
-            }
-        }
+        page.children = Array.from(node.childNodes).flatMap(childNode => parseChild(doc, childNode))
+
         return page
     }
 
