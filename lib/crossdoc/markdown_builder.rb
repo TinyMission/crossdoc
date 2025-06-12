@@ -1,15 +1,14 @@
+# frozen_string_literal: true
+
 require 'kramdown'
 require_relative './styler'
 
 module CrossDoc
-
   # Used by Builder to build content from a markdown source
   class MarkdownBuilder
-
-    def initialize(container, styles={})
+    def initialize(container, styles = {})
       @container = container
       @styler = Styler.new styles
-
     end
 
     def build(content)
@@ -17,7 +16,6 @@ module CrossDoc
       @converter = Kramdown::Converter::Html.method(:new).call(doc.root, Kramdown::Options.defaults)
       render_element @container, doc.root
     end
-
 
     private
 
@@ -52,6 +50,7 @@ module CrossDoc
     def render_paragraph(parent, elem)
       children = elem.children
       return if elem.children.empty?
+
       if children.first.type == :img
         render_image parent, children.shift
       elsif children.last.type == :img
@@ -74,11 +73,44 @@ module CrossDoc
         @styler.style_node list
         elem.children.each do |child_elem|
           unless child_elem.type == :li
-            raise "Lists must only contain li elements, not #{child_elem.type}"
+            raise "Lists must only contain 'LI' elements, not #{child_elem.type.to_s.upcase}"
           end
+
           list.node 'LI' do |item|
             @styler.style_node item
             item.text = combine_text(child_elem.children.first.children) # kramdown nests item content in a paragraph
+          end
+        end
+      end
+    end
+
+    def render_table(parent, elem)
+      return if elem.children.empty?
+
+      parent.node 'TABLE' do |table|
+        @styler.style_node table
+
+        # Check if 'bare' table (i.e. no thead, tbody, etc.)
+        if elem.children[0].type == :tr
+          elem.children.each do |row|
+            render_table_row(table, row)
+          end
+          return
+        end
+
+        # Otherwise, 'full' table
+        elem.children.each do |child|
+          unless %i[thead tbody tfoot].include? child.type
+            raise "Full tables must only contain 'TBODY', 'THEAD', and 'TFOOT' elements, not #{child.type.to_s.upcase}"
+          end
+
+          table.node child.type.to_s.upcase do |subtable|
+            @styler.style_node subtable
+
+            # Render the rows for each subtable
+            child.children.each do |row|
+              render_table_row(subtable, row)
+            end
           end
         end
       end
@@ -97,23 +129,42 @@ module CrossDoc
     def render_element(node, elem)
       type = elem.type
       return if type == :blank
+
       case type
-        when :root # container
-          elem.children.each do |child_elem|
-            render_element node, child_elem
-          end
-        when :header
-          render_header node, elem
-        when :p
-          render_paragraph node, elem
-        when :ul, :ol
-          render_list node, elem
-        when :hr
-          render_horizontal_rule node
-        else
-          raise "Don't know how to render markdown element #{type}"
+      when :root # container
+        elem.children.each do |child_elem|
+          render_element node, child_elem
+        end
+      when :header
+        render_header node, elem
+      when :p
+        render_paragraph node, elem
+      when :ul, :ol
+        render_list node, elem
+      when :hr
+        render_horizontal_rule node
+      when :table
+        render_table node, elem
+      else
+        raise "Don't know how to render markdown element #{type.to_s.upcase}"
       end
     end
 
+    def render_table_row(parent, elem)
+      return if elem.children.empty?
+
+      parent.node 'TR', block_orientation: 'horizontal' do |row|
+        elem.children.each do |entry|
+          unless %i[th td].include? entry.type
+            raise "Table row must have only 'TH' or 'TD' child elements, not #{entry.type.to_s.upcase}"
+          end
+
+          row.node entry.type.to_s.upcase do |data_element|
+            @styler.style_node data_element
+            data_element.text = combine_text entry.children
+          end
+        end
+      end
+    end
   end
 end
