@@ -110,7 +110,7 @@ module CrossDoc
     end
 
     # these list styles will be rendered so they should be preferentially parsed
-    RENDERED_LIST_STYLES = %w[disc decimal]
+    RENDERED_LIST_STYLES = %w[disc decimal lower_roman upper_roman lower_alpha upper_alpha]
 
     def render_node_decorations(node)
       # keep track of the list style so that we can render item decorations when they come around
@@ -140,25 +140,25 @@ module CrossDoc
         unless font
           font = CrossDoc::Font.default
         end
-        case @list_style
-          when 'disc'
-            r = font.size/5.0
-            pos = [-4*r, node.box.height - (font.line_height/2.0)]
-            @pdf.fill_color = font.color_no_hash
-            @pdf.circle pos, r
-            @pdf.fill
-          when 'decimal'
-            @list_count += 1
-            s = font.size
-            @pdf.font_size s
-            color = font.color_no_hash
-            leading = (font.line_height - s)*leading_factor(font.family)
-            pos = [-2.5*s, node.box.height - leading]
-            @pdf.bounding_box(pos, width: 2*s) do
-              @pdf.text "#{@list_count}.", color: color, align: :right, leading: leading
-            end
-          else
-            puts "!! don't know how to render list style '#{@list_style}'"
+        if @list_style == 'disc'
+          r = font.size/5.0
+          pos = [-4*r, node.box.height - (font.line_height/2.0)]
+          @pdf.fill_color = font.color_no_hash
+          @pdf.circle pos, r
+          @pdf.fill
+        elsif @list_style in %w[decimal lower_roman upper_roman lower_alpha upper_alpha]
+          # Text
+          @list_count += 1
+          s = font.size
+          @pdf.font_size s
+          color = font.color_no_hash
+          leading = (font.line_height - s)*leading_factor(font.family)
+          pos = [-2.5 * s, node.box.height - leading]
+          @pdf.bounding_box(pos, width: 2*s) do
+            @pdf.text "#{list_style_text(@list_style, @list_count)}.", color: color, align: :right, leading: leading
+          end
+        else
+          puts "!! don't know how to render list style '#{@list_style}'"
         end
       end
     end
@@ -367,6 +367,51 @@ module CrossDoc
     end
 
     private
+
+    # Format an ordered list number using the given style.
+    def list_style_text(list_style, list_count)
+      case list_style
+      when 'decimal' then list_count.to_s
+      when 'lower_alpha' then list_count_render_alpha(list_count)
+      when 'upper_alpha' then list_count_render_alpha(list_count).upcase
+      when 'lower_roman' then list_count_render_roman(list_count)
+      when 'upper_roman' then list_count_render_roman(list_count).upcase
+      end
+    end
+
+    # Render an alphabetical list count. For lists of more than 26 items, a
+    # second "digit" is used.
+    def list_count_render_alpha(list_count)
+      alpha_string = ''
+      while list_count.positive?
+        list_count, alpha_pos = list_count.divmod 26
+        alpha_string << ('a'.ord + alpha_pos).chr
+      end
+      alpha_string
+    end
+
+    MOD_TO_ROMAN = {
+      1000 => 'M',
+      900 => 'CM',
+      500 => 'D',
+      400 => 'CD',
+      100 => 'C',
+      90 => 'XC',
+      40 => 'XL',
+      10 => 'X',
+      9 => 'IX',
+      5 => 'V',
+      4 => 'IV',
+      1 => 'I'
+    }.freeze
+
+    # Convert a list count to roman numerals.
+    def list_count_render_roman(list_count)
+      MOD_TO_ROMAN.reduce '' do |roman_string, (mod, roman)|
+        whole_part, list_count = list_count.divmod mod
+        roman_string << roman * whole_part
+      end
+    end
 
     # concatenate all child text into a single string, taking into account line breaks
     def compute_compound_text(node)

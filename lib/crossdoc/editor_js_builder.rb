@@ -48,23 +48,26 @@ module CrossDoc
     def render_list(parent, list)
       return if list['items'].empty?
 
-      element = case list['type']
+      element = case list['style']
                 when 'ordered' then 'OL'
                 when 'unordered', 'checklist' then 'UL'
-                else throw "Unknown list type #{list['type']}"
+                else throw "Unknown list style '#{list['style']}'"
                 end
 
-      render_nested_list(parent, element, list['items'])
+      list_bullet_style = element == 'UL' ? 'disc' : list['meta']['counterType']
+
+      render_nested_list(parent, element, list_bullet_style, list['items'])
     end
 
-    def render_nested_list(parent, element, items)
-      parent.node element do |list_node|
+    def render_nested_list(parent, element, list_bullet_style, items)
+      parent.node element, list_style: list_bullet_style do |list_node|
         @styler.style_node list_node
         items.each do |item|
           list_node.node 'LI' do |item_node|
             @styler.style_node item_node
             item_node.text = item['content']
-            render_nested_list(item_node, element, item['items']) if item['items'].any?
+            list_bullet_style = element == 'UL' ? 'disc' : item['meta']['counterType']
+            render_nested_list(item_node, element, list_bullet_style, item['items']) if item['items'].any?
           end
         end
       end
