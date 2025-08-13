@@ -385,6 +385,13 @@ module CrossDoc
       end.join(' ')
     end
 
+    # convert EditorJS-specific formatting tags to something compatible with Prawn.
+    def preprocess_editorjs_tags(text)
+      text
+        .gsub(%r{del class=['"]?cdx-strikethrough['"]?>([^<]*)</del>}, '<strikethrough>\1</strikethrough>')
+        .gsub(%r{code class=['"]?inline-code['"]?>([^<]*)</code>}, '<font family="Courier">\1</font>')
+    end
+
     # look at the children and try to compute a single font
     def compute_compound_font(node)
       return if node.font
@@ -415,13 +422,15 @@ module CrossDoc
           end
         end
         if node.children && node.children.length > 0 && all_text_children
-          text = compute_compound_text node
+          text = preprocess_editorjs_tags(compute_compound_text(node))
           compute_compound_font node
-          ctx.render_node_text text, node
-        elsif node.input_value && node.input_value.length > 0
-          ctx.render_node_text node.input_value, node
+          ctx.render_node_text(text, node)
+        elsif node.input_value && node.any?
+          text = preprocess_editorjs_tags node.input_value
+          ctx.render_node_text(text, node)
         elsif node.text
-          ctx.render_node_text node.text, node
+          text = preprocess_editorjs_tags node.text
+          ctx.render_node_text(text, node)
         end
 
         # draw the decorations

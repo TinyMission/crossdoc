@@ -7,6 +7,7 @@ module CrossDoc
   require 'crossdoc/pdf_render'
   require 'crossdoc/builder'
   require 'crossdoc/paginator'
+  require 'crossdoc/editor_js_builder'
   require 'crossdoc/markdown_builder'
   require 'crossdoc/converter'
   require 'crossdoc/prawn_monkey_patches'
