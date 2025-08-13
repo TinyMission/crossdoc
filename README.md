@@ -2,22 +2,30 @@
 
 CrossDoc is a platform-independent document interchange format.
 
-This is the Ruby server library and JavaScript client library for CrossDoc.
-It is the defacto standard implementation of CrossDoc PDF rendering.
+This is the Ruby server library and JavaScript client library for CrossDoc.  It
+is the defacto standard implementation of CrossDoc PDF rendering.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'crossdoc', github: 'TinyMission/crossdoc'
+``` sh
+gem 'crossdoc', github: 'TinyMission/crossdoc'
+```
 
 And then execute:
 
-    $ bundle
+``` sh
+$ bundle
+```
+
 
 Or install it yourself as:
 
-    $ gem install crossdoc
+``` sh
+$ gem install crossdoc
+```
+
 
 ## Usage
 
@@ -44,17 +52,18 @@ A basic document is structured like this:
 </div>
 ```
 
-There is one containing div with class *crossdoc*.
-Each page is it's own div with class *page*, and optional classes for formatting:
+There is one containing div with class `crossdoc`.  Each page is it's own div with
+class `page`, and optional classes for formatting:
 
-* Page size: *us-letter* (default) or *us-legal*
-* Page margin: *margin-50*, *margin-75*, or *margin-100* for 1/2", 3/4", or 1" margins, respectively
-* Decoration: *decorated* applies a simple white background, border, and drop shadow to the page
+* Page size: `us-letter` (default) or `us-legal`
+* Page margin: `margin-50`, `margin-75`, or `margin-100` for 1/2", 3/4", or 1" margins, respectively
+* Decoration: `decorated` applies a simple white background, border, and drop shadow to the page
 
-Inside each page, you place the markup for your document.
-The actual markup can be basically anything you want.
-The CrossDoc JavaScript library (see next section) will serialize the document structure and layout into a platform-neutral JSON format, which can then be sent to a server to render into a PDF.
-
+Inside each page, you place the markup for your document.  The actual markup can
+be basically anything you want.  The CrossDoc JavaScript library (see next
+section) will serialize the document structure and layout into a
+platform-neutral JSON format, which can then be sent to a server to render into
+a PDF.
 
 ### JavaScript API
 
@@ -66,12 +75,13 @@ doc.parse('document'); // parse the document, passed by id
 var json = doc.toJSON(); // serialize the document to JSON
 ```
 
-Once serialized, you can send the document to your server through an AJAX call or form parameter.
-
+Once serialized, you can send the document to your server through an AJAX call
+or form parameter.
 
 ### Ruby API
 
-On the server, the Ruby API lets you take a JSON document representation and render it to a PDF.
+On the server, the Ruby API lets you take a JSON document representation and
+render it to a PDF.
 
 ```ruby
 doc = CrossDoc::Document.new doc_json # create a document from a JSON string (or Hash)
@@ -79,12 +89,13 @@ renderer = CrossDoc::PdfRenderer.new doc # create a PDF renderer to render the d
 renderer.to_pdf 'path/to/output.pdf' # render the document to a PDF in the filesystem
 ```
 
-The renderer will download all images included in the document and render the contents to a PDF using the [Prawn](http://http://prawnpdf.org/) PDF library.
+The renderer will download all images included in the document and render the
+contents to a PDF using the [Prawn](http://http://prawnpdf.org/) PDF library.
 
+### Custom Fonts
 
-## Custom Fonts
-
-In order to user custom fonts inside the PDF, you must register the font family with the renderer: 
+In order to use custom fonts inside the PDF, you must register the font family
+with the renderer: 
 
 ```ruby
 renderer.register_font_family 'FontName', {
@@ -96,21 +107,27 @@ renderer.register_font_family 'FontName', {
 Only TTF fonts are currently supported. 
 
 
-## Pagination
+### Pagination
 
-CrossDoc includes an automatic pagination utility that will split a one-page document into multiple pages.
-It recursively traverses the document tree and tries to determine the best place to break the pages.
+CrossDoc includes an automatic pagination utility that will split a one-page
+document into multiple pages.  It recursively traverses the document tree and
+tries to determine the best place to break the pages.
 
-To use the pagination, create a Paginator then run it on the document. This should be done before rendering the document.
+To use the pagination, create a Paginator then run it on the document. This
+should be done before rendering the document.
 
 ```ruby
 CrossDoc::Paginator.new(options).run doc
 ```
 
-_options_ is a hash with the possible optional values:
+`options` is a hash with the possible optional values:
 
-* _num_levels_ (default 3): the number of document tree levels the paginator will traverse before giving up. Set higher for complex documents and lower if you don't want to split up elements at a certain level (like tables).
-* _max_pages*_ (default 10): the maximum number of pages to create. This only exists to compensate for pagination failures that cause the document to blow up.
+* `num_levels` (default 3): the number of document tree levels the paginator will
+  traverse before giving up. Set higher for complex documents and lower if you
+  don't want to split up elements at a certain level (like tables).
+* `max_pages` (default 10): the maximum number of pages to create. This only
+  exists to compensate for pagination failures that cause the document to blow
+  up.
 
 
 ### Ruby Builder
@@ -148,9 +165,11 @@ CrossDoc::PdfRenderer.new(doc).to_pdf 'path/to/output.pdf'
 ```
 
 
-## Markdown
+### Markdown
 
-The Ruby Builder is able to parse a (limited subset of) Markdown-formatted text (using the [Kramdown](https://github.com/gettalong/kramdown/) parser) and create the appropriate nodes in the document. Simply call the _markdown_ method on any builder node: 
+The Ruby Builder is able to parse a (limited subset of) Markdown-formatted text
+(using the [Kramdown](https://github.com/gettalong/kramdown/) parser) and create the appropriate nodes in the document.
+Simply call the `markdown` method on any builder node: 
 
 ```ruby
 page.div do |container|
@@ -158,9 +177,10 @@ page.div do |container|
 end
 ```
 
-_formatted_text_ is a string containing Markdown-formatted text.
-_style_ is an optional hash that lets you override the default styling for the generated nodes.
-You can override the font attributes, margin, and padding, using the uppercase tag name as the key:
+where `formatted_text` is a string containing Markdown-formatted text and  `style` is
+an optional hash that lets you override the default styling for the generated
+nodes.  You can override the font attributes, margin, and padding, using the
+uppercase tag name as the key:
 
 ```ruby
 styles = {
@@ -209,8 +229,6 @@ To use CrossDoc in a Rails application, simply include the gem in your Gemfile a
 // application.js or similar
 //= require crossdoc
 ```
-
-
 
 ## Contributing
 
