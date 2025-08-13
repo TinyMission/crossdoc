@@ -178,10 +178,22 @@ styles = {
 Currently, only the following constructs are supported by the Markdown parser:
 
 * Headers (levels 1-3)
+* Images
 * Paragraphs
 * Ordered and unordered lists
 * Inline *em* and **strong** spans 
+* Tables
 
+### EditorJS Integration
+
+The Ruby Builder is also capable of parsing EditorJS (or, again, a limited
+subset) using the `editor_js` method. The following block types are supported:
+
++ Paragraphs
++ Quotes (no captions)
++ Headers
++ Images (no captions or styling tweaks)
++ Tables (no styling tweaks)
 
 ### Rails Integration
 
