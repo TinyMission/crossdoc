@@ -43,8 +43,17 @@ module CrossDoc
         }
       },
       TABLE: {
-        border: '1.2px solid',
+        border: '1px solid',
         margin: { bottom: 0.1.inches }
+      },
+      TH: {
+        font: { size: 13, align: 'center' },
+      },
+      THEAD: {
+        border: { bottom: '0.2px solid' },
+      },
+      TR: {
+        border: { bottom: '0.2px solid' },
       },
       TD: {
         margin: {
