@@ -36,12 +36,6 @@ module CrossDoc
       OL: {
         margin: {bottom: 12, left: 20}
       },
-      LI: {
-        font: {
-          size: 12,
-          line_height: 24
-        }
-      },
       TABLE: {
         border: '1px solid',
         margin: { bottom: 0.1.inches }

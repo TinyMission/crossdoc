@@ -56,20 +56,19 @@ module CrossDoc
 
       list_bullet_style = element == 'UL' ? 'disc' : list['meta']['counterType']
 
-      render_nested_list(parent, element, list_bullet_style, list['items'])
-    end
-
-    def render_nested_list(parent, element, list_bullet_style, items)
       parent.node element, list_style: list_bullet_style do |list_node|
         @styler.style_node list_node
-        items.each do |item|
-          list_node.node 'LI' do |item_node|
-            @styler.style_node item_node
-            item_node.text = item['content']
-            list_bullet_style = element == 'UL' ? 'disc' : item['meta']['counterType']
-            render_nested_list(item_node, element, list_bullet_style, item['items']) if item['items'].any?
-          end
+        render_nested_list(list_node, list['items'])
+      end
+    end
+
+    def render_nested_list(parent, items, level = 0)
+      items.each do |item|
+        parent.node 'LI', list_level: level do |item_node|
+          @styler.style_node item_node
+          item_node.text = item['content']
         end
+        render_nested_list(parent, item['items'], level + 1) if item['items'].any?
       end
     end
 

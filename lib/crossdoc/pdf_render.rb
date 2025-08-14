@@ -454,6 +454,10 @@ module CrossDoc
 
       height = node.box.height
       pos = [node.box.x, ctx.parent.box.height - node.box.y]
+      if node.tag == 'LI'
+        list_level = node.list_level || 0
+        pos[0] += node.font.size * list_level
+      end
 
       ctx.pdf.bounding_box pos, width: node.box.width, height: height do
         ctx.render_node_background node

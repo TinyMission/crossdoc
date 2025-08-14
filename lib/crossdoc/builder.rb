@@ -14,6 +14,8 @@ module CrossDoc
 
     raw_shadow :list_style
 
+    raw_shadow :list_level
+
     raw_shadow :text
 
     raw_shadow :font
