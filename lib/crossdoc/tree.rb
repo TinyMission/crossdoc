@@ -94,7 +94,7 @@ module CrossDoc
       assign_fields attrs
     end
 
-    simple_fields %i(id tag text src hash list_style start input_type input_value input_possible)
+    simple_fields %i[id tag text src hash list_style list_level start input_type input_value input_possible]
 
     object_field :background, Background
 
