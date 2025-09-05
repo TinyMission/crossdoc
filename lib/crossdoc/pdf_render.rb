@@ -455,8 +455,20 @@ module CrossDoc
       height = node.box.height
       pos = [node.box.x, ctx.parent.box.height - node.box.y]
       if node.tag == 'LI'
+        font = node.font
+        unless font
+          node.children.each do |child|
+            if child.font
+              font = child.font
+              break
+            end
+          end
+        end
+        unless font
+          font = CrossDoc::Font.default
+        end
         list_level = node.list_level || 0
-        pos[0] += node.font.size * list_level
+        pos[0] += font.size * list_level
       end
 
       ctx.pdf.bounding_box pos, width: node.box.width, height: height do
