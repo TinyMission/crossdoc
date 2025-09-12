@@ -111,7 +111,7 @@ module CrossDoc
     end
 
     # these list styles will be rendered so they should be preferentially parsed
-    RENDERED_LIST_STYLES = %w[disc decimal]
+    RENDERED_LIST_STYLES = %w[disc decimal lower_roman upper_roman lower_alpha upper_alpha]
 
     def render_node_decorations(node)
       # keep track of the list style so that we can render item decorations when they come around
@@ -141,25 +141,25 @@ module CrossDoc
         unless font
           font = CrossDoc::Font.default
         end
-        case @list_style
-          when 'disc'
-            r = font.size/5.0
-            pos = [-4*r, node.box.height - (font.line_height/2.0)]
-            @pdf.fill_color = font.color_no_hash
-            @pdf.circle pos, r
-            @pdf.fill
-          when 'decimal'
-            @list_count += 1
-            s = font.size
-            @pdf.font_size s
-            color = font.color_no_hash
-            leading = (font.line_height - s)*leading_factor(font.family)
-            pos = [-2.5*s, node.box.height - leading]
-            @pdf.bounding_box(pos, width: 2*s) do
-              @pdf.text "#{@list_count}.", color: color, align: :right, leading: leading
-            end
-          else
-            puts "!! don't know how to render list style '#{@list_style}'"
+        if @list_style == 'disc'
+          r = font.size/5.0
+          pos = [-4*r, node.box.height - (font.line_height/2.0)]
+          @pdf.fill_color = font.color_no_hash
+          @pdf.circle pos, r
+          @pdf.fill
+        elsif @list_style in %w[decimal lower_roman upper_roman lower_alpha upper_alpha]
+          # Text
+          @list_count += 1
+          s = font.size
+          @pdf.font_size s
+          color = font.color_no_hash
+          leading = (font.line_height - s)*leading_factor(font.family)
+          pos = [-2.5 * s, node.box.height - leading]
+          @pdf.bounding_box(pos, width: 2*s) do
+            @pdf.text "#{list_style_text(@list_style, @list_count)}.", color: color, align: :right, leading: leading
+          end
+        else
+          puts "!! don't know how to render list style '#{@list_style}'"
         end
       end
     end
@@ -369,6 +369,51 @@ module CrossDoc
 
     private
 
+    # Format an ordered list number using the given style.
+    def list_style_text(list_style, list_count)
+      case list_style
+      when 'decimal' then list_count.to_s
+      when 'lower_alpha' then list_count_render_alpha(list_count)
+      when 'upper_alpha' then list_count_render_alpha(list_count).upcase
+      when 'lower_roman' then list_count_render_roman(list_count)
+      when 'upper_roman' then list_count_render_roman(list_count).upcase
+      end
+    end
+
+    # Render an alphabetical list count. For lists of more than 26 items, a
+    # second "digit" is used.
+    def list_count_render_alpha(list_count)
+      alpha_string = ''
+      while list_count.positive?
+        list_count, alpha_pos = list_count.divmod 26
+        alpha_string << ('a'.ord + alpha_pos).chr
+      end
+      alpha_string
+    end
+
+    MOD_TO_ROMAN = {
+      1000 => 'M',
+      900 => 'CM',
+      500 => 'D',
+      400 => 'CD',
+      100 => 'C',
+      90 => 'XC',
+      40 => 'XL',
+      10 => 'X',
+      9 => 'IX',
+      5 => 'V',
+      4 => 'IV',
+      1 => 'I'
+    }.freeze
+
+    # Convert a list count to roman numerals.
+    def list_count_render_roman(list_count)
+      MOD_TO_ROMAN.reduce '' do |roman_string, (mod, roman)|
+        whole_part, list_count = list_count.divmod mod
+        roman_string << roman * whole_part
+      end
+    end
+
     # concatenate all child text into a single string, taking into account line breaks
     def compute_compound_text(node)
       node.children.map do |n|
@@ -384,6 +429,13 @@ module CrossDoc
           n.text
         end
       end.join(' ')
+    end
+
+    # convert EditorJS-specific formatting tags to something compatible with Prawn.
+    def preprocess_editorjs_tags(text)
+      text
+        .gsub(%r{del class=['"]?cdx-strikethrough['"]?>([^<]*)</del>}, '<strikethrough>\1</strikethrough>')
+        .gsub(%r{code class=['"]?inline-code['"]?>([^<]*)</code>}, '<font family="Courier">\1</font>')
     end
 
     # look at the children and try to compute a single font
@@ -403,6 +455,22 @@ module CrossDoc
 
       height = node.box.height
       pos = [node.box.x, ctx.parent.box.height - node.box.y]
+      if node.tag == 'LI'
+        font = node.font
+        unless font
+          node.children.each do |child|
+            if child.font
+              font = child.font
+              break
+            end
+          end
+        end
+        unless font
+          font = CrossDoc::Font.default
+        end
+        list_level = node.list_level || 0
+        pos[0] += font.size * list_level
+      end
 
       ctx.pdf.bounding_box pos, width: node.box.width, height: height do
         ctx.render_node_background node
@@ -416,13 +484,15 @@ module CrossDoc
           end
         end
         if node.children && node.children.length > 0 && all_text_children
-          text = compute_compound_text node
+          text = preprocess_editorjs_tags(compute_compound_text(node))
           compute_compound_font node
-          ctx.render_node_text text, node
-        elsif node.input_value && node.input_value.length > 0
-          ctx.render_node_text node.input_value, node
+          ctx.render_node_text(text, node)
+        elsif node.input_value.present?
+          text = preprocess_editorjs_tags node.input_value
+          ctx.render_node_text(text, node)
         elsif node.text
-          ctx.render_node_text node.text, node
+          text = preprocess_editorjs_tags node.text
+          ctx.render_node_text(text, node)
         end
 
         # draw the decorations

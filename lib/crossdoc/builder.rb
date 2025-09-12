@@ -14,6 +14,8 @@ module CrossDoc
 
     raw_shadow :list_style
 
+    raw_shadow :list_level
+
     raw_shadow :text
 
     raw_shadow :font
@@ -160,6 +162,10 @@ module CrossDoc
       self.box.height = @min_height + self.padding.top + self.padding.bottom
 
       self.box.height + @margin.top + @margin.bottom
+    end
+
+    def editor_js(content, style={})
+      EditorJsBuilder.new(self, style).build content
     end
 
     def markdown(content, style={})

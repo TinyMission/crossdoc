@@ -5,59 +5,59 @@ module CrossDoc
   class Styler
 
     DEFAULT_STYLE = {
-        FOOTER_LEFT: {
-            font: {
-                size: 10
-            }
+      FOOTER_LEFT: {
+        font: { size: 10 }
+      },
+      FOOTER_CENTER: {
+        font: { size: 10, align: 'center' }
+      },
+      FOOTER_RIGHT: {
+        font: { size: 10, align: 'right' }
+      },
+      H1: {
+        font: { size: 32 },
+        margin: {bottom: 8}
+      },
+      H2: {
+        font: { size: 26 },
+        margin: {bottom: 8}
+      },
+      H3: {
+        font: { size: 20 },
+        margin: {bottom: 8}
+      },
+      P: {
+        font: { size: 12 },
+        margin: {bottom: 12}
+      },
+      UL: {
+        margin: {bottom: 12, left: 20}
+      },
+      OL: {
+        margin: {bottom: 12, left: 20}
+      },
+      TABLE: {
+        border: '1px solid',
+        margin: { bottom: 0.1.inches }
+      },
+      TH: {
+        font: { size: 13, align: 'center' },
+      },
+      THEAD: {
+        border: { bottom: '0.2px solid' },
+      },
+      TR: {
+        border: { bottom: '0.2px solid' },
+      },
+      TD: {
+        margin: {
+          bottom: 1,
+          top: 1,
+          left: 8,
+          right: 8
         },
-        FOOTER_CENTER: {
-            font: {
-                size: 10,
-                align: 'center'
-            }
-        },
-        FOOTER_RIGHT: {
-            font: {
-                size: 10,
-                align: 'right'
-            }
-        },
-        H1: {
-            font: {
-                size: 32
-            },
-            margin: {bottom: 8}
-        },
-        H2: {
-            font: {
-                size: 26
-            },
-            margin: {bottom: 8}
-        },
-        H3: {
-            font: {
-                size: 20
-            },
-            margin: {bottom: 8}
-        },
-        P: {
-            font: {
-                size: 12
-            },
-            margin: {bottom: 12}
-        },
-        UL: {
-            margin: {bottom: 12, left: 20}
-        },
-        OL: {
-            margin: {bottom: 12, left: 20}
-        },
-        LI: {
-            font: {
-                size: 12,
-                line_height: 24
-            }
-        }
+        font: { size: 9, align: 'center' }
+      }
     }
 
     def initialize(styles)
@@ -83,6 +83,17 @@ module CrossDoc
       end
     end
 
+    def style_border(node, border_value)
+      if border_value.is_a? Hash
+        raw_border = { top: '0', right: '0', bottom: '0', left: '0' }.merge(border_value)
+        node.border_left raw_border[:left]
+        node.border_right raw_border[:right]
+        node.border_top raw_border[:top]
+        node.border_bottom raw_border[:bottom]
+      elsif border_value.is_a? String
+        node.border_all border_value
+      end
+    end
 
     # styles a builder node with the given tag (uses the node's tag by default)
     def style_node(node, tag=nil)
@@ -90,6 +101,8 @@ module CrossDoc
       node_style = @styles[tag] || {}
 
       node.default_font node_style[:font] || {}
+      style_border(node, node_style[:border]) if node_style[:border].present?
+      node.push_min_height node_style[:min_height] || 0
 
       unless node_style.has_key? :margin_cache
         raw_margin = {top: 0, right: 0, bottom: 0, left: 0}.merge (node_style[:margin] || {})
