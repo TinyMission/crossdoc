@@ -1,6 +1,7 @@
 require 'open-uri'
 require 'base64'
 require 'tempfile'
+require 'mini_magick'
 
 module CrossDoc
 
@@ -16,7 +17,7 @@ module CrossDoc
 
     attr_reader :io, :is_svg
 
-    def download(skip_processing: false)
+    def download(skip_resize: false)
       if @src.index('data:image/svg+xml;') == 0
         @is_svg = true
         raw = Base64.decode64 @src.gsub('data:image/svg+xml;base64,', '')
@@ -27,8 +28,7 @@ module CrossDoc
         @io = StringIO.new raw
       elsif @src.index('data:image/jpeg;') == 0
         @is_svg = false
-        raw = Base64.decode64 @src.gsub('data:image/jpeg;base64,', '')
-        @io = StringIO.new raw
+        @io = process_orientation(@src)
       else
         @is_svg = !@src.index('.svg').nil?
         if @src.index('file://')==0
@@ -36,8 +36,8 @@ module CrossDoc
         elsif @src.index('./')==0
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
-          @io = URI.open @src
-          if @is_svg || skip_processing
+          @io = process_orientation(@src)
+          if @is_svg || skip_resize
             return
           end
           img = MiniMagick::Image.open @src
@@ -47,6 +47,7 @@ module CrossDoc
             i.geometry image_width(img_size)
             i.background '#FFFFFF'
             i.alpha 'remove'
+            i.auto_orient
           end
           img.format 'jpg'
           @io = URI.open img.path
@@ -60,6 +61,13 @@ module CrossDoc
     def image_width(file_size)
       scale_amount = (file_size/1024/16)
       1024 - scale_amount
+    end
+
+    # Applies EXIF rotation to actual image geometry and removes the metadata
+    def process_orientation(src)
+      processed = MiniMagick::Image.open src
+      processed.auto_orient
+      StringIO.new processed.to_blob
     end
 
     # returns a hash (with :width and :height keys) giving the natural size of the images
