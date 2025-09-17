@@ -18,7 +18,7 @@ class CrossDoc::Paginator
       # look for a node that is entirely below y, while the rest were all above
       if all_above_y
         if node.box && node.box.y >= y
-          if node.box.width.to_f/content_width > width_threshold
+          if node.tag == 'IMG' || node.box.width.to_f/content_width > width_threshold
             return node
           else
             all_above_y = false
@@ -27,7 +27,7 @@ class CrossDoc::Paginator
       end
 
       # look for a node that spans y
-      if node.box && node.box.y <= y && node.box.bottom > y && node.box.width.to_f/content_width > width_threshold
+      if node.box && node.box.y <= y && node.box.bottom > y && (node.tag == 'IMG' || node.box.width.to_f/content_width > width_threshold)
         return node
       end
     end
