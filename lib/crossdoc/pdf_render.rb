@@ -1,5 +1,6 @@
 require 'prawn'
 require 'prawn-svg'
+require 'mini_magick'
 
 module CrossDoc
 
@@ -275,7 +276,7 @@ module CrossDoc
 
     def download_images
       @doc.images.each do |h, image|
-        image.download(skip_processing: @doc.images.count < 6)
+        image.download(skip_resize: @doc.images.count < 6)
       end
     end
 
