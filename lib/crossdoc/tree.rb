@@ -28,7 +28,7 @@ module CrossDoc
         @io = StringIO.new raw
       elsif @src.index('data:image/jpeg;') == 0
         @is_svg = false
-        raw = Base64.decode64(@src.sub('data:image/jpeg;base64,', ''))
+        raw = Base64.decode64(@src.gsub('data:image/jpeg;base64,', ''))
         @io = process_orientation raw, :read
       else
         @is_svg = !@src.index('.svg').nil?
