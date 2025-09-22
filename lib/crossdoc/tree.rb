@@ -37,7 +37,12 @@ module CrossDoc
         elsif @src.index('./')==0
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
-          @io = process_orientation @src, :open
+          is_jpg = @src.index('.jpeg') || @src.index('.jpg')
+          if is_jpg
+            @io = process_orientation @src, :open
+          else
+            @io = URI.open @src
+          end
           if @is_svg || skip_resize
             return
           end
@@ -48,7 +53,7 @@ module CrossDoc
             i.geometry image_width(img_size)
             i.background '#FFFFFF'
             i.alpha 'remove'
-            i.auto_orient
+            i.auto_orient if is_jpg
           end
           img.format 'jpg'
           @io = URI.open img.path
