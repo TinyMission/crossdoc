@@ -1,7 +1,6 @@
 require 'open-uri'
 require 'base64'
 require 'tempfile'
-require 'mini_magick'
 
 module CrossDoc
 

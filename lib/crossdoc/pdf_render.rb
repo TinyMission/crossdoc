@@ -1,6 +1,5 @@
 require 'prawn'
 require 'prawn-svg'
-require 'mini_magick'
 
 module CrossDoc
 
