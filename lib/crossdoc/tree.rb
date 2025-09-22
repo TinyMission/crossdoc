@@ -66,7 +66,7 @@ module CrossDoc
     # Applies EXIF rotation to actual image geometry and removes the metadata
     def process_orientation(src, method)
       processed = MiniMagick::Image.send(method, src)
-      processed.auto_orient
+      processed.auto_orient unless @is_svg
       StringIO.new(processed.to_blob)
     end
 
