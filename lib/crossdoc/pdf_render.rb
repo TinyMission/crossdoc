@@ -474,7 +474,7 @@ module CrossDoc
           text = preprocess_editorjs_tags(compute_compound_text(node))
           compute_compound_font node
           ctx.render_node_text(text, node)
-        elsif node.input_value && node.any?
+        elsif node.input_value&.length&.positive?
           text = preprocess_editorjs_tags node.input_value
           ctx.render_node_text(text, node)
         elsif node.text
