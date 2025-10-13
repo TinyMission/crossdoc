@@ -11,7 +11,7 @@ module CrossDoc
     end
 
     def build(content)
-      content['blocks'].each do |block|
+      content['blocks']&.each do |block|
         render_block(@container, block)
       end
     end
@@ -63,12 +63,12 @@ module CrossDoc
     end
 
     def render_nested_list(parent, items, level = 0)
-      items.each do |item|
+      items&.each do |item|
         parent.node 'LI', list_level: level do |item_node|
           @styler.style_node item_node
           item_node.text = item['content']
         end
-        render_nested_list(parent, item['items'], level + 1) if item['items'].any?
+        render_nested_list(parent, item['items'], level + 1) unless item['items'].blank?
       end
     end
 
@@ -90,7 +90,7 @@ module CrossDoc
 
         # No headings, render 'bare' table
         unless table['withHeadings']
-          table.content.each { |row| render_table_row(table_node, row) }
+          table.content&.each { |row| render_table_row(table_node, row) }
           break
         end
 
@@ -104,7 +104,7 @@ module CrossDoc
         @styler.style_node header_node
         header_node.node 'TR', block_orientation: 'horizontal' do |header_row_node|
           @styler.style_node header_row_node
-          content[0].each do |header_item|
+          content[0]&.each do |header_item|
             header_row_node.node 'TH' do |header_item_node|
               @styler.style_node header_item_node
               header_item_node.text = header_item
@@ -137,6 +137,8 @@ module CrossDoc
 
     def render_block(parent, block)
       data = block['data']
+      return if data.blank?
+
       case block['type']
       when 'paragraph' then render_paragraph(parent, data)
       when 'quote' then render_quote(parent, data)
