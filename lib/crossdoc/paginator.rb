@@ -5,28 +5,35 @@ class CrossDoc::Paginator
     @options = {
         num_levels: 3,
         max_pages: 10,
-        width_threshold: 0.75
     }.merge options
   end
 
   # returns the node in parent.children that spans y
-  def find_spanning_node(content_width, parent, y)
-    width_threshold = @options[:width_threshold] # how close (fraction) the width of the matching node needs to be to the content_width
-    all_above_y = true # keep track of when all nodes have been entirely above y
-
+  def find_spanning_node(content_height, parent, y)
     parent.children&.find do |node|
       next false unless node.box.present?
 
-      is_wide = (node.box.width.to_f / content_width) > width_threshold
+      box = node.box
 
-      # look for a node that is entirely below y, while the rest were all above
-      if all_above_y && node.box.y >= y
-        next true if is_wide
-        all_above_y = false
+      # Don't split child nodes that are taller than the entire document.
+      # Otherwise, this algorithm will generate blank pages until the limit.
+      next false if (box.bottom - box.y > content_height) && node.children&.empty?
+
+      # look for a node that is entirely below y
+      next true if box.y >= y
+
+      # Don't split if the node significantly overlaps another in terms of height.
+      # Assumes that all child nodes of a parent are fully contained in the
+      # parent's bounding box.
+      next false if parent.children.reject { _1 == node }.find do |other_node|
+        next false unless other_node.box.present?
+
+        other_box = other_node.box
+        (box.y - other_box.y).abs <= 1 && (box.bottom - other_box.bottom).abs <= 1
       end
 
       # look for a node that spans y
-      is_wide && (node.box.y...node.box.bottom).include?(y)
+      (box.y ... box.bottom).include? y
     end
   end
 
@@ -122,7 +129,6 @@ class CrossDoc::Paginator
     if doc.footer
       content_height -= doc.footer.box.height
     end
-    content_width = doc.page_width - doc.page_margin.left - doc.page_margin.right
     pages = []
 
     page_num = 0
@@ -133,7 +139,7 @@ class CrossDoc::Paginator
       0.upto(@options[:num_levels]) do |level|
         current_parent = stack.length > 0 ? stack.last : full_page
 
-        span_node = find_spanning_node content_width, current_parent, content_height-y
+        span_node = find_spanning_node(content_height, current_parent, content_height - y)
         if span_node
           stack << span_node
           if level == @options[:num_levels]
