@@ -1,11 +1,9 @@
 # takes a document and spreads it into multiple pages
 class CrossDoc::Paginator
 
-  def initialize(options={})
-    @options = {
-        num_levels: 3,
-        max_pages: 10,
-    }.merge options
+  def initialize(num_levels: 3, max_pages: 10)
+    @num_levels = num_levels
+    @max_pages = max_pages
   end
 
   # returns the node in parent.children that spans y
@@ -132,17 +130,17 @@ class CrossDoc::Paginator
     pages = []
 
     page_num = 0
-    while full_page && page_num < @options[:max_pages]
+    while full_page && page_num < @max_pages
       page_num += 1
       y = 0
       stack = []
-      0.upto(@options[:num_levels]) do |level|
+      0.upto @num_levels do |level|
         current_parent = stack.length > 0 ? stack.last : full_page
 
         span_node = find_spanning_node(content_height, current_parent, content_height - y)
         if span_node
           stack << span_node
-          if level == @options[:num_levels]
+          if level == @num_levels
             pages << break_page(full_page, stack)
             break
           else
