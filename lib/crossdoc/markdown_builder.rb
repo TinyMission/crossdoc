@@ -6,9 +6,10 @@ require_relative './styler'
 module CrossDoc
   # Used by Builder to build content from a markdown source
   class MarkdownBuilder
-    def initialize(container, styles = {})
+    def initialize(container, styles = {}, image_mapper:)
       @container = container
       @styler = Styler.new styles
+      @image_mapper = image_mapper
     end
 
     def build(content)
@@ -36,7 +37,7 @@ module CrossDoc
     def render_image(parent, elem)
       parent.node 'IMG' do |img|
         src = elem.attr['src']
-        image_ref = img.image_src src
+        image_ref = img.image_src @image_mapper.call(src)
         dims = image_ref.dimensions
         height = if dims[:width] > parent.box.width
                    dims[:height].to_f / dims[:width] * parent.box.width

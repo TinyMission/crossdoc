@@ -15,49 +15,21 @@ module CrossDoc
 
     simple_fields %i(src hash)
 
-    attr_reader :io, :is_svg
+    attr_reader :image, :is_svg
+
+    DATA_URL_REGEXP = /^data:(?<type>[^;]+)(?<base64>;base64)?,(?<data>.*)$/
 
     def download(skip_resize: false)
-      if @src.index('data:image/svg+xml;') == 0
-        @is_svg = true
-        raw = Base64.decode64 @src.gsub('data:image/svg+xml;base64,', '')
-        @io = StringIO.new raw
-      elsif @src.index('data:image/png;') == 0
-        @is_svg = false
-        raw = Base64.decode64 @src.gsub('data:image/png;base64,', '')
-        @io = StringIO.new raw
-      elsif @src.index('data:image/jpeg;') == 0
-        @is_svg = false
-        raw = Base64.decode64 @src.gsub('data:image/jpeg;base64,', '')
-        @io = process_orientation raw, :read
-      else
-        @is_svg = !@src.index('.svg').nil?
-        if @src.index('file://')==0
-          @io = open(@src.gsub('file://', ''))
-        elsif @src.index('./')==0
-          @io = open(@src.gsub('./', Dir.pwd + '/'))
-        else # assume it's a URL
-          is_jpg = @src.index('.jpeg') || @src.index('.jpg')
-          if is_jpg
-            @io = process_orientation @src, :open
-          else
-            @io = URI.open @src
-          end
-          if @is_svg || skip_resize
-            return
-          end
-          img = MiniMagick::Image.open @src
-          img_size = img.size
-          img.combine_options do |i|
-            i.quality 80
-            i.geometry image_width(img_size)
-            i.background '#FFFFFF'
-            i.alpha 'remove'
-            i.auto_orient if is_jpg
-          end
-          img.format 'jpg'
-          @io = URI.open img.path
+      @image = MiniMagic::Image.read download_raw_image
+      @is_svg = img.type == 'SVG'
+      @image.combine_options do |i|
+        if @is_svg || skip_resize
+          i.quality 80
+          i.geometry image_width(img.size)
+          i.background '#FFFFFF'
+          i.alpha 'remove'
         end
+        i.auto_orient if img.type == 'JPEG'
       end
     end
 
@@ -69,36 +41,40 @@ module CrossDoc
       1024 - scale_amount
     end
 
-    # Applies EXIF rotation to actual image geometry and removes the metadata
-    def process_orientation(src, method)
-      processed = MiniMagick::Image.send(method, src)
-      processed.auto_orient
-      StringIO.new(processed.to_blob)
-    end
-
     # returns a hash (with :width and :height keys) giving the natural size of the images
     def dimensions
-      if !@is_svg && !@src.index('data:')
-        ident = `identify #{@src}`
-        match = /\s\d+x\d+\s/.match(ident)
-        unless match.size > 0
-          raise "Error getting identity information for #{@src}: #{ident}"
+      @image.size => [width, height]
+      { width: width, height: height }
+    end
+
+    def dispose = @io&.close
+
+    # Singleton IO wrapper
+    def io = (@io ||= StringIO.new(@image.to_blob))
+
+    private
+
+    def download_raw_image()
+      # Parse data fields
+      data_url_match = DATA_URL_REGEXP.match @src
+      image_url = URL.parse @src
+
+      if data_url_match.present?
+        data = data_url_match[:data]
+        if data_url_match[:base64].present?
+          Base64.decode64 data
+        else
+          CGI.unescape data
         end
-        dims = match[0].strip.split('x').map(&:to_f)
-        {width: dims[0], height: dims[1]}
-      else
-        raise "Need to implement size calculation for #{@src}"
+      elsif [URI::HTTP, URI::HTTPS, URI::FTP].include? image_url.class
+        image_url.open.read
+      elsif image_url.is_a? URI::File
+        raise 'Cannot use file:/// URLs in embedded images'
+      else # Use local file path
+        File.open(@src).read
       end
     end
-
-    def dispose
-      if @io
-        @io.close
-      end
-    end
-
   end
-
 
   # represents a single node in the DOM
   class Node
