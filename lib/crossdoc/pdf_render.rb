@@ -147,7 +147,7 @@ module CrossDoc
           @pdf.fill_color = font.color_no_hash
           @pdf.circle pos, r
           @pdf.fill
-        elsif @list_style in %w[decimal lower_roman upper_roman lower_alpha upper_alpha]
+        elsif %w[decimal lower_roman upper_roman lower_alpha upper_alpha].include? @list_style
           # Text
           @list_count += 1
           s = font.size
