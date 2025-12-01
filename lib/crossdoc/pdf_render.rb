@@ -17,8 +17,10 @@ module CrossDoc
       @ancestors = [page]
       @show_overlays = false
       @guide_color = '00ffff'
-      @list_style = nil
-      @list_count = 0
+
+      # Track list styles for rendering
+      @list_style_stack = []
+      @list_count_stack = []
     end
 
     attr_reader :pdf, :doc, :page, :parent
@@ -110,25 +112,23 @@ module CrossDoc
       end
     end
 
-    # these list styles will be rendered so they should be preferentially parsed
-    RENDERED_LIST_STYLES = %w[disc circle square decimal lower_roman upper_roman lower_alpha upper_alpha]
+    def push_list_style(node)
+      return unless node.list_style.present?
+
+      @list_style_stack.push node.list_style
+      @list_count_stack.push((node.start || 1) - 1)
+    end
+
+    def pop_list_style(node)
+      return unless node.list_style.present?
+
+      @list_style_stack.pop
+      @list_count_stack.pop
+    end
 
     def render_node_decorations(node)
-      # keep track of the list style so that we can render item decorations when they come around
-      # list styles will often look like: "outside+none+disc"
-      if node.list_style
-        @list_style = nil
-        RENDERED_LIST_STYLES.each do |style|
-          if node.list_style.index(style)
-            @list_style = style
-            break
-          end
-        end
-        @list_count = (node.start || 1) - 1
-      end
-
       # list item
-      if node.tag&.downcase == 'li' && @list_style
+      if node.tag&.downcase == 'li' && !@list_style_stack.empty?
         font = node.font
         unless font
           node.children.each do |child|
@@ -141,7 +141,10 @@ module CrossDoc
         unless font
           font = CrossDoc::Font.default
         end
-        case @list_style
+
+        list_style = @list_style_stack.last
+
+        case list_style
         when 'disc', 'circle' # Circle
           radius = font.size / 5.0
           pos = [-4 * radius, node.box.height - (font.line_height / 2.0)]
@@ -159,17 +162,17 @@ module CrossDoc
           @pdf.fill_rectangle(pos, side_length, side_length)
         when 'decimal', 'lower_roman', 'upper_roman', 'lower_alpha', 'upper_alpha'
           # Text
-          @list_count += 1
+          @list_count_stack[-1] += 1
           s = font.size
           @pdf.font_size s
           color = font.color_no_hash
           leading = (font.line_height - s)*leading_factor(font.family)
           pos = [-2.5 * s, node.box.height - leading]
           @pdf.bounding_box(pos, width: 2*s) do
-            @pdf.text "#{list_style_text(@list_style, @list_count)}.", color: color, align: :right, leading: leading
+            @pdf.text "#{list_style_text(list_style, @list_count_stack.last)}.", color: color, align: :right, leading: leading
           end
         else
-          puts "!! don't know how to render list style '#{@list_style}'"
+          puts "!! don't know how to render list style '#{list_style}'"
         end
       end
     end
@@ -508,6 +511,8 @@ module CrossDoc
         end
 
         # draw the decorations
+
+        ctx.push_list_style node
         ctx.render_node_decorations node
 
         # draw the border
@@ -533,6 +538,7 @@ module CrossDoc
           ctx.pop_parent
         end
 
+        ctx.pop_list_style node
       end
 
 
