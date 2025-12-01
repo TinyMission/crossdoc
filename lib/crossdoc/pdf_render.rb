@@ -244,6 +244,53 @@ module CrossDoc
       end
     end
 
+    private
+
+    # Format an ordered list number using the given style.
+    def list_style_text(list_style, list_count)
+      case list_style
+      when 'decimal' then list_count.to_s
+      when 'lower_alpha' then list_count_render_alpha(list_count)
+      when 'upper_alpha' then list_count_render_alpha(list_count).upcase
+      when 'lower_roman' then list_count_render_roman(list_count)
+      when 'upper_roman' then list_count_render_roman(list_count).upcase
+      end
+    end
+
+    # Render an alphabetical list count. For lists of more than 26 items, a
+    # second "digit" is used.
+    def list_count_render_alpha(list_count)
+      alpha_string = ''
+      while list_count.positive?
+        list_count, alpha_pos = list_count.divmod 26
+        alpha_string << ('a'.ord + alpha_pos).chr
+      end
+      alpha_string
+    end
+
+    MOD_TO_ROMAN = {
+      1000 => 'M',
+      900 => 'CM',
+      500 => 'D',
+      400 => 'CD',
+      100 => 'C',
+      90 => 'XC',
+      40 => 'XL',
+      10 => 'X',
+      9 => 'IX',
+      5 => 'V',
+      4 => 'IV',
+      1 => 'I'
+    }.freeze
+
+    # Convert a list count to roman numerals.
+    def list_count_render_roman(list_count)
+      MOD_TO_ROMAN.reduce '' do |roman_string, (mod, roman)|
+        whole_part, list_count = list_count.divmod mod
+        roman_string << roman * whole_part
+      end
+    end
+
   end
 
   # renders a document to a PDF
@@ -368,51 +415,6 @@ module CrossDoc
     end
 
     private
-
-    # Format an ordered list number using the given style.
-    def list_style_text(list_style, list_count)
-      case list_style
-      when 'decimal' then list_count.to_s
-      when 'lower_alpha' then list_count_render_alpha(list_count)
-      when 'upper_alpha' then list_count_render_alpha(list_count).upcase
-      when 'lower_roman' then list_count_render_roman(list_count)
-      when 'upper_roman' then list_count_render_roman(list_count).upcase
-      end
-    end
-
-    # Render an alphabetical list count. For lists of more than 26 items, a
-    # second "digit" is used.
-    def list_count_render_alpha(list_count)
-      alpha_string = ''
-      while list_count.positive?
-        list_count, alpha_pos = list_count.divmod 26
-        alpha_string << ('a'.ord + alpha_pos).chr
-      end
-      alpha_string
-    end
-
-    MOD_TO_ROMAN = {
-      1000 => 'M',
-      900 => 'CM',
-      500 => 'D',
-      400 => 'CD',
-      100 => 'C',
-      90 => 'XC',
-      40 => 'XL',
-      10 => 'X',
-      9 => 'IX',
-      5 => 'V',
-      4 => 'IV',
-      1 => 'I'
-    }.freeze
-
-    # Convert a list count to roman numerals.
-    def list_count_render_roman(list_count)
-      MOD_TO_ROMAN.reduce '' do |roman_string, (mod, roman)|
-        whole_part, list_count = list_count.divmod mod
-        roman_string << roman * whole_part
-      end
-    end
 
     # concatenate all child text into a single string, taking into account line breaks
     def compute_compound_text(node)
