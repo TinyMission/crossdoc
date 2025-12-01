@@ -111,7 +111,7 @@ module CrossDoc
     end
 
     # these list styles will be rendered so they should be preferentially parsed
-    RENDERED_LIST_STYLES = %w[disc decimal lower_roman upper_roman lower_alpha upper_alpha]
+    RENDERED_LIST_STYLES = %w[disc circle square decimal lower_roman upper_roman lower_alpha upper_alpha]
 
     def render_node_decorations(node)
       # keep track of the list style so that we can render item decorations when they come around
@@ -141,13 +141,23 @@ module CrossDoc
         unless font
           font = CrossDoc::Font.default
         end
-        if @list_style == 'disc'
-          r = font.size/5.0
-          pos = [-4*r, node.box.height - (font.line_height/2.0)]
-          @pdf.fill_color = font.color_no_hash
-          @pdf.circle pos, r
-          @pdf.fill
-        elsif %w[decimal lower_roman upper_roman lower_alpha upper_alpha].include? @list_style
+        case @list_style
+        when 'disc', 'circle' # Circle
+          radius = font.size / 5.0
+          pos = [-4 * radius, node.box.height - (font.line_height / 2.0)]
+          @pdf.fill_color font.color_no_hash if list_style == 'disc'
+          @pdf.stroke_color font.color_no_hash if list_style == 'circle'
+          if list_style == 'disc'
+            @pdf.fill_circle(pos, radius)
+          else
+            @pdf.stroke_circle(pos, radius)
+          end
+        when 'square' # Square
+          side_length = font.size / 2.5
+          pos = [-2 * side_length, node.box.height - (font.line_height - side_length) / 2.0]
+          @pdf.fill_color font.color_no_hash
+          @pdf.fill_rectangle(pos, side_length, side_length)
+        when 'decimal', 'lower_roman', 'upper_roman', 'lower_alpha', 'upper_alpha'
           # Text
           @list_count += 1
           s = font.size
