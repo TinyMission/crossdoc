@@ -104,13 +104,7 @@ module CrossDoc
 
     DEFAULT_LEADING_FACTOR = 0.4
 
-    def leading_factor(family)
-      if @pdf.font_families[family]
-        @pdf.font_families[family][:leading_factor] || DEFAULT_LEADING_FACTOR
-      else
-        DEFAULT_LEADING_FACTOR
-      end
-    end
+    def leading_factor(family) = @pdf.font_families.dig(family, :leading_factor) || DEFAULT_LEADING_FACTOR
 
     def push_list_style(node)
       return unless node.list_style.present?
@@ -198,7 +192,8 @@ module CrossDoc
         style = node.font.prawn_style
         align = node.font.align.to_sym
         text = node.font.transform_text(text)
-        family = node.font.family.strip
+        # CSS font families separated by commas
+        families = node.font.family.split(',').map(&:strip)
         character_spacing = node.font.letter_spacing || 0
 
         true_family = families.find(&@pdf.font_families)
@@ -209,7 +204,7 @@ module CrossDoc
           @pdf.font('Helvetica', style:)
           @pdf.font_size node.font.size
         end
-        leading = (node.font.line_height - node.font.size).to_f*leading_factor(family)
+        leading = (node.font.line_height - node.font.size).to_f*leading_factor(true_family)
       else
         @pdf.font('Helvetica', style: :normal)
         @pdf.font_size 12
