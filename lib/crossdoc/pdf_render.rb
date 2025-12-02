@@ -200,20 +200,21 @@ module CrossDoc
         text = node.font.transform_text(text)
         family = node.font.family.strip
         character_spacing = node.font.letter_spacing || 0
-        if family.length > 0 && @pdf.font_families[family] && @pdf.font_families[family][style]
-          @pdf.font family
+
+        true_family = families.find(&@pdf.font_families)
+        if true_family.present? && @pdf.font_families[true_family].key?(style)
+          @pdf.font(true_family, style:)
           @pdf.font_size node.font.size
         else
-          @pdf.font 'Helvetica'
+          @pdf.font('Helvetica', style:)
           @pdf.font_size node.font.size
         end
         leading = (node.font.line_height - node.font.size).to_f*leading_factor(family)
       else
-        @pdf.font 'Helvetica'
+        @pdf.font('Helvetica', style: :normal)
         @pdf.font_size 12
         character_spacing = 0
         color = '000000'
-        style = :normal
         align = :left
         leading = 0.0
       end
@@ -243,7 +244,6 @@ module CrossDoc
         color:,
         align:,
         leading:,
-        style:,
         inline_format: true,
         final_gap: false,
         character_spacing:,
@@ -448,8 +448,8 @@ module CrossDoc
         text = child.text || compute_compound_text(child) || ''
         case child.tag
         when 'BR' then '<br>'
-        when 'EM', 'I', 'BLOCKQUOTE', 'Q' then "<em>#{text}</em>"
-        when 'STRONG', 'B', 'DT', 'TH' then "<strong>#{text}</strong>"
+        when 'EM', 'I', 'Q' then "<i>#{text}</i>"
+        when 'STRONG', 'B' then "<b>#{text}</b>"
         when 'DEL' then "<strikethrough>#{text}</strikethrough>"
         when 'U' then "<u>#{text}</u>"
         when 'SUP' then "<sup>#{text}</sup>"
@@ -469,9 +469,18 @@ module CrossDoc
     # look at the children and try to compute a single font
     def compute_compound_font(node)
       return if node.font
-      fonts = node.children.map{|child| child.font}.compact
-      if fonts.length > 0
-        node.font = fonts.first
+      font = node.children.map(&:font).compact.first
+      if font.present?
+        node.font = CrossDoc::Font.default(
+          color: font.color,
+          size: font.size,
+          family: font.family,
+          line_height: font.line_height,
+          letter_spacing: font.letter_spacing,
+          align: font.align,
+          style: 'normal',
+          transform: font.transform
+        )
       end
     end
 
@@ -484,18 +493,7 @@ module CrossDoc
       height = node.box.height
       pos = [node.box.x, ctx.parent.box.height - node.box.y]
       if node.tag == 'LI'
-        font = node.font
-        unless font
-          node.children.each do |child|
-            if child.font
-              font = child.font
-              break
-            end
-          end
-        end
-        unless font
-          font = CrossDoc::Font.default
-        end
+        font = node.font || node.children.lazy.map(&:font).compact.first || CrossDoc::Font.default
         list_level = node.list_level || 0
         pos[0] += font.size * list_level
       end
@@ -503,15 +501,7 @@ module CrossDoc
       ctx.pdf.bounding_box pos, width: node.box.width, height: height do
         ctx.render_node_background node
 
-        all_text_children = true
-        if node.children
-          node.children.each do |child|
-            if child.box
-              all_text_children = false
-            end
-          end
-        end
-        if node.children && node.children.length > 0 && all_text_children
+        if node.children&.all? { _1.box.nil? } # All children are text
           text = preprocess_editorjs_tags(compute_compound_text(node))
           compute_compound_font node
           ctx.render_node_text(text, node)
