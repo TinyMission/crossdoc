@@ -236,9 +236,19 @@ module CrossDoc
                 node.box.width + 2
               end
       @pdf.fill_color color # need to reset the fill color every time when using text_box
-      @pdf.text_box text, at: pos, width: width, color: color, align: align, leading: leading,
-                      style: style, inline_format: true, final_gap: false,
-                      character_spacing: character_spacing, overflow: :expand
+      @pdf.text_box(
+        text,
+        at: pos,
+        width:,
+        color:,
+        align:,
+        leading:,
+        style:,
+        inline_format: true,
+        final_gap: false,
+        character_spacing:,
+        overflow: :expand
+      )
     end
 
     def render_horizontal_guides(ys)
