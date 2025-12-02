@@ -439,19 +439,22 @@ module CrossDoc
 
     private
 
-    # concatenate all child text into a single string, taking into account line breaks
+    # Concatenate inline elements to use Prawn's inline formatting, converting:
+    # - Linebreak tags into <br>
+    # - Italicizing tags into <em>
+    # - Bolding tags into <strong>
     def compute_compound_text(node)
-      node.children.map do |n|
-        if n.tag == 'BR'
-          '<br>'
-        elsif n.tag == 'EM'
-          text = n.text || compute_compound_text(n) || ""
-          "<em>#{text}</em>"
-        elsif n.tag == 'STRONG'
-          text = n.text || compute_compound_text(n) || ""
-          "<strong>#{text}</strong>"
-        else
-          n.text
+      node.children.map do |child|
+        text = child.text || compute_compound_text(child) || ''
+        case child.tag
+        when 'BR' then '<br>'
+        when 'EM', 'I', 'BLOCKQUOTE', 'Q' then "<em>#{text}</em>"
+        when 'STRONG', 'B', 'DT', 'TH' then "<strong>#{text}</strong>"
+        when 'DEL' then "<strikethrough>#{text}</strikethrough>"
+        when 'U' then "<u>#{text}</u>"
+        when 'SUP' then "<sup>#{text}</sup>"
+        when 'SUB' then "<sub>#{text}</sub>"
+        else text
         end
       end.join(' ')
     end
@@ -459,8 +462,8 @@ module CrossDoc
     # convert EditorJS-specific formatting tags to something compatible with Prawn.
     def preprocess_editorjs_tags(text)
       text
-        .gsub(%r{del class=['"]?cdx-strikethrough['"]?>([^<]*)</del>}, '<strikethrough>\1</strikethrough>')
-        .gsub(%r{code class=['"]?inline-code['"]?>([^<]*)</code>}, '<font family="Courier">\1</font>')
+        .gsub(%r{<del[ '"A-Za-z1-9%-]*>([^<]*)</del>}, '<strikethrough>\1</strikethrough>')
+        .gsub(%r{<code[ '"A-Za-z1-9%-]*>([^<]*)</code>}, '<font family="Courier">\1</font>')
     end
 
     # look at the children and try to compute a single font
