@@ -148,11 +148,11 @@ module CrossDoc
         when 'disc', 'circle' # Circle
           radius = font.size / 5.0
           pos = [-4 * radius, node.box.height - (font.line_height / 2.0)]
-          @pdf.fill_color font.color_no_hash if list_style == 'disc'
-          @pdf.stroke_color font.color_no_hash if list_style == 'circle'
           if list_style == 'disc'
+            @pdf.fill_color(font.color_no_hash)
             @pdf.fill_circle(pos, radius)
           else
+            @pdf.stroke_color(font.color_no_hash)
             @pdf.stroke_circle(pos, radius)
           end
         when 'square' # Square
