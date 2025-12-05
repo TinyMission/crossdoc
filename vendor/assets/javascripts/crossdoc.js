@@ -306,10 +306,10 @@
     }
 
     tagParsers.UL = function(doc, node, obj, style) {
-        obj.listStyle = style.listStyle
+        obj.listStyle = style.listStyleType
     }
     tagParsers.OL = function(doc, node, obj, style) {
-        obj.listStyle = style.listStyle
+        obj.listStyle = style.listStyleType
         if (node.start)
             obj.start = node.start
     }

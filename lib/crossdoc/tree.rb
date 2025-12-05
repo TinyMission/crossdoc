@@ -124,13 +124,22 @@ module CrossDoc
 
     def to_s
       downcase_tag = @tag.to_s.downcase
+
+      attr_str = self.class.simple_field_names.map do |field_name|
+        field_value = self.send field_name
+        next if field_value.blank? || %i[tag text].include?(field_name)
+        "#{field_name}=\"#{field_value.to_s}\""
+      end.compact.join ' '
+
+      attr_str = ' ' + attr_str if attr_str.present?
+
       if @text.present?
-        "<#{downcase_tag}>#{@text.to_s}</#{downcase_tag}>"
+        "<#{downcase_tag}#{attr_str}>#{@text.to_s}</#{downcase_tag}>"
       elsif @children.present?
         child_noun = @children.length > 1 ? "children" : "child"
-        "<#{downcase_tag}>...</#{downcase_tag}> (#{@children.length} #{child_noun})"
+        "<#{downcase_tag}#{attr_str}>...</#{downcase_tag}> (#{@children.length} #{child_noun})"
       else
-        "<#{downcase_tag}>"
+        "<#{downcase_tag}#{attr_str}/>"
       end
     end
 
