@@ -496,7 +496,7 @@ module CrossDoc
       ctx.pdf.bounding_box pos, width: node.box.width, height: height do
         ctx.render_node_background node
 
-        if node.children&.all? { _1.box.nil? } # All children are text
+        if !node.children.empty? && node.children&.all? { _1.box.nil? } # All children are text
           text = preprocess_editorjs_tags(compute_compound_text(node))
           compute_compound_font node
           ctx.render_node_text(text, node)
