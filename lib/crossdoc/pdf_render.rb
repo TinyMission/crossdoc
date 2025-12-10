@@ -125,7 +125,7 @@ module CrossDoc
       if node.tag&.downcase == 'li' && !@list_style_stack.empty?
         font = node.font
         unless font
-          node.children.each do |child|
+          node.children&.each do |child|
             if child.font
               font = child.font
               break
@@ -439,6 +439,7 @@ module CrossDoc
     # - Italicizing tags into <em>
     # - Bolding tags into <strong>
     def compute_compound_text(node)
+      return '' unless node.children.present?
       node.children.map do |child|
         text = child.text || compute_compound_text(child) || ''
         case child.tag
@@ -464,6 +465,7 @@ module CrossDoc
     # look at the children and try to compute a single font
     def compute_compound_font(node)
       return if node.font
+      return unless node.children.present?
       font = node.children.map(&:font).compact.first
       if font.present?
         node.font = CrossDoc::Font.default(
@@ -488,7 +490,11 @@ module CrossDoc
       height = node.box.height
       pos = [node.box.x, ctx.parent.box.height - node.box.y]
       if node.tag == 'LI'
-        font = node.font || node.children.lazy.map(&:font).compact.first || CrossDoc::Font.default
+        font = node.font
+        if font.nil? && node.children.present?
+          font = node.children.lazy.map(&:font).compact.first
+        end
+        font ||= CrossDoc::Font.default
         list_level = node.list_level || 0
         pos[0] += font.size * list_level
       end
@@ -496,7 +502,7 @@ module CrossDoc
       ctx.pdf.bounding_box pos, width: node.box.width, height: height do
         ctx.render_node_background node
 
-        if node.children && !node.children.empty? && node.children.all? { _1.box.nil? } # All children are text
+        if node.children.present? && node.children.all? { _1.box.nil? } # All children are text
           text = preprocess_editorjs_tags(compute_compound_text(node))
           compute_compound_font node
           ctx.render_node_text(text, node)
