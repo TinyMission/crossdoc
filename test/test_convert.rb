@@ -1,4 +1,4 @@
-require 'crossdoc'
+require 'crossdoc/converter'
 require_relative 'test_base'
 
 class TestConvert < TestBase

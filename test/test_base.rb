@@ -1,4 +1,6 @@
 require 'minitest/autorun'
+require 'crossdoc/paginator'
+require 'crossdoc/pdf_render'
 
 # Base class for test runners, contains common operations like file I/O
 class TestBase < Minitest::Test
