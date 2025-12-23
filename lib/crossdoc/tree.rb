@@ -31,21 +31,20 @@ module CrossDoc
         raw = Base64.decode64 @src.gsub('data:image/jpeg;base64,', '')
         @io = process_orientation raw, :read
       else
-        @is_svg = !@src.index('.svg').nil?
         if @src.index('file://')==0
+          @is_svg = !@src.index('.svg').nil?
           @io = open(@src.gsub('file://', ''))
         elsif @src.index('./')==0
+          @is_svg = !@src.index('.svg').nil?
           @io = open(@src.gsub('./', Dir.pwd + '/'))
         else # assume it's a URL
-          is_jpg = @src.index('.jpeg') || @src.index('.jpg')
-          if is_jpg
-            @io = process_orientation @src, :open
-          else
-            @io = URI.open @src
-          end
-          if @is_svg || skip_resize
-            return
-          end
+          @io = URI.open @src
+          is_jpg = @io.content_type.start_with? 'image/jpeg'
+          @is_svg = @io.content_type.start_with? 'image/svg+xml'
+          @io = process_orientation @src, :open if is_jpg
+
+          return if @is_svg || skip_resize
+
           img = MiniMagick::Image.open @src
           img_size = img.size
           img.combine_options do |i|
