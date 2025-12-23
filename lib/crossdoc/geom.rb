@@ -143,7 +143,7 @@ module CrossDoc
 
     # one of the allowed default prawn font styles
     def prawn_style
-      is_bold = self.weight == 'bold' || self.weight.to_i&.>=(700).is_true?
+      is_bold = weight == 'bold' || weight.to_i >= 700
       is_italic = %w[italic oblique].include? self.style
 
       is_bold ?
