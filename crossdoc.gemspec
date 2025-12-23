@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'railties'
   spec.add_dependency 'kramdown'
   spec.add_dependency 'mini_magick'
+  spec.add_dependency 'any_ascii', '~> 0.3.3'
 
   spec.required_ruby_version = '>= 3.0.0'
 end

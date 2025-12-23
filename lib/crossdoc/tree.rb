@@ -2,6 +2,7 @@ require 'open-uri'
 require 'base64'
 require 'tempfile'
 require 'mini_magick'
+require 'any_ascii'
 
 module CrossDoc
 
@@ -106,6 +107,9 @@ module CrossDoc
 
     def initialize(attrs={})
       assign_fields attrs
+
+      # Normalize text to ASCII
+      self.text = AnyAscii.transliterate self.text unless self.text.nil?
     end
 
     simple_fields %i[id tag text src hash list_style list_level start input_type input_value input_possible]
