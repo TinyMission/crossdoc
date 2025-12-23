@@ -1,4 +1,5 @@
 require_relative './util'
+require_relative './geom.rb'
 
 module CrossDoc
 

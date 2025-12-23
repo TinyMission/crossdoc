@@ -3,6 +3,8 @@ require 'base64'
 require 'tempfile'
 require 'mini_magick'
 
+require_relative './geom'
+
 module CrossDoc
 
   # represents a reference to an image used in a document

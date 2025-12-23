@@ -1,4 +1,4 @@
-require 'crossdoc'
+require 'crossdoc/builder'
 require_relative 'test_base'
 
 class TestBuilder < TestBase

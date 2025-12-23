@@ -1,4 +1,4 @@
-require 'crossdoc'
+require 'crossdoc/tree'
 require_relative 'test_base'
 
 class TestRender < TestBase
