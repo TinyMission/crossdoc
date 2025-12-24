@@ -5,7 +5,7 @@
             "hash": "c908c1bb"
         },
         "8dce576b": {
-            "src": "https://via.placeholder.com/400x300.png&text=Photo",
+            "src": "https://placehold.co/400x300.png?text=Photo",
             "hash": "8dce576b"
         },
         "d7a28ba0": {
@@ -276,7 +276,7 @@
                                         "width": 137,
                                         "height": 103
                                     },
-                                    "src": "https://via.placeholder.com/400x300.png&text=Photo",
+                                    "src": "https://placehold.co/400x300.png?text=Photo",
                                     "hash": "8dce576b"
                                 }
                             ]
