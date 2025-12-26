@@ -164,12 +164,12 @@ module CrossDoc
       self.box.height + @margin.top + @margin.bottom
     end
 
-    def editor_js(content, style={})
-      EditorJsBuilder.new(self, style).build content
+    def editor_js(content, style={}, image_mapper: ->(source) { source })
+      EditorJsBuilder.new(self, style, image_mapper: image_mapper).build content
     end
 
-    def markdown(content, style={})
-      MarkdownBuilder.new(self, style).build content
+    def markdown(content, style={}, image_mapper: ->(source) { source })
+      MarkdownBuilder.new(self, style, image_mapper: image_mappper).build content
     end
 
     def to_node

@@ -5,9 +5,10 @@ require_relative './styler'
 module CrossDoc
   # Used by the Builder to include content from EditorJS
   class EditorJsBuilder
-    def initialize(container, styles = {})
+    def initialize(container, styles = {}, image_mapper:)
       @container = container
       @styler = Styler.new styles
+      @image_mapper = image_mapper
     end
 
     def build(content)
@@ -77,7 +78,7 @@ module CrossDoc
     def render_image(parent, image)
       parent.node 'IMG' do |image_node|
         @styler.style_node image_node
-        image_source = image['file']['url']
+        image_source = @image_mapper.call image['file']['url']
         image_node.image_src(image_source).dimensions => { width: image_width, height: image_height }
         image_height = (image_height.to_f / image_width * parent.box.width) if image_width > parent.box.width
         image_node.push_min_height image_height
