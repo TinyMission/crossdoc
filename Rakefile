@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'bundler/gem_tasks'
-require 'rake/testtask'
+require 'minitest/test_task'
 
-
-
-Rake::TestTask.new do |t|
-  t.libs << "lib/crossdoc"
-  t.test_files = FileList['test/test*.rb']
-  t.verbose = true
+Minitest::TestTask.create(:test) do |t|
+  t.libs << 'lib'
+  t.libs << 'test'
+  t.test_globs = ['test/**/test_*.rb']
+  t.verbose = false
 end
+
