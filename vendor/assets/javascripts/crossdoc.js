@@ -155,10 +155,10 @@
     }
 
     // Parse an individual child node
-    function parseChild(doc, childNode) {
+    function parseChild(doc, childNode, parentRect) {
         switch (childNode.nodeType) {
             case Node.ELEMENT_NODE:
-                return parseNode(doc, childNode)
+                return parseNode(doc, childNode, parentRect)
             case Node.TEXT_NODE:
                 var text = childNode.data.trim()
                 if (text.length > 0) {
@@ -173,7 +173,7 @@
     }
 
     // Recursively parses a node and its children
-    function parseNode(doc, node) {
+    function parseNode(doc, node, parentRect) {
         var i
         var obj = {
             tag: node.tagName
@@ -195,7 +195,12 @@
             childNodes = childNodes.concat(Array.from(node.shadowRoot.childNodes))
         }
 
-        var children = childNodes.flatMap(childNode => parseChild(doc, childNode))
+        var nodeRect = node.getBoundingClientRect()
+        var offset = {
+          x: nodeRect.left - parentRect.left,
+          y: nodeRect.top - parentRect.top
+        }
+        var children = childNodes.flatMap(childNode => parseChild(doc, childNode, nodeRect))
 
         // display == contents means render this node's children directly into its parent with no formatting from itself
         if (style.display === 'contents') {
@@ -204,25 +209,23 @@
 
         // we only need box size for non-inline elements
         var display = style.display
-        var offsetHeight = node.offsetHeight
+        var nodeHeight = nodeRect.height
         for (i = 0; i < node.childNodes.length; i++) {
             var child = node.childNodes[i]
             // inline elements with line breaks are inherently blocks
             if (child.tagName === 'BR') {
                 display = 'block'
-                offsetHeight = node.offsetHeight * 1.3 // hack to ensure that text actually renders
+                nodeHeight *= 1.3 // hack to ensure that text actually renders
+                break;
             }
         }
         if (display !== 'inline' || node.tagName === 'IMG') {
             obj.box = {
-                x: node.offsetLeft,
-                y: node.offsetTop,
-                width: node.offsetWidth,
-                height: offsetHeight
+                x: offset.x,
+                y: offset.y,
+                width: nodeRect.width,
+                height: nodeHeight
             }
-            // hack for wrong reporting of table-cell vertical offsets
-            if (style.display === 'table-cell')
-                obj.box.y = 0
         }
 
         var hasText = children.some(child => child.tag === 'TEXT')
@@ -280,7 +283,8 @@
         }
 
         // parse the children
-        page.children = Array.from(node.childNodes).flatMap(childNode => parseChild(doc, childNode))
+        var pageRect = node.getBoundingClientRect()
+        page.children = Array.from(node.childNodes).flatMap(childNode => parseChild(doc, childNode, pageRect))
 
         return page
     }
