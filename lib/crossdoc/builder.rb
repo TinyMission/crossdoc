@@ -1,3 +1,5 @@
+require_relative './util'
+
 module CrossDoc
 
   # DSL for recursively creating nodes

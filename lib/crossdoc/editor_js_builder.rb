@@ -92,8 +92,8 @@ module CrossDoc
 
         # No headings, render 'bare' table
         unless table['withHeadings']
-          table.content&.each { |row| render_table_row(table_node, row) }
-          break
+          table['content']&.each { |row| render_table_row(table_node, row) }
+          next
         end
 
         render_thead(table_node, table['content'])

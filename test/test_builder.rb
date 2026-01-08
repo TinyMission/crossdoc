@@ -1,4 +1,4 @@
-require 'crossdoc'
+require 'crossdoc/builder'
 require_relative 'test_base'
 
 class TestBuilder < TestBase
@@ -20,7 +20,7 @@ class TestBuilder < TestBase
     # header
     builder.header do |header|
       header.horizontal_div do |left_header|
-        left_header.node 'img', {src: 'https://via.placeholder.com/100x80'} do |logo|
+        left_header.node 'img', {src: 'https://placehold.co/100x80'} do |logo|
           logo.push_min_height 100
           logo.margin.set_all 8
         end

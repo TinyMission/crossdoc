@@ -28,8 +28,8 @@ module CrossDoc
   class Box
     include CrossDoc::Fields
 
-    def initialize(attrs = {width: 0, height: 0, x: 0, y: 0})
-      assign_fields attrs
+    def initialize(attrs = {})
+      assign_fields({width: 0, height: 0, x: 0, y: 0}.merge attrs)
     end
 
     simple_fields %i(x y width height)
@@ -54,14 +54,15 @@ module CrossDoc
       "x: #{self.x}, y: #{self.y}, w: #{self.width}, h: #{self.height}"
     end
 
+    def ==(other) = self.x == other.x && self.y == other.y && self.width == other.width && self.height == other.height
   end
 
 
   class BorderSide
     include CrossDoc::Fields
 
-    def initialize(attrs = {width: 1, style: 'solid', color: '#000000'})
-      assign_fields attrs
+    def initialize(attrs = {})
+      assign_fields({width: 1, style: 'solid', color: '#000000'}.merge attrs)
     end
 
     simple_fields %i(width style color)
@@ -99,8 +100,8 @@ module CrossDoc
   class Border
     include CrossDoc::Fields
 
-    def initialize(attrs = {top: nil, bottom: nil, left: nil, right: nil})
-      assign_fields attrs
+    def initialize(attrs = {})
+      assign_fields({top: nil, bottom: nil, left: nil, right: nil}.merge attrs)
     end
 
     object_field :top, BorderSide
@@ -118,7 +119,7 @@ module CrossDoc
   class Font
     include CrossDoc::Fields
 
-    def initialize(attrs)
+    def initialize(attrs = {})
       assign_fields attrs
     end
 
@@ -143,7 +144,7 @@ module CrossDoc
 
     # one of the allowed default prawn font styles
     def prawn_style
-      is_bold = self.weight == 'bold' || self.weight.to_i&.>=(700).is_true?
+      is_bold = weight == 'bold' || weight.to_i >= 700
       is_italic = %w[italic oblique].include? self.style
 
       is_bold ?
@@ -152,9 +153,9 @@ module CrossDoc
     end
 
     def self.default(modifiers={})
-      args = {family: 'helvetica,sans-serif', color: '#000000', size: 12, weight: 'normal', align: :left, line_height: 16}.merge modifiers
+      args = { family: 'helvetica,sans-serif', color: '#000000', size: 12, weight: 'normal', align: :left, line_height: 16 }.merge modifiers
       # guess as a good line height
-      unless modifiers.has_key? :line_height
+      unless args.has_key? :line_height
         args[:line_height] = (1.4 * args[:size]).round.to_i
       end
       CrossDoc::Font.new args
@@ -166,8 +167,8 @@ module CrossDoc
   class Margin
     include CrossDoc::Fields
 
-    def initialize(attrs = {top: 0, left: 0, right: 0, bottom: 0})
-      assign_fields attrs
+    def initialize(attrs = {})
+      assign_fields({top: 0, left: 0, right: 0, bottom: 0}.merge attrs)
     end
 
     simple_fields %i(top right bottom left)
