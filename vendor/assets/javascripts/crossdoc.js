@@ -195,7 +195,7 @@
             childNodes = childNodes.concat(Array.from(node.shadowRoot.childNodes))
         }
 
-        var nodeRect = node.getBoundingClientRect()
+        var nodeRect = style.display === 'contents' ? parentRect : node.getBoundingClientRect()
         var offset = {
           x: nodeRect.left - parentRect.left,
           y: nodeRect.top - parentRect.top
