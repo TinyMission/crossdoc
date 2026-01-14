@@ -27,7 +27,7 @@ class CrossDoc::Paginator
         next false unless other_node.box.present?
 
         other_box = other_node.box
-        (box.y - other_box.y).abs <= 1 && (box.bottom - other_box.bottom).abs <= 1
+        (box.y ... box.bottom).overlap? (other_box.y ... other_box.bottom)
       end
 
       # look for a node that spans y
