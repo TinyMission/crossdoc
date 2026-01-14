@@ -33,32 +33,35 @@ module CrossDoc
         raw = Base64.decode64 @src.gsub('data:image/jpeg;base64,', '')
         @io = process_orientation raw, :read
       else
-        if @src.index('file://')==0
-          @is_svg = !@src.index('.svg').nil?
-          @io = open(@src.gsub('file://', ''))
-        elsif @src.index('./')==0
-          @is_svg = !@src.index('.svg').nil?
-          @io = open(@src.gsub('./', Dir.pwd + '/'))
-        else # assume it's a URL
-          @io = URI.open @src
-          is_jpg = @io.content_type.start_with? 'image/jpeg'
-          @is_svg = @io.content_type.start_with? 'image/svg+xml'
-          @io = process_orientation @src, :open if is_jpg
+        uri = URI.parse @src
 
-          return if @is_svg || skip_resize
-
-          img = MiniMagick::Image.open @src
-          img_size = img.size
-          img.combine_options do |i|
-            i.quality 80
-            i.geometry image_width(img_size)
-            i.background '#FFFFFF'
-            i.alpha 'remove'
-            i.auto_orient if is_jpg
-          end
-          img.format 'jpg'
-          @io = URI.open img.path
+        if uri.respond_to? :open
+          @io = uri.open
+        else
+          @io = File.open uri.path
         end
+
+        if @io.respond_to? :content_type
+          @is_jpg = @io.content_type.start_with? 'image/jpeg'
+          @is_svg = @io.content_type.start_with? 'image/svg+xml'
+        else
+          @is_jpg = uri.path.end_with?('.jpg') || uri.path.end_with?('.jpeg')
+          @is_svg = uri.path.end_with? '.svg'
+        end
+
+        return if @is_svg || skip_resize
+
+        img = MiniMagick::Image.open @src
+        img_size = img.size
+        img.combine_options do |i|
+          i.quality 80
+          i.geometry image_width(img_size)
+          i.background '#FFFFFF'
+          i.alpha 'remove'
+          i.auto_orient if @is_jpg
+        end
+        img.format 'jpg'
+        @io = URI.open img.path
       end
     end
 
